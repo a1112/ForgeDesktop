@@ -43,6 +43,12 @@ class ProcessMetricsTests(unittest.TestCase):
             Path(directory, '77').mkdir()
             self.assertEqual(metrics.read_processes(Path(directory)), {})
 
+    def test_exact_group_excludes_apps_spawned_by_panel(self):
+        table = {10: {'ppid': 1, 'name': 'xfce4-panel', 'uid': 1000},
+                 11: {'ppid': 10, 'name': 'terminal', 'uid': 1000}}
+        self.assertEqual(metrics.select_group(table, {'xfce4-panel'}, 1000,
+                                             descendants=False), {10})
+
 
 if __name__ == '__main__':
     unittest.main()

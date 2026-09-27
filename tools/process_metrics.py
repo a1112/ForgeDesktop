@@ -31,9 +31,11 @@ def cpu_percent(before, after, ticks_per_second, seconds):
     return delta / ticks_per_second / seconds * 100
 
 
-def select_group(table, names, uid):
+def select_group(table, names, uid, descendants=True):
     selected = {pid for pid, row in table.items()
                 if row['uid'] == uid and row['name'] in names}
+    if not descendants:
+        return selected
     while True:
         children = {pid for pid, row in table.items()
                     if row['uid'] == uid and row['ppid'] in selected}
@@ -61,7 +63,7 @@ def read_processes(root):
     return table
 
 
-def sample(groups, duration, interval, uid):
+def sample(groups, duration, interval, uid, exact_groups=()):
     proc = Path('/proc')
     frequency = os.sysconf('SC_CLK_TCK')
     samples = []
@@ -71,7 +73,7 @@ def sample(groups, duration, interval, uid):
         table = read_processes(proc)
         current = {'seconds': stamp - start, 'groups': {}}
         for label, names in groups.items():
-            selected = select_group(table, names, uid)
+            selected = select_group(table, names, uid, label not in exact_groups)
             rows = {}
             for pid in sorted(selected):
                 row = dict(table[pid])
@@ -110,6 +112,8 @@ def sample(groups, duration, interval, uid):
                             'pss_mib_mean': statistics.mean(pss) / 1024 if pss else None,
                             'pss_mib_max': max(pss) / 1024 if pss else None}
     return {'schemaVersion': 1, 'duration_seconds': elapsed, 'uid': uid,
+            'selection': {label: {'names': sorted(names), 'descendants': label not in exact_groups}
+                          for label, names in groups.items()},
             'clock_ticks_per_second': frequency, 'summary': summaries,
             'samples': samples,
             'limitations': ['CPU comparison is valid only for stable process sets.',
@@ -118,19 +122,23 @@ def sample(groups, duration, interval, uid):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--group', action='append', required=True, help='label=executable,executable')
+    parser.add_argument('--group', action='append', default=[], help='label=executable,executable; include descendants')
+    parser.add_argument('--exact-group', action='append', default=[], help='label=executable,executable; exclude descendants')
     parser.add_argument('--seconds', type=float, default=60)
     parser.add_argument('--interval', type=float, default=1)
     args = parser.parse_args()
     if not 1 <= args.seconds <= 28800 or not .1 <= args.interval <= 60:
         parser.error('seconds must be 1..28800 and interval .1..60')
     groups = {}
-    for item in args.group:
+    if not args.group and not args.exact_group:
+        parser.error('at least one process group is required')
+    for item in args.group + args.exact_group:
         label, separator, names = item.partition('=')
         if not separator or not label or not names or label in groups:
             parser.error('groups need unique labels and executable names')
         groups[label] = set(names.split(','))
-    print(json.dumps(sample(groups, args.seconds, args.interval, os.getuid()), indent=2))
+    exact = {item.partition('=')[0] for item in args.exact_group}
+    print(json.dumps(sample(groups, args.seconds, args.interval, os.getuid(), exact), indent=2))
 
 
 if __name__ == '__main__':

@@ -1,0 +1,6373 @@
+{
+  "schemaVersion": 1,
+  "duration_seconds": 60.00013066700012,
+  "uid": 1000,
+  "clock_ticks_per_second": 100,
+  "summary": {
+    "ros": {
+      "stable_process_set": true,
+      "complete_pss": true,
+      "cpu_percent_one_core": 1.2333306474064025,
+      "pss_mib_mean": 884.7031410092213,
+      "pss_mib_max": 884.8486328125
+    },
+    "xfce": {
+      "stable_process_set": false,
+      "complete_pss": true,
+      "cpu_percent_one_core": 0.03333326074071358,
+      "pss_mib_mean": 106.9066662397541,
+      "pss_mib_max": 109.51953125
+    }
+  },
+  "samples": [
+    {
+      "seconds": 1.5300020095310174e-07,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18294,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796362
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 1.007030110999949,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18295,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796362
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 2.0144674530001794,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18295,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796362
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 3.0221447210001315,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18295,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796366
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 4.029454705000262,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18295,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796378
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 5.036961289999908,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18295,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796378
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 6.044340808000015,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18296,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796322
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 7.051853493000181,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18296,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796322
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 8.059630961000039,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18296,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796322
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 9.067654650999884,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18296,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796322
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 10.076831988999857,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18297,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796322
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 11.084213254000133,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18297,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796326
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 12.093056580999928,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18297,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796326
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 13.100214248000157,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18297,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796330
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 14.107871239999895,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18298,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796330
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 15.11594401100001,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18298,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796330
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 16.12314301100014,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 143,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18298,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796330
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 17.13034705600012,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18299,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796334
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 18.13817178599993,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18299,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796334
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 19.14577842100016,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28930
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18299,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796334
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 20.153044547000263,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18299,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796446
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 21.160583832000157,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18299,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796446
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 22.168043495999882,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18300,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796450
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 23.175844705000145,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 196,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28930
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18300,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796450
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 24.183063228000265,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28930
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18300,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796450
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 25.190395332000207,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80607
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18301,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796450
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51966
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14916
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 41,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22873
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9841
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7872
+          },
+          "2040": {
+            "pid": 2040,
+            "name": "bwrap",
+            "ppid": 772,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 138
+          },
+          "2042": {
+            "pid": 2042,
+            "name": "bwrap",
+            "ppid": 745,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 142
+          },
+          "2044": {
+            "pid": 2044,
+            "name": "bwrap",
+            "ppid": 2042,
+            "ticks": 0,
+            "start": 319974,
+            "uid": 1000,
+            "pss_kib": 125
+          },
+          "2046": {
+            "pid": 2046,
+            "name": "bwrap",
+            "ppid": 2040,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 121
+          },
+          "2051": {
+            "pid": 2051,
+            "name": "glycin-image-rs",
+            "ppid": 2044,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2143
+          },
+          "2053": {
+            "pid": 2053,
+            "name": "glycin-image-rs",
+            "ppid": 2046,
+            "ticks": 0,
+            "start": 319975,
+            "uid": 1000,
+            "pss_kib": 2011
+          }
+        }
+      }
+    },
+    {
+      "seconds": 26.198213878999923,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18301,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796453
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 27.205475945000217,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18301,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796457
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 28.212294782999834,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18301,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796457
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 29.219409135000205,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28934
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18302,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796457
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 30.22641288800014,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18302,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796345
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 31.23367618500015,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18302,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796345
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 32.24082319399986,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18303,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796349
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 33.24793892000025,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18303,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796353
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 34.25517208300016,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18303,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796353
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 35.262356199999886,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18303,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796353
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 36.26928810800018,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18304,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796353
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 37.27656525200018,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18304,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796357
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 38.28364614500015,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18304,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796357
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 39.291134431000046,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18304,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796357
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 40.29781853800023,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18305,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796357
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 76,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 41.305160914000226,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18341,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796357
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 42.31250142399995,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18341,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 43.31936709599995,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18342,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 44.32622386699995,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18342,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 45.333611176999966,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 144,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18343,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 46.34116109000024,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18343,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 47.34856075000016,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796365
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 48.355768313000226,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796369
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 49.36305267199987,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796369
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 50.370453977000125,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796369
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 51.377401036000265,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796373
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 52.38499187300022,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18344,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796373
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 53.39172078299998,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18363,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796517
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 54.39867640500006,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18364,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796517
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 55.40628475099993,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18364,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796525
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14919
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22876
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 56.41350432800027,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18364,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796525
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14922
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22879
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 57.420734191000065,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18365,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796525
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14922
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22879
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 58.42761240500022,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18365,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796525
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14922
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22879
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 59.434513526000046,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28938
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18365,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796529
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14922
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22879
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    },
+    {
+      "seconds": 60.00013066700012,
+      "groups": {
+        "ros": {
+          "1188": {
+            "pid": 1188,
+            "name": "r-os-desktop",
+            "ppid": 1165,
+            "ticks": 197,
+            "start": 5305,
+            "uid": 1000,
+            "pss_kib": 80610
+          },
+          "1196": {
+            "pid": 1196,
+            "name": "WebKitNetworkProcess",
+            "ppid": 1188,
+            "ticks": 145,
+            "start": 5328,
+            "uid": 1000,
+            "pss_kib": 28942
+          },
+          "1211": {
+            "pid": 1211,
+            "name": "WebKitWebProcess",
+            "ppid": 1188,
+            "ticks": 18365,
+            "start": 5337,
+            "uid": 1000,
+            "pss_kib": 796533
+          }
+        },
+        "xfce": {
+          "695": {
+            "pid": 695,
+            "name": "xfwm4",
+            "ppid": 581,
+            "ticks": 77,
+            "start": 839,
+            "uid": 1000,
+            "pss_kib": 51970
+          },
+          "745": {
+            "pid": 745,
+            "name": "xfce4-panel",
+            "ppid": 581,
+            "ticks": 60,
+            "start": 868,
+            "uid": 1000,
+            "pss_kib": 14922
+          },
+          "772": {
+            "pid": 772,
+            "name": "xfdesktop",
+            "ppid": 581,
+            "ticks": 42,
+            "start": 878,
+            "uid": 1000,
+            "pss_kib": 22879
+          },
+          "838": {
+            "pid": 838,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 5,
+            "start": 899,
+            "uid": 1000,
+            "pss_kib": 9844
+          },
+          "861": {
+            "pid": 861,
+            "name": "wrapper-2.0",
+            "ppid": 745,
+            "ticks": 4,
+            "start": 906,
+            "uid": 1000,
+            "pss_kib": 7875
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "CPU comparison is valid only for stable process sets.",
+    "No frame time, input latency or noVNC latency is inferred."
+  ]
+}

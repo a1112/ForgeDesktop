@@ -26,8 +26,17 @@ L: was identified as a SATA HDD. The destination selected for the new build disk
 is D:, on the existing Lexar SSD, with 231.7 GiB free before the copy. Hyper-V
 online storage migration failed its directory ACL check. The new disk alone was
 cleanly unmounted and hot-detached, then copied to D: with the original retained.
-Reattachment and mount verification are pending; this is not a migration of the
-Ubuntu OS disk or the running ForgeOS guest's data.
+The copy was too slow and was cancelled. Its incomplete destination was briefly
+attached by a non-terminating PowerShell error, then immediately detached without
+mounting it. No data was read or written through that incomplete filesystem.
+
+A fresh `forge-desktop-build-ssd.vhdx` was instead created directly on D:. Its
+blank WWN `6002248051e83175438f5c3cb83cd82c` and size were checked before format.
+The active ext4 UUID is now `7e07ca5a-e1c9-43c2-8d92-fef69f00008b`.
+Formatting and copying the read-only Arch source completed in about four seconds;
+the mounted volume has 123 GiB available after the source copy. This did not
+migrate the Ubuntu OS disk or the running ForgeOS guest's data. The unused HDD
+disk and incomplete SSD copy are retained outside the active VM.
 
 Initial filesystem setup/copy incurred high host I/O pressure. Performance
 samples during this preparation are invalid as desktop comparison evidence.
