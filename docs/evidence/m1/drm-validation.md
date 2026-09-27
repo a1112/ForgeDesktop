@@ -1,8 +1,9 @@
 # M1 independent DRM runtime — 2026-09-27
 
 The independent compositor/input subset passed in a disposable VM. Full M1
-also passed graphical login recovery below. M1 code-review fixes still require
-their regression/re-review before milestone closure; M2–M5 remain pending.
+also passed graphical login recovery below. Specification and quality reviews
+passed after input lifecycle fixes. M1 is accepted at its scoped milestone;
+M2–M5 and the remaining M0 performance baselines are not completed by this test.
 
 ## Environment and build
 
@@ -75,3 +76,14 @@ No password was entered or changed, and no authentication/lock-screen acceptance
 is implied by this recovery test. The ordinary applications lose their display
 when the compositor dies; preserving apps during a *shell* crash is M2's distinct
 requirement. This injected crash is not counted as a normal M4 stability cycle.
+
+## Reviewed build recheck
+
+After `362fef5`, binary SHA-256
+`171b35ef88413ce69fbb5faaf1dd6bdd1dbf209cd26b7218a3bac4ac6d90fb55`
+was installed offline into the stopped LightDM test copy and booted again.
+The real noVNC session showed both clients; typing `forge` in GTK, moving its
+titlebar, focusing/typing `forge` in Qt and resizing Qt were visually rechecked.
+See `lightdm-latest-input.png`. The focused quality re-review passed all three
+findings (buffer mapping, stationary pointer targeting, host modifier focus),
+supported by the committed native Wayland lifecycle regression fixture/logs.
