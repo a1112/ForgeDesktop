@@ -30,7 +30,7 @@ static void done(void*d,struct zwp_input_method_v2*ime){
   char path[]="/tmp/forge-ime-test-XXXXXX";int fd=mkstemp(path);unlink(path);
   if(fd<0||ftruncate(fd,40*20*4))exit(3);
   uint32_t*p=mmap(NULL,40*20*4,PROT_READ|PROT_WRITE,MAP_SHARED,fd,0);if(p==MAP_FAILED)exit(4);
-  for(int n=0;n<40*20;n++)p[n]=0xff00ff00;
+  for(int n=0;n<40*20;n++)p[n]=getenv("FORGE_TEST_IME_ALPHA")?0x80008000:0xff00ff00;
   struct wl_shm_pool*pool=wl_shm_create_pool(shm,fd,40*20*4);
   buffer=wl_shm_pool_create_buffer(pool,0,40,20,40*4,WL_SHM_FORMAT_ARGB8888);
   wl_shm_pool_destroy(pool);munmap(p,40*20*4);close(fd);

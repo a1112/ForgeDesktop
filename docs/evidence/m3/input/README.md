@@ -96,3 +96,25 @@ mounted over `/usr/bin/fcitx5` **only in the disposable nspawn namespace** with
 `--bind-ro=/srv/forge-desktop-build/work/persistent-ime:/usr/bin/fcitx5`, then run
 with `dbus-run-session -- sh crates/forge-compositor/tests/persistent_ime.sh`.
 No production bypass or process-name authorization was introduced.
+
+## Live xdg-popup input regression (2026-09-28)
+
+The `popup_input.c` native Wayland fixture creates a real xdg_popup using a legal
+pointer serial, enables text-input-v3 on that popup, then explicitly disables and
+reenables it three times without destroying either popup surface. The supervised
+input-method fixture paints 40 x 20 premultiplied half-alpha green pixels on a
+white popup. This distinguishes a duplicated render node from a single node.
+
+- Red: rebuilding `ime.rs` from `4e57ad4` gives 800 multiply blended candidate
+  pixels and zero single-blended pixels; `popup_input.sh` exits 1.
+- Green: derive the actual toplevel root with `find_popup_root_surface` before
+  dismissal. Exactly 800 single-blended pixels, zero duplicate pixels; exit 0.
+- Negative: `popup_input.sh bogus` sends an unrelated serial, receives popup_done,
+  and never enables text input; exit 0.
+- Popup parent geometry is taken from its tracked popup geometry; normal
+  toplevel candidate placement continues to use the local client geometry.
+
+These tests run in isolated Xvfb hosting the Pixman nested compositor, with a
+private nspawn bind of the deterministic input-method fixture over the supervised
+fixed executable. They exercise native Wayland clients, not XWayland. The bind
+and fixture environment are never installed into the production guest.

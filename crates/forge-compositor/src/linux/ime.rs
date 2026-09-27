@@ -96,11 +96,11 @@ impl InputMethodHandler for App {
         self.dirty = true;
     }
     fn dismiss_popup(&mut self, popup: PopupSurface) {
-        if let Some(parent) = popup.get_parent() {
+        let kind = smithay::desktop::PopupKind::InputMethod(popup);
+        if let Ok(root) = find_popup_root_surface(&kind) {
             // The IME may reuse this still-live surface after focus changes.
             // cleanup() alone only drops dead surfaces, leaving stale trees.
-            let root = parent.surface.clone();
-            let _ = PopupManager::dismiss_popup(&root, &popup.into());
+            let _ = PopupManager::dismiss_popup(&root, &kind);
         }
         self.popups.cleanup();
         self.dirty = true;
@@ -111,6 +111,9 @@ impl InputMethodHandler for App {
         self.dirty = true;
     }
     fn parent_geometry(&self, parent: &WlSurface) -> Rectangle<i32, Logical> {
+        if let Some(popup) = self.popups.find_popup(parent) {
+            return popup.geometry();
+        }
         let mut root = parent.clone();
         while let Some(p) = get_parent(&root) {
             root = p;
