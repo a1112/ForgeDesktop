@@ -6,8 +6,13 @@
 #include <QVBoxLayout>
 #include <QWidget>
 #include <QResizeEvent>
+#include <QWheelEvent>
 #include <iostream>
 class ProbeWindow : public QWidget {
+    void wheelEvent(QWheelEvent *event) override {
+        std::cout << "qt-wheel:" << event->angleDelta().x() << "," << event->angleDelta().y() << std::endl;
+        event->accept();
+    }
     void resizeEvent(QResizeEvent *event) override {
         std::cout << "qt-size:" << event->size().width() << "x" << event->size().height() << std::endl;
         QWidget::resizeEvent(event);

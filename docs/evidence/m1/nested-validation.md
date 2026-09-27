@@ -66,3 +66,26 @@ to pass input through its test helper unless this display and the explicit
   Lock, capture, portal, virtual input and private shell control protocols are
   not registered. No XWayland acceptance has been performed.
 - No latency/PSS/idle-CPU/frame-time goal has been measured or accepted here.
+
+## Follow-up: axis forwarding and DRM scanout format
+
+The review found missing DRM scroll dispatch. Both backends now use one axis
+translator. Three regression tests first failed and then passed, covering both
+axes, high-resolution v120 steps, continuous motion, natural direction, and
+explicit finger stops (an absent axis is not a stop). Real Qt Wayland acceptance
+was rerun after the change: `nested-wheel-client.log` records vertical
+`qt-wheel:0,120` and horizontal `qt-wheel:-120,0`. Move, resize, two-client focus,
+socket collision and crash/rebind checks also passed again. Arch locked/offline
+workspace tests now total **20 passing**; all-target Clippy with `-D warnings`
+passed. Earlier GTK screenshot/log evidence above retains its original build hash.
+
+This follow-up binary SHA-256 is
+`df0d0a95abb0cae9e38f4567e525921b62e2ef8054327bbb759750362c6e57f1`.
+
+A separate isolated DRM test reached initialization but the kernel rejected AR24
+on the primary plane. Smithay's opaque framebuffer helper can fall back to legacy
+framebuffer creation using the original allocation format. The compositor now
+queries primary-plane XRGB8888 support and allocates that format directly, so
+both modern and legacy framebuffer creation use XRGB8888. Initial atomic state
+testing preserves kernel error context. Actual DRM acceptance is recorded by the
+separate VM test; compilation alone does not establish that acceptance.

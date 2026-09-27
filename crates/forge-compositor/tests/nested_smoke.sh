@@ -29,6 +29,8 @@ kill -0 "$compositor"
 kill -0 "$gtk"
 grep -F "$toolkit-entry:forge" "$work/client.log"
 if test "$toolkit" = qt; then
+    grep -Fx 'qt-wheel:0,120' "$work/client.log"
+    grep -Fx 'qt-wheel:-120,0' "$work/client.log"
     awk -F'[:x]' '/^qt-size:/ {if (++n==2) start=$2; end=$2} END {if (n<3 || end-start!=100) exit 1; print "Qt resize +100 pixels verified"}' "$work/client.log"
     env WAYLAND_DISPLAY=forge-wayland-0 QT_QPA_PLATFORM=wayland "$work/probe" >"$work/second-client.log" 2>&1 &
     second=$!

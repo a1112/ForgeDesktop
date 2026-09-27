@@ -77,14 +77,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             sleep(Duration::from_millis(100));
             Ok(())
         };
-        let button = |x, y, pressed| -> Result<(), Box<dyn std::error::Error>> {
+        let button = |x, y, pressed, detail| -> Result<(), Box<dyn std::error::Error>> {
             let event = ButtonPressEvent {
                 response_type: if pressed {
                     BUTTON_PRESS_EVENT
                 } else {
                     BUTTON_RELEASE_EVENT
                 },
-                detail: 1,
+                detail,
                 sequence: 0,
                 time: 210,
                 root,
@@ -113,16 +113,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         };
         if mode.as_deref() == Some("focus") {
             motion(820, 568)?;
-            button(820, 568, true)?;
-            button(820, 568, false)?;
+            button(820, 568, true, 1)?;
+            button(820, 568, false, 1)?;
             type_word()?;
             println!("nested two-client click focus input delivered");
             return Ok(());
         }
         motion(300, 75)?;
-        button(300, 75, true)?;
+        button(300, 75, true, 1)?;
         motion(500, 175)?;
-        button(500, 175, false)?;
+        button(500, 175, false, 1)?;
         let old = conn
             .get_image(ImageFormat::Z_PIXMAP, window, 60, 100, 1, 1, u32::MAX)?
             .reply()?
@@ -135,10 +135,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             return Err("Qt titlebar move did not change rendered position".into());
         }
         motion(888, 400)?;
-        button(888, 400, true)?;
+        button(888, 400, true, 1)?;
         motion(988, 400)?;
-        button(988, 400, false)?;
-        println!("nested Qt move and resize input delivered");
+        button(988, 400, false, 1)?;
+        motion(500, 250)?;
+        for detail in [4, 7] {
+            button(500, 250, true, detail)?;
+            button(500, 250, false, detail)?;
+        }
+        println!("nested Qt move, resize and two-axis wheel input delivered");
     }
     Ok(())
 }

@@ -1,4 +1,5 @@
 //! Unprivileged, software-only compositor. No capture/control protocol.
+mod axis;
 mod drm_backend;
 use forge_desktop_core::{Desktop, Geometry, WindowId};
 use smithay::{
@@ -22,7 +23,7 @@ use smithay::{
     input::{
         Seat, SeatHandler, SeatState,
         keyboard::FilterResult,
-        pointer::{AxisFrame, ButtonEvent, CursorImageStatus, Focus, MotionEvent},
+        pointer::{ButtonEvent, CursorImageStatus, Focus, MotionEvent},
     },
     output::{Mode, Output, PhysicalProperties, Subpixel},
     reexports::{
@@ -304,10 +305,20 @@ impl App {
                 let pointer = self.seat.get_pointer().unwrap();
                 pointer.axis(
                     self,
-                    AxisFrame::new(time)
-                        .source(AxisSource::Wheel)
-                        .value(axis, sign * 15.0)
-                        .v120(axis, (sign * 120.0) as i32),
+                    axis::frame(
+                        time,
+                        AxisSource::Wheel,
+                        [Axis::Horizontal, Axis::Vertical].map(|candidate| {
+                            if candidate == axis {
+                                axis::AxisInput {
+                                    v120: Some(sign * 120.0),
+                                    ..Default::default()
+                                }
+                            } else {
+                                axis::AxisInput::default()
+                            }
+                        }),
+                    ),
                 );
                 pointer.frame(self);
             }
@@ -535,7 +546,8 @@ pub fn run() -> AppResult<()> {
     }
     use std::os::unix::fs::MetadataExt;
     let runtime = std::env::var_os("XDG_RUNTIME_DIR").ok_or("XDG_RUNTIME_DIR is required")?;
-    let metadata = std::fs::metadata(runtime)?;
+    let metadata = std::fs::metadata(&runtime)
+        .map_err(|error| format!("runtime directory metadata {:?}: {error}", runtime))?;
     if !forge_compositor::private_runtime_directory(
         metadata.uid(),
         smithay::reexports::rustix::process::geteuid().as_raw(),

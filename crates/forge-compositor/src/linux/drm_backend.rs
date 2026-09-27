@@ -9,7 +9,7 @@ use smithay::{
         },
         input::{
             AbsolutePositionEvent, Event as InputEventTime, InputEvent, KeyboardKeyEvent,
-            PointerButtonEvent, PointerMotionEvent,
+            PointerAxisEvent, PointerButtonEvent, PointerMotionEvent,
         },
         libinput::{LibinputInputBackend, LibinputSessionInterface},
         renderer::element::{
@@ -43,14 +43,22 @@ struct Runtime {
 }
 
 pub(super) fn run(path: &str) -> AppResult<()> {
-    let (mut session, notifier) = LibSeatSession::new()?;
+    let (mut session, notifier) =
+        LibSeatSession::new().map_err(|e| format!("DRM libseat initialization: {e}"))?;
     let seat_name = session.seat();
-    let fd = DrmDeviceFd::new(DeviceFd::from(session.open(
-        std::path::Path::new(path),
-        OFlags::RDWR | OFlags::CLOEXEC | OFlags::NONBLOCK,
-    )?));
-    let (mut drm, drm_notifier) = DrmDevice::new(fd.clone(), false)?;
-    let resources = fd.resource_handles()?;
+    let fd = DrmDeviceFd::new(DeviceFd::from(
+        session
+            .open(
+                std::path::Path::new(path),
+                OFlags::RDWR | OFlags::CLOEXEC | OFlags::NONBLOCK,
+            )
+            .map_err(|e| format!("DRM seat open {path}: {e}"))?,
+    ));
+    let (mut drm, drm_notifier) =
+        DrmDevice::new(fd.clone(), false).map_err(|e| format!("DRM device initialization: {e}"))?;
+    let resources = fd
+        .resource_handles()
+        .map_err(|e| format!("DRM enumerate resources: {e}"))?;
     let connector = resources
         .connectors()
         .iter()
@@ -70,20 +78,33 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         .flat_map(|encoder| resources.filter_crtcs(encoder.possible_crtcs()))
         .next()
         .ok_or("no compatible DRM CRTC")?;
-    let surface = drm.create_surface(crtc, mode, &[connector.handle()])?;
+    let surface = drm
+        .create_surface(crtc, mode, &[connector.handle()])
+        .map_err(|e| format!("DRM create output surface: {e}"))?;
+    let primary = fd
+        .get_plane(surface.plane())
+        .map_err(|e| format!("DRM query primary plane formats: {e}"))?;
+    if !primary.formats().contains(&(Fourcc::Xrgb8888 as u32)) {
+        return Err("DRM primary plane does not support software XRGB8888 scanout".into());
+    }
     let (width, height) = mode.size();
     let size = (i32::from(width), i32::from(height));
     let mut allocator = DumbAllocator::new(fd.clone());
     let mut buffers = Vec::new();
     for _ in 0..2 {
-        let buffer = allocator.create_buffer(
-            u32::from(width),
-            u32::from(height),
-            Fourcc::Argb8888,
-            &[Modifier::Linear],
-        )?;
-        let framebuffer = framebuffer_from_dumb_buffer(&fd, &buffer, true)?;
-        let dmabuf = buffer.export()?;
+        let buffer = allocator
+            .create_buffer(
+                u32::from(width),
+                u32::from(height),
+                Fourcc::Xrgb8888,
+                &[Modifier::Linear],
+            )
+            .map_err(|e| format!("DRM allocate dumb buffer: {e}"))?;
+        let framebuffer = framebuffer_from_dumb_buffer(&fd, &buffer, true)
+            .map_err(|e| format!("DRM attach dumb framebuffer: {e}"))?;
+        let dmabuf = buffer
+            .export()
+            .map_err(|e| format!("DRM export dumb buffer to PRIME: {e}"))?;
         buffers.push((buffer, framebuffer, dmabuf));
     }
     let mut input = Libinput::new_with_udev(LibinputSessionInterface::from(session.clone()));
@@ -91,10 +112,13 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         .udev_assign_seat(&seat_name)
         .map_err(|_| "libinput seat assignment failed")?;
     let input_backend = LibinputInputBackend::new(input.clone());
-    let mut display = Display::<App>::new()?;
+    let mut display =
+        Display::<App>::new().map_err(|e| format!("DRM Wayland display creation: {e}"))?;
     let mut dh = display.handle();
-    let listener = ListeningSocket::bind("forge-wayland-0")?;
-    let app = App::new(&dh, size, "Forge-DRM-1")?;
+    let listener = ListeningSocket::bind("forge-wayland-0")
+        .map_err(|e| format!("DRM Wayland socket bind: {e}"))?;
+    let app = App::new(&dh, size, "Forge-DRM-1")
+        .map_err(|e| format!("DRM Wayland seat/output initialization: {e}"))?;
     let mut state = Runtime {
         app,
         drm,
@@ -182,11 +206,24 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                         event.time_msec(),
                     );
                 }
+                InputEvent::PointerAxis { event } => {
+                    let samples =
+                        [Axis::Horizontal, Axis::Vertical].map(|axis| super::axis::AxisInput {
+                            pixels: event.amount(axis),
+                            v120: event.amount_v120(axis),
+                            direction: event.relative_direction(axis),
+                        });
+                    let frame = super::axis::frame(event.time_msec(), event.source(), samples);
+                    let pointer = state.app.seat.get_pointer().unwrap();
+                    pointer.axis(&mut state.app, frame);
+                    pointer.frame(&mut state.app);
+                }
                 _ => {}
             }
         })
         .map_err(|error| error.error)?;
-    let mut renderer = PixmanRenderer::new()?;
+    let mut renderer =
+        PixmanRenderer::new().map_err(|e| format!("DRM Pixman initialization: {e}"))?;
     let cursor = SolidColorBuffer::new((7, 16), [0.95, 0.95, 1.0, 1.0]);
     let mut damage = OutputDamageTracker::from_output(&state.app.output);
     let start = Instant::now();
@@ -239,14 +276,18 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                     1.0,
                 ));
             }
-            let mut framebuffer = renderer.bind(&mut buffers[current].2)?;
-            let result = damage.render_output(
-                &mut renderer,
-                &mut framebuffer,
-                if rendered[current] { 2 } else { 0 },
-                &elements,
-                [0.055, 0.065, 0.09, 1.0],
-            )?;
+            let mut framebuffer = renderer
+                .bind(&mut buffers[current].2)
+                .map_err(|e| format!("DRM map PRIME buffer for Pixman: {e}"))?;
+            let result = damage
+                .render_output(
+                    &mut renderer,
+                    &mut framebuffer,
+                    if rendered[current] { 2 } else { 0 },
+                    &elements,
+                    [0.055, 0.065, 0.09, 1.0],
+                )
+                .map_err(|e| format!("DRM Pixman render: {e:?}"))?;
             if let Some(rectangles) = result.damage {
                 result.sync.wait()?;
                 let clips = PlaneDamageClips::from_damage(
@@ -268,9 +309,16 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                     }),
                 };
                 if state.reset || surface.commit_pending() {
-                    surface.commit([plane], true)?;
+                    surface
+                        .test_state([plane.clone()], true)
+                        .map_err(|e| format!("DRM initial atomic state test: {e:?}"))?;
+                    surface
+                        .commit([plane], true)
+                        .map_err(|e| format!("DRM initial modeset: {e}"))?;
                 } else {
-                    surface.page_flip([plane], true)?;
+                    surface
+                        .page_flip([plane], true)
+                        .map_err(|e| format!("DRM page flip: {e}"))?;
                 }
                 state.pending = true;
                 state.reset = false;
