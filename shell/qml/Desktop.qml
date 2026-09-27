@@ -19,17 +19,53 @@ Window {
    Repeater {model: 4;Action {required property int index;label: String(index+1);selected: desktop.workspace===index;onClicked: desktop.switchWorkspace(index)}}
   }
   Text {anchors.centerIn: parent;text: desktop.clock;textFormat: Text.PlainText;color: "#e4eaf5";font.pixelSize: 12}
-  Action {anchors.right: parent.right;anchors.rightMargin: 14;anchors.verticalCenter: parent.verticalCenter;label: "Displays";onClicked: displays.visible=true}
+  Row {anchors.right: parent.right;anchors.rightMargin: 14;anchors.verticalCenter: parent.verticalCenter;spacing: 8
+   Action {label: notices.entries.length ? "Notices ("+notices.entries.length+")" : "Notices";onClicked: notificationCenter.visible=true}
+   Action {label: "Displays";onClicked: displays.visible=true}
+  }
+ }
+ Window {
+  id: notificationCenter;visible: false;title: "ForgeDesktop — Notifications";width: 480;height: 520;color: "#192436"
+  Column {anchors.fill: parent;anchors.margins: 20;spacing: 12
+   Row {width: parent.width;spacing: 12
+    Text {text: "Notifications";textFormat: Text.PlainText;font.pixelSize: 24;color: "#edf3ff";width: parent.width-70}
+    Action {label: "×";onClicked: notificationCenter.visible=false}
+   }
+   Text {visible: !notices.online;text: "Notification service unavailable";textFormat: Text.PlainText;color: "#adc2df"}
+   Text {visible: notices.online && notices.entries.length===0;text: "No notifications";textFormat: Text.PlainText;color: "#adc2df"}
+   Flickable {width: parent.width;height: parent.height-56;contentWidth: width;contentHeight: cards.implicitHeight;clip: true
+    Column {id: cards;width: parent.width;spacing: 10
+     Repeater {model: notices.entries
+      Rectangle {id: noticeCard;required property var modelData;width: cards.width;height: noticeText.implicitHeight+64+actionsRow.height;radius: 12;color: "#25364d";border.color: "#405978"
+       Column {id: noticeText;x: 14;y: 12;width: parent.width-68;spacing: 5
+        Text {text: noticeCard.modelData.app;textFormat: Text.PlainText;color: "#8fb5e9";font.pixelSize: 12;width: parent.width;elide: Text.ElideRight}
+        Text {text: noticeCard.modelData.summary;textFormat: Text.PlainText;color: "#f1f5fc";font.pixelSize: 15;font.bold: true;width: parent.width;wrapMode: Text.Wrap}
+        Text {text: noticeCard.modelData.body;textFormat: Text.PlainText;color: "#d4dfed";font.pixelSize: 12;width: parent.width;wrapMode: Text.Wrap}
+       }
+       Action {anchors.right: parent.right;anchors.rightMargin: 12;y: 10;label: "×";onClicked: notices.dismiss(noticeCard.modelData.id)}
+       Flow {id: actionsRow;x: 14;y: noticeText.y+noticeText.implicitHeight+8;width: parent.width-28;spacing: 6
+        Repeater {model: noticeCard.modelData.actionLabels
+         Action {required property int index;required property string modelData;maxWidth: actionsRow.width;label: modelData;onClicked: notices.invoke(noticeCard.modelData.id,noticeCard.modelData.actionKeys[index])}
+        }
+       }
+      }
+     }
+    }
+   }
+  }
  }
  Window {
   id: displays;visible: false;title: "ForgeDesktop — Displays";width: 600;height: 420;color: "#192436"
   Column {anchors.fill: parent;anchors.margins: 24;spacing: 18
    Text {text: "Displays";font.pixelSize: 24;color: "#edf3ff"}
    Text {text: desktop.displayPending?"Keep these settings? Reverting automatically in 15 seconds.":"Scaling and layout apply immediately. Confirm to save.";color: "#adc2df";wrapMode: Text.Wrap;width: parent.width}
-   Repeater {model: desktop.outputs;Column {required property var modelData;spacing: 8
-    Text {text: "Output "+modelData.id+" · "+modelData.width+"×"+modelData.height+" · "+modelData.scale/10+"%";color: "white"}
-    Row {spacing: 8;Repeater {model: [1000,1500,2000];Action {required property int modelData;label: modelData/10+"%";enabled: !desktop.displayPending;onClicked: {var o=parent.parent.modelData;desktop.configureOutput(o.id,modelData,o.x,o.y)}}}
-     Action {label: "Place right";enabled: !desktop.displayPending;onClicked: {var o=parent.parent.modelData;desktop.configureOutput(o.id,o.scale,desktop.desktopWidth,0)}}
+   Repeater {model: desktop.outputs.length;Column {id: outputRow;required property int index;property var output: desktop.outputs[index];spacing: 8
+    Text {text: "Output "+outputRow.output.id+" · "+outputRow.output.width+"×"+outputRow.output.height+" · "+outputRow.output.scale/10+"%";color: "white"}
+    Row {spacing: 8
+     Action {label: "100%";enabled: !desktop.displayPending;onClicked: {var o=outputRow.output;desktop.configureOutput(o.id,1000,o.x,o.y)}}
+     Action {label: "150%";enabled: !desktop.displayPending;onClicked: {var o=outputRow.output;desktop.configureOutput(o.id,1500,o.x,o.y)}}
+     Action {label: "200%";enabled: !desktop.displayPending;onClicked: {var o=outputRow.output;desktop.configureOutput(o.id,2000,o.x,o.y)}}
+     Action {label: "Place right";enabled: !desktop.displayPending;onClicked: {var o=outputRow.output;desktop.configureOutput(o.id,o.scale,desktop.desktopWidth,0)}}
     }
    }}
    Row {spacing: 12;visible: desktop.displayPending

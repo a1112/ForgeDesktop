@@ -9,6 +9,7 @@ private slots:
  void rejection(){Model m;QVERIFY(!m.consume("2\tstate\t1280\t800\t0\t0\n"));QVERIFY(!m.consume(QByteArray(65537,'x')));QVERIFY(!m.consume("1\tstate\t1280\t800\t9\t0\n"));QVERIFY(!m.consume("1\tstate\t1280\t800\t0\t0\n../../x\t\t\t0\t0\t0\t0\t0\n"));}
  void desktopFiles(){QTemporaryDir d;auto put=[&](const QString& name,const QByteArray& fields){QString p=d.path()+"/"+name+".desktop";QFile f(p);if(!f.open(QIODevice::WriteOnly))return QString();f.write("[Desktop Entry]\nType=Application\nName=Test\nExec=/usr/bin/true\n"+fields);return p;};QVERIFY(Model::visibleEntry(put("show","")));QVERIFY(!Model::visibleEntry(put("hidden","Hidden=true\n")));QVERIFY(!Model::visibleEntry(put("nodisplay","NoDisplay=true\n")));QVERIFY(!Model::visibleEntry(put("other","OnlyShowIn=UnrelatedDesktop;\n")));}
  void launchFailure(){Model m;QVERIFY(!m.launch("org.forge.does-not-exist.desktop"));QVERIFY(!m.error().isEmpty());}
+ void notificationBusRegistration(){Model m;QSignalSpy sent(&m,&Model::command);QVERIFY(!m.registerNotificationBus("org.fake.Shell"));QVERIFY(sent.isEmpty());QVERIFY(m.registerNotificationBus(":1.42"));QCOMPARE(sent.takeFirst().first().toByteArray(),QByteArray("1\tnotices-bus\t:1.42"));}
 };
 QTEST_GUILESS_MAIN(Tests)
 #include "model_test.moc"

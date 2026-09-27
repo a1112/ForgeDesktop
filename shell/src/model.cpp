@@ -31,6 +31,12 @@ bool Model::consume(const QByteArray&payload){
 }
 void Model::configureOutput(int id,int scale,int x,int y){if(id<=0||(scale!=1000&&scale!=1500&&scale!=2000)||x<0||x>16384||y<0||y>16384)return;emit command("1\toutput\t"+QByteArray::number(id)+'\t'+QByteArray::number(scale)+'\t'+QByteArray::number(x)+'\t'+QByteArray::number(y));}
 void Model::confirmDisplay(bool keep){emit command(keep?"1\tdisplay-confirm":"1\tdisplay-revert");}
+bool Model::registerNotificationBus(const QString& uniqueName){
+ QByteArray name=uniqueName.toLatin1();
+ if(name.size()<4||name.size()>32||!name.startsWith(":1.")||!std::all_of(name.cbegin()+3,name.cend(),[](char ch){return ch>='0'&&ch<='9';}))return false;
+ emit command("1\tnotices-bus\t"+name);
+ return true;
+}
 bool Model::visibleEntry(const QString&file){auto a=g_desktop_app_info_new_from_filename(file.toUtf8().constData());if(!a)return false;bool visible=!g_desktop_app_info_get_is_hidden(a) && !g_desktop_app_info_get_nodisplay(a) && g_desktop_app_info_get_show_in(a,"ForgeDesktop");g_object_unref(a);return visible;}
 void Model::scanApplications(){
  QVariantList apps;auto all=g_app_info_get_all();

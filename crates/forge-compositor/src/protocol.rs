@@ -9,6 +9,7 @@ pub enum Command {
     Output { id: u32, scale: u32, x: i32, y: i32 },
     DisplayConfirm,
     DisplayRevert,
+    NoticesBus(String),
 }
 #[derive(Default)]
 pub struct Decoder {
@@ -67,6 +68,14 @@ pub fn command(payload: &[u8]) -> Result<Command, String> {
         s.parse::<u32>().ok().filter(|n| *n < 4)
     }
     match fields.as_slice() {
+        ["1", "notices-bus", bus]
+            if bus.len() <= 32
+                && bus.starts_with(":1.")
+                && !bus[3..].is_empty()
+                && bus[3..].bytes().all(|b| b.is_ascii_digit()) =>
+        {
+            Some(Command::NoticesBus((*bus).into()))
+        }
         ["1", "display-confirm"] => Some(Command::DisplayConfirm),
         ["1", "display-revert"] => Some(Command::DisplayRevert),
         ["1", "output", id, scale, x, y] => {
@@ -179,6 +188,22 @@ mod tests {
             command(b"1\tactivate\tw0000000000000001").unwrap(),
             Command::Window("activate".into(), "w0000000000000001".into())
         );
+    }
+    #[test]
+    fn notification_shell_identity_is_private_and_bounded() {
+        assert_eq!(
+            command(b"1\tnotices-bus\t:1.42").unwrap(),
+            Command::NoticesBus(":1.42".into())
+        );
+        for value in [
+            "1\tnotices-bus\torg.forge.Shell",
+            "1\tnotices-bus\t:1.",
+            "1\tnotices-bus\t:1.1;rm",
+            "1\tnotices-bus\t:2.1",
+            "1\tnotices-bus\t:1.123456789012345678901234567890123",
+        ] {
+            assert!(command(value.as_bytes()).is_err(), "{value}");
+        }
     }
     #[test]
     fn roles_require_exact_live_child_credentials() {

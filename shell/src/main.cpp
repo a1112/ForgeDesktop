@@ -1,5 +1,7 @@
 #include "model.h"
+#include "notifications.h"
 #include <QGuiApplication>
+#include <QDBusConnection>
 #include <QQmlApplicationEngine>
 #include <QQmlContext>
 #include <QQuickImageProvider>
@@ -30,11 +32,12 @@ int main(int argc,char**argv){
  int kind=0;socklen_t length=sizeof(kind);if(getsockopt(0,SOL_SOCKET,SO_TYPE,&kind,&length)<0 || kind!=SOCK_STREAM)return 1;
  qputenv("QT_QUICK_BACKEND","software");qputenv("QSG_RENDER_LOOP","basic");
  QGuiApplication app(argc,argv);app.setQuitOnLastWindowClosed(false);app.setApplicationName("ForgeDesktop");app.setDesktopFileName("org.forge.Desktop");QIcon::setThemeName("Adwaita");
- Model model;model.scanApplications();QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("desktop",&model);engine.addImageProvider("apps",new Icons(model));
+ Model model;model.scanApplications();Notifications notices;QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("desktop",&model);engine.rootContext()->setContextProperty("notices",&notices);engine.addImageProvider("apps",new Icons(model));
  QByteArray input,output;QSocketNotifier reader(0,QSocketNotifier::Read),writer(0,QSocketNotifier::Write);writer.setEnabled(false);
  auto flush=[&](){while(!output.isEmpty()){auto n=::send(0,output.constData(),output.size(),MSG_NOSIGNAL);if(n<0&&(errno==EAGAIN||errno==EWOULDBLOCK))break;if(n<=0){app.exit(1);return;}output.remove(0,n);}writer.setEnabled(!output.isEmpty());};
  QObject::connect(&writer,&QSocketNotifier::activated,&app,[&]{flush();});
  QObject::connect(&model,&Model::command,&app,[&](const QByteArray&command){if(command.size()>128||output.size()>4096){app.exit(1);return;}char header[4];qToBigEndian<quint32>(command.size(),header);output.append(header,4);output.append(command);flush();});
+ if(QDBusConnection::sessionBus().isConnected())model.registerNotificationBus(QDBusConnection::sessionBus().baseService());
  QObject::connect(&reader,&QSocketNotifier::activated,&app,[&]{
   char bytes[16384];auto n=::recv(0,bytes,sizeof(bytes),0);if(n<0&&(errno==EAGAIN||errno==EWOULDBLOCK))return;if(n<=0){app.exit(1);return;}input.append(bytes,n);if(input.size()>131072){app.exit(1);return;}
   for(int count=0;count<8 && input.size()>=4;count++){quint32 size=qFromBigEndian<quint32>(input.constData());if(size==0||size>65536){app.exit(1);return;}if(input.size()<size+4)break;if(!model.consume(input.mid(4,size))){app.exit(1);return;}input.remove(0,size+4);}

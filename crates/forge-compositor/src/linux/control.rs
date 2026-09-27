@@ -271,6 +271,7 @@ impl App {
         let previous = self.shell.credentials();
         let commands = self.shell.poll();
         if previous != self.shell.credentials() {
+            self.notices.authorize(None);
             self.launcher = false;
             self.launcher_pending = None;
             self.restore_focus();
@@ -309,6 +310,10 @@ impl App {
                     self.set_launcher(open, Some(serial));
                     Ok(())
                 }
+                Command::NoticesBus(name) => {
+                    self.notices.authorize(Some(name));
+                    Ok(())
+                }
                 command @ (Command::Output { .. }
                 | Command::DisplayConfirm
                 | Command::DisplayRevert) => {
@@ -326,6 +331,7 @@ impl App {
             self.dirty = true;
             self.reconcile_pointer(0);
         }
+        self.notices.poll();
         let mut state = format!(
             "1\tstate\t{}\t{}\t{}\t{}\n",
             self.size.0,

@@ -3,6 +3,7 @@ mod axis;
 mod control;
 mod drm_backend;
 mod ime;
+mod notices;
 mod output_config;
 mod outputs;
 mod perf;
@@ -120,6 +121,7 @@ struct App {
     dirty: bool,
     size: (i32, i32),
     shell: shell::Shell,
+    notices: notices::Notices,
     launcher: bool,
     launcher_key_down: bool,
     launcher_pending: Option<u32>,
@@ -856,6 +858,7 @@ impl App {
             dirty: true,
             size,
             shell: shell::Shell::new(),
+            notices: notices::Notices::new(),
             launcher: false,
             launcher_key_down: false,
             launcher_pending: None,

@@ -1,0 +1,26 @@
+#!/bin/sh
+# Current x86_64 software-rendered ForgeOS VM profile. The display manager
+# provides a PAM user session; the compositor and helpers never run as root.
+set -u
+[ "$(id -u)" -ne 0 ] || exit 1
+umask 077
+export XDG_CURRENT_DESKTOP=ForgeDesktop XDG_SESSION_TYPE=wayland
+export WAYLAND_DISPLAY=forge-wayland-0
+export QT_QPA_PLATFORM=wayland QT_QUICK_BACKEND=software QSG_RENDER_LOOP=basic
+export GDK_BACKEND=wayland,x11 LIBGL_ALWAYS_SOFTWARE=1
+if [ -z "${DBUS_SESSION_BUS_ADDRESS:-}" ] && [ -n "${XDG_RUNTIME_DIR:-}" ]; then
+    export DBUS_SESSION_BUS_ADDRESS="unix:path=$XDG_RUNTIME_DIR/bus"
+fi
+
+compositor_pid=''
+cleanup() {
+    [ -z "$compositor_pid" ] || kill "$compositor_pid" 2>/dev/null || :
+    wait 2>/dev/null || :
+}
+trap cleanup EXIT
+trap 'exit 143' HUP INT TERM
+
+/usr/bin/forge-compositor --drm "${FORGE_DESKTOP_DRM_DEVICE:-/dev/dri/card1}" &
+compositor_pid=$!
+wait "$compositor_pid"
+exit $?

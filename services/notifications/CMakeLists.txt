@@ -1,0 +1,24 @@
+cmake_minimum_required(VERSION 3.25)
+project(ForgeNotifications VERSION 0.1.0 LANGUAGES CXX)
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_AUTOMOC ON)
+find_package(Qt6 6.11 REQUIRED COMPONENTS Core DBus Test)
+
+add_library(notification-store src/store.cpp src/store.h src/authority.cpp src/authority.h)
+target_link_libraries(notification-store PUBLIC Qt6::Core)
+target_include_directories(notification-store PUBLIC src)
+target_compile_options(notification-store PRIVATE -Wall -Wextra -Werror)
+
+add_executable(forge-notificationd src/main.cpp)
+target_link_libraries(forge-notificationd PRIVATE notification-store Qt6::DBus)
+target_compile_options(forge-notificationd PRIVATE -Wall -Wextra -Werror)
+
+add_executable(notification-store-test tests/store_test.cpp)
+target_link_libraries(notification-store-test PRIVATE notification-store Qt6::Test)
+add_executable(notification-dbus-test tests/dbus_test.cpp)
+target_link_libraries(notification-dbus-test PRIVATE Qt6::Core Qt6::DBus)
+enable_testing()
+add_test(NAME notification-store COMMAND notification-store-test)
+add_test(NAME notification-dbus COMMAND /usr/bin/dbus-run-session -- $<TARGET_FILE:notification-dbus-test> $<TARGET_FILE:forge-notificationd>)
+
+install(TARGETS forge-notificationd RUNTIME DESTINATION libexec/forge-desktop)

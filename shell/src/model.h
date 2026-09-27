@@ -28,6 +28,7 @@ public:
  Q_INVOKABLE void showLauncher(bool);
  Q_INVOKABLE void configureOutput(int id,int scale,int x,int y);
  Q_INVOKABLE void confirmDisplay(bool keep);
+ bool registerNotificationBus(const QString& uniqueName);
  void scanApplications();
  void launcherFrame();
  QString icon(const QString&) const;

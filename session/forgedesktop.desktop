@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=ForgeDesktop
+Comment=ForgeOS native Wayland desktop
+Exec=/usr/libexec/forge-desktop/forge-session
+TryExec=/usr/bin/forge-compositor
+Type=Application
+DesktopNames=ForgeDesktop
