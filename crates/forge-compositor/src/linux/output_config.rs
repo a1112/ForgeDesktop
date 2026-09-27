@@ -3,7 +3,7 @@ use forge_desktop_core::{Geometry, Output, OutputTransaction};
 use std::{
     fs::{self, File, OpenOptions},
     io::{Read, Write},
-    os::unix::fs::OpenOptionsExt,
+    os::unix::fs::{DirBuilderExt, OpenOptionsExt, PermissionsExt},
     path::{Path, PathBuf},
 };
 
@@ -40,7 +40,18 @@ pub(super) fn path() -> Option<PathBuf> {
 }
 pub(super) fn load(path: &Path) -> std::io::Result<Vec<Output>> {
     let mut data = String::new();
-    File::open(path)?.take(4097).read_to_string(&mut data)?;
+    let file = OpenOptions::new()
+        .read(true)
+        .custom_flags(
+            (smithay::reexports::rustix::fs::OFlags::NOFOLLOW
+                | smithay::reexports::rustix::fs::OFlags::NONBLOCK)
+                .bits() as i32,
+        )
+        .open(path)?;
+    if !file.metadata()?.is_file() {
+        return Err(invalid());
+    }
+    file.take(4097).read_to_string(&mut data)?;
     if data.len() > 4096 {
         return Err(invalid());
     }
@@ -79,7 +90,14 @@ pub(super) fn load(path: &Path) -> std::io::Result<Vec<Output>> {
 pub(super) fn save(path: &Path, outputs: &[Output]) -> std::io::Result<()> {
     validate(outputs)?;
     let parent = path.parent().ok_or_else(invalid)?;
-    fs::create_dir_all(parent)?;
+    fs::DirBuilder::new()
+        .recursive(true)
+        .mode(0o700)
+        .create(parent)?;
+    if !fs::symlink_metadata(parent)?.file_type().is_dir() {
+        return Err(invalid());
+    }
+    fs::set_permissions(parent, fs::Permissions::from_mode(0o700))?;
     let temp = parent.join(format!(".outputs-{}.tmp", std::process::id()));
     let mut file = OpenOptions::new()
         .write(true)
@@ -130,6 +148,19 @@ mod tests {
         }];
         save(&path, &outputs).unwrap();
         assert_eq!(load(&path).unwrap(), outputs);
+        assert_eq!(
+            fs::metadata(&root).unwrap().permissions().mode() & 0o777,
+            0o700
+        );
+        assert_eq!(
+            fs::metadata(&path).unwrap().permissions().mode() & 0o777,
+            0o600
+        );
+        let alias = root.join("alias");
+        std::os::unix::fs::symlink(&path, &alias).unwrap();
+        assert!(load(&alias).is_err());
+        fs::remove_file(alias).unwrap();
+        assert!(load(&root).is_err());
         let mut bad = outputs.clone();
         bad[0].scale_milli = 1250;
         assert!(save(&path, &bad).is_err());

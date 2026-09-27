@@ -54,4 +54,3 @@ int main(int argc, char **argv) {
     std::cout << "qt-ready" << std::endl;
     return app.exec();
 }
-

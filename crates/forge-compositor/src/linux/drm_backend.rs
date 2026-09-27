@@ -1,6 +1,5 @@
 //! DRM software scanout through a seat-controlled fd, with two dumb buffers.
 use super::*;
-use smithay::wayland::seat::WaylandFocus;
 use smithay::{
     backend::{
         allocator::{
@@ -69,14 +68,28 @@ impl Runtime {
             .take(4)
             .collect();
         let before: Vec<_> = self.heads.iter().map(|h| h.connector).collect();
-        let topology_changed=before.len()!=connected.len() || before.iter().any(|id|!connected.iter().any(|c|c.handle()==*id));
+        let topology_changed = before.len() != connected.len()
+            || before
+                .iter()
+                .any(|id| !connected.iter().any(|c| c.handle() == *id));
         // A hardware change must not implicitly confirm an unconfirmed scale.
         if topology_changed {
-            if let Some(transaction)=self.display_transaction.as_mut().filter(|t|t.pending()) {
-                let _=transaction.cancel(self.epoch.elapsed().as_millis() as u64);
+            if let Some(transaction) = self.display_transaction.as_mut().filter(|t| t.pending()) {
+                let _ = transaction.cancel(self.epoch.elapsed().as_millis() as u64);
                 for output in transaction.active() {
-                    if let Some(head)=self.heads.iter_mut().find(|h|u32::from(h.connector)==output.id) {
-                        head.output.change_current_state(None,None,Some(smithay::output::Scale::Fractional(f64::from(output.scale_milli)/1000.0)),Some((output.geometry.x,output.geometry.y).into()));
+                    if let Some(head) = self
+                        .heads
+                        .iter_mut()
+                        .find(|h| u32::from(h.connector) == output.id)
+                    {
+                        head.output.change_current_state(
+                            None,
+                            None,
+                            Some(smithay::output::Scale::Fractional(
+                                f64::from(output.scale_milli) / 1000.0,
+                            )),
+                            Some((output.geometry.x, output.geometry.y).into()),
+                        );
                     }
                 }
             }
@@ -86,7 +99,9 @@ impl Runtime {
                 return true;
             }
             for mapped in &self.app.windows {
-                if let Some(surface)=mapped.window.wl_surface() {head.output.leave(surface.as_ref());}
+                if let Some(surface) = mapped.window.wl_surface() {
+                    head.output.leave(surface.as_ref());
+                }
             }
             dh.remove_global::<App>(head.global.clone());
             self.pending.remove(&head.surface.crtc());
@@ -185,14 +200,21 @@ impl Runtime {
             });
         }
         if before != self.heads.iter().map(|h| h.connector).collect::<Vec<_>>() {
-            if let Some(first)=self.heads.first() {
-                let origin=first.output.current_location();
-                if origin.x!=0 || origin.y!=0 {
-                    for head in &self.heads {let loc=head.output.current_location();head.output.change_current_state(None,None,None,Some(((loc.x-origin.x).max(0),(loc.y-origin.y).max(0)).into()));}
+            if let Some(first) = self.heads.first() {
+                let origin = first.output.current_location();
+                if origin.x != 0 || origin.y != 0 {
+                    for head in &self.heads {
+                        let loc = head.output.current_location();
+                        head.output.change_current_state(
+                            None,
+                            None,
+                            None,
+                            Some(((loc.x - origin.x).max(0), (loc.y - origin.y).max(0)).into()),
+                        );
+                    }
                 }
             }
             {
-
                 if let Some(saved) =
                     output_config::path().and_then(|p| output_config::load(&p).ok())
                 {
@@ -564,6 +586,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         .map_err(|error| error.error)?;
     let mut renderer =
         PixmanRenderer::new().map_err(|e| format!("DRM Pixman initialization: {e}"))?;
+    let mut xwayland = xwayland::Runtime::new()?;
     let start = Instant::now();
     let mut perf = perf::Recorder::new();
     state.rescan(&fd, &dh)?;
@@ -573,6 +596,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         state.heads.len()
     );
     loop {
+        xwayland.tick(&mut state.app)?;
         event_loop.dispatch(Duration::from_millis(4), &mut state)?;
         if let Some(error) = state.error.take() {
             return Err(error.into());
@@ -619,5 +643,3 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         display.flush_clients()?;
     }
 }
-
-

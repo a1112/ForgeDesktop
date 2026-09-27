@@ -28,8 +28,12 @@ impl App {
                             .focused()
                             .and_then(|id| self.desktop.window(id))
                             .is_some_and(|w| {
-                                let g=w.geometry();
-                                w.fullscreen() && outputs::geometry(&self.output).overlaps(Rectangle::new((g.x,g.y).into(),(g.width as i32,g.height as i32).into()))
+                                let g = w.geometry();
+                                w.fullscreen()
+                                    && outputs::geometry(&self.output).overlaps(Rectangle::new(
+                                        (g.x, g.y).into(),
+                                        (g.width as i32, g.height as i32).into(),
+                                    ))
                             })
                 }
                 Some(_) => true,
@@ -111,6 +115,16 @@ impl App {
         if let Some(m) = self.windows.iter().find(|m| m.id == id) {
             let g = self.geometry(id);
             let p = self.desktop.window(id).unwrap();
+            if let Some(x) = m.window.x11_surface() {
+                let _ = x.set_maximized(p.maximized());
+                let _ = x.set_fullscreen(p.fullscreen());
+                let _ = x.configure(Rectangle::new(
+                    (g.x, g.y).into(),
+                    (g.width as i32, g.height as i32).into(),
+                ));
+                self.dirty = true;
+                return;
+            }
             let s = m.window.toplevel().unwrap();
             s.with_pending_state(|state| {
                 state.size = Some((g.width as i32, g.height as i32).into());
@@ -149,14 +163,13 @@ impl App {
         };
         match action {
             "close" => {
-                self.windows
-                    .iter()
-                    .find(|m| m.id == id)
-                    .unwrap()
-                    .window
-                    .toplevel()
-                    .unwrap()
-                    .send_close();
+                let window = &self.windows.iter().find(|m| m.id == id).unwrap().window;
+                if let Some(top) = window.toplevel() {
+                    top.send_close();
+                }
+                if let Some(x) = window.x11_surface() {
+                    let _ = x.close();
+                }
             }
             "activate" | "restore" => {
                 let workspace = self.desktop.window(id).unwrap().workspace();
@@ -323,11 +336,24 @@ impl App {
         let mut normal: Vec<_> = self
             .windows
             .iter()
-            .filter(|m| m.role.is_none() && m.has_buffer)
+            .filter(|m| {
+                m.role.is_none()
+                    && m.has_buffer
+                    && !m
+                        .window
+                        .x11_surface()
+                        .is_some_and(|w| w.is_override_redirect())
+            })
             .collect();
         normal.sort_by_key(|m| m.id);
         for m in normal {
-            let (title, app) = metadata(m.window.toplevel().unwrap());
+            let (title, app) = if let Some(top) = m.window.toplevel() {
+                metadata(top)
+            } else if let Some(x) = m.window.x11_surface() {
+                (x.title(), x.class())
+            } else {
+                continue;
+            };
             let p = self.desktop.window(m.id).unwrap();
             state.push_str(&format!(
                 "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",

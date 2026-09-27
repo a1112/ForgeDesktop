@@ -3,16 +3,25 @@ use std::time::{Duration, Instant};
 
 pub(super) struct PopupInput<C> {
     delivered: Vec<(u32, C, Instant)>,
+    consumed: bool,
 }
 impl<C: PartialEq> Default for PopupInput<C> {
     fn default() -> Self {
         Self {
             delivered: Vec::new(),
+            consumed: false,
         }
     }
 }
 impl<C: PartialEq> PopupInput<C> {
-    pub fn record(&mut self, serial: u32, client: C, now: Instant) {
+    pub fn record(&mut self, serial: u32, client: C, now: Instant, pressed: bool) {
+        if pressed {
+            self.delivered.clear();
+            self.consumed = false;
+        }
+        if self.consumed {
+            return;
+        }
         self.delivered.retain(|(_, owner, at)| {
             *owner == client && now.duration_since(*at) < Duration::from_secs(2)
         });
@@ -27,6 +36,7 @@ impl<C: PartialEq> PopupInput<C> {
         });
         if valid {
             self.delivered.clear();
+            self.consumed = true;
         }
         valid
     }
@@ -38,16 +48,18 @@ mod tests {
     fn popup_input_is_client_bound_recent_and_one_use() {
         let mut auth = PopupInput::default();
         let now = Instant::now();
-        auth.record(41, 7, now);
-        auth.record(42, 7, now);
+        auth.record(41, 7, now, true);
+        auth.record(42, 7, now, false);
         assert!(!auth.consume(42, &8, now));
         assert!(!auth.consume(43, &7, now));
         assert!(auth.consume(41, &7, now));
         assert!(!auth.consume(42, &7, now));
-        auth.record(50, 7, now);
+        auth.record(43, 7, now, false);
+        assert!(!auth.consume(43, &7, now));
+        auth.record(50, 7, now, true);
         assert!(!auth.consume(50, &7, now + Duration::from_secs(2)));
-        auth.record(51, 7, now);
-        auth.record(52, 8, now);
+        auth.record(51, 7, now, true);
+        auth.record(52, 8, now, true);
         assert!(!auth.consume(51, &7, now));
     }
 }

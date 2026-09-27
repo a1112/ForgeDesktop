@@ -4,6 +4,12 @@
 
 static const char *text = "Forge 中文剪贴板 😀";
 static const char *uri = "file:///tmp/Forge-%E4%B8%AD%E6%96%87.txt\r\n";
+static gboolean describe(gpointer data) {
+    GtkWidget *widget=data;int x,y,w,h;
+    gdk_window_get_origin(gtk_widget_get_window(widget),&x,&y);
+    gtk_window_get_size(GTK_WINDOW(widget),&w,&h);
+    printf("geometry:%d,%d:%dx%d\n",x,y,w,h);fflush(stdout);return FALSE;
+}
 static gboolean key(GtkWidget *widget, GdkEventKey *event, gpointer data) {
     (void)widget; (void)data;
     if (event->keyval == GDK_KEY_p) {
@@ -41,6 +47,7 @@ static void realized(GtkWidget *w, gpointer d) {
 int main(int argc, char **argv) {
     gtk_init(&argc, &argv);
     GtkWidget *window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
+    gtk_window_set_default_size(GTK_WINDOW(window), 640, 480);
     gtk_window_set_title(GTK_WINDOW(window), argc > 1 ? argv[1] : "selection-probe");
     gtk_window_set_decorated(GTK_WINDOW(window), FALSE);
     GtkWidget *area = gtk_event_box_new();
@@ -55,5 +62,6 @@ int main(int argc, char **argv) {
     g_signal_connect(area, "realize", G_CALLBACK(realized), NULL);
     g_signal_connect(window, "destroy", G_CALLBACK(gtk_main_quit), NULL);
     gtk_widget_show_all(window);
+    g_timeout_add(1000,describe,window);
     gtk_main();
 }

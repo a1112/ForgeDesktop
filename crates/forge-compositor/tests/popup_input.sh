@@ -41,4 +41,3 @@ done
 cp "$work/framebuffer/Xvfb_screen0" "$work/toggled.xwd"
 python crates/forge-compositor/tests/count_ime_pixels.py "$work/toggled.xwd" alpha
 printf 'xdg-popup input disable/enable preserved one live candidate\n'
-

@@ -16,6 +16,7 @@ pub(super) struct Ime {
     next_start: Instant,
     failures: u32,
     started: Instant,
+    xdisplay: Option<String>,
 }
 impl Ime {
     pub fn new(dh: &smithay::reexports::wayland_server::DisplayHandle) -> Self {
@@ -38,6 +39,16 @@ impl Ime {
             next_start: Instant::now(),
             failures: 0,
             started: Instant::now(),
+            xdisplay: None,
+        }
+    }
+    pub fn set_xdisplay(&mut self, display: String) {
+        if self.xdisplay.as_ref() != Some(&display) {
+            self.xdisplay = Some(display);
+            if self.child.is_some() {
+                self.failed();
+                self.next_start = Instant::now();
+            }
         }
     }
     pub fn tick(&mut self) {
@@ -49,13 +60,16 @@ impl Ime {
             self.failed();
         }
         if self.child.is_none() && Instant::now() >= self.next_start {
-            match Command::new("/usr/bin/fcitx5")
+            let mut command = Command::new("/usr/bin/fcitx5");
+            command
                 .args(["-D", "--replace"])
                 .env("WAYLAND_DISPLAY", "forge-wayland-0")
                 .env_remove("DISPLAY")
-                .stdin(Stdio::null())
-                .spawn()
-            {
+                .stdin(Stdio::null());
+            if let Some(display) = &self.xdisplay {
+                command.env("DISPLAY", display);
+            }
+            match command.spawn() {
                 Ok(child) => {
                     self.authorized_pid.store(child.id(), Ordering::Release);
                     eprintln!("ForgeDesktop input method started pid={}", child.id());

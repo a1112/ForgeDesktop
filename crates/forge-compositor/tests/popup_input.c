@@ -70,4 +70,3 @@ int main(int argc,char**argv){
  root=wl_compositor_create_surface(compositor);root_xdg=xdg_wm_base_get_xdg_surface(wm,root);xdg_surface_add_listener(root_xdg,&config,root);struct xdg_toplevel*t=xdg_surface_get_toplevel(root_xdg);xdg_toplevel_add_listener(t,&top,NULL);xdg_toplevel_set_title(t,"Forge popup input fixture");wl_surface_commit(root);
  for(;;){wl_display_dispatch_pending(display);wl_display_flush(display);struct pollfd fds[2]={{wl_display_get_fd(display),POLLIN,0},{0,POLLIN,0}};if(poll(fds,2,-1)<0)return 5;if(fds[0].revents&POLLIN)if(wl_display_dispatch(display)<0)return 6;if(fds[1].revents&POLLIN){char c;if(read(0,&c,1)!=1)return 0;if(c=='d'){zwp_text_input_v3_disable(input);zwp_text_input_v3_commit(input);puts("disabled-popup-input");}if(c=='e')enable();}}
 }
-

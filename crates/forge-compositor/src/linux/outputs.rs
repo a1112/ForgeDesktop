@@ -1,5 +1,18 @@
 //! Logical output membership and recovery shared by real backend layouts.
 use super::*;
+pub(super) fn preferred_scale(surface: &WlSurface, scale: f64) {
+    smithay::wayland::compositor::with_surface_tree_downward(
+        surface,
+        (),
+        |_, _, _| smithay::wayland::compositor::TraversalAction::DoChildren(()),
+        |_, states, _| {
+            smithay::wayland::fractional_scale::with_fractional_scale(states, |fractional| {
+                fractional.set_preferred_scale(scale)
+            });
+        },
+        |_, _, _| true,
+    );
+}
 
 pub(super) fn geometry(output: &Output) -> Rectangle<i32, Logical> {
     let mode = output.current_mode().unwrap();
@@ -96,12 +109,24 @@ impl App {
         for mapped in &self.windows {
             let g = self.geometry(mapped.id);
             let r = Rectangle::new((g.x, g.y).into(), (g.width as i32, g.height as i32).into());
-            let root = mapped.window.toplevel().unwrap().wl_surface();
+            let Some(root) = mapped.window.wl_surface() else {
+                continue;
+            };
+            let scale = self
+                .outputs
+                .iter()
+                .filter(|o| geometry(o).overlaps(r))
+                .map(|o| o.current_scale().fractional_scale())
+                .fold(1.0, f64::max);
+            preferred_scale(root.as_ref(), scale);
+            for (popup, _) in PopupManager::popups_for_surface(root.as_ref()) {
+                preferred_scale(popup.wl_surface(), scale);
+            }
             for output in &self.outputs {
                 if mapped.has_buffer && geometry(output).overlaps(r) {
-                    output.enter(root);
+                    output.enter(root.as_ref());
                 } else {
-                    output.leave(root);
+                    output.leave(root.as_ref());
                 }
             }
         }

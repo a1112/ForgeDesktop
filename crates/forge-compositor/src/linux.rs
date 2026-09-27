@@ -9,6 +9,7 @@ mod perf;
 mod popup_input;
 mod shell;
 mod visual;
+mod xwayland;
 use forge_desktop_core::{Desktop, Geometry, WindowId};
 use smithay::{
     backend::{
@@ -54,6 +55,7 @@ use smithay::{
         buffer::BufferHandler,
         compositor::{CompositorClientState, CompositorHandler, CompositorState},
         output::{OutputHandler, OutputManagerState},
+        seat::WaylandFocus,
         selection::{
             SelectionHandler,
             data_device::{
@@ -100,6 +102,8 @@ struct App {
     data: DataDeviceState,
     primary: PrimarySelectionState,
     _outputs: OutputManagerState,
+    _fractional: smithay::wayland::fractional_scale::FractionalScaleManagerState,
+    _viewporter: smithay::wayland::viewporter::ViewporterState,
     output: Output,
     output_global: Option<smithay::reexports::wayland_server::backend::GlobalId>,
     outputs: Vec<Output>,
@@ -123,6 +127,10 @@ struct App {
     cursor_fallback: smithay::backend::renderer::element::solid::SolidColorBuffer,
     dnd_icon: Option<WlSurface>,
     ime: ime::Ime,
+    xwm: Option<smithay::xwayland::X11Wm>,
+    xwayland_shell: smithay::wayland::xwayland_shell::XWaylandShellState,
+    xwayland_failed: bool,
+    xwayland_handle: Option<smithay::reexports::calloop::LoopHandle<'static, App>>,
 }
 impl BufferHandler for App {
     fn buffer_destroyed(&mut self, _: &wl_buffer::WlBuffer) {}
@@ -132,6 +140,9 @@ impl CompositorHandler for App {
         &mut self.compositor
     }
     fn client_compositor_state<'a>(&self, client: &'a Client) -> &'a CompositorClientState {
+        if let Some(data) = client.get_data::<smithay::xwayland::XWaylandClientData>() {
+            return &data.compositor_state;
+        }
         &client
             .get_data::<ClientState>()
             .expect("server-owned client state")
@@ -144,25 +155,39 @@ impl CompositorHandler for App {
         let mut unmapped = false;
         for mapped in &mut self.windows {
             mapped.window.on_commit();
-            let toplevel = mapped.window.toplevel().unwrap();
-            let root = toplevel.wl_surface();
-            if root == surface && !toplevel.is_initial_configure_sent() {
-                toplevel.send_configure();
+            let Some(root) = mapped.window.wl_surface() else {
+                continue;
+            };
+            if let Some(toplevel) = mapped.window.toplevel() {
+                if root.as_ref() == surface && !toplevel.is_initial_configure_sent() {
+                    toplevel.send_configure();
+                }
             }
-            let has_buffer =
-                with_renderer_surface_state(root, |s| s.buffer().is_some()).unwrap_or(false);
+            let has_buffer = with_renderer_surface_state(root.as_ref(), |s| s.buffer().is_some())
+                .unwrap_or(false);
             if has_buffer != mapped.has_buffer {
                 mapped.has_buffer = has_buffer;
                 if has_buffer {
-                    self.output.enter(root);
+                    self.output.enter(root.as_ref());
                     if mapped.role.is_none() {
+                        let previous = self.desktop.focused();
                         let _ = self.desktop.restore(mapped.id);
-                        newly_mapped = Some(mapped.id);
+                        if mapped
+                            .window
+                            .x11_surface()
+                            .is_some_and(|w| w.is_override_redirect())
+                        {
+                            if let Some(previous) = previous {
+                                let _ = self.desktop.focus(previous);
+                            }
+                        } else {
+                            newly_mapped = Some(mapped.id);
+                        }
                     } else if mapped.role.as_deref() == Some("forge.launcher") && self.launcher {
                         newly_mapped = Some(mapped.id);
                     }
                 } else {
-                    self.output.leave(root);
+                    self.output.leave(root.as_ref());
                     let _ = self.desktop.minimize(mapped.id);
                     if self.drag.as_ref().is_some_and(|d| d.id == mapped.id) {
                         self.drag = None;
@@ -201,9 +226,14 @@ impl ShmHandler for App {
     }
 }
 impl OutputHandler for App {}
-impl SelectionHandler for App {
-    type SelectionUserData = ();
+impl smithay::wayland::fractional_scale::FractionalScaleHandler for App {
+    fn new_fractional_scale(&mut self, surface: WlSurface) {
+        outputs::preferred_scale(&surface, self.output.current_scale().fractional_scale());
+        self.sync_output_membership();
+    }
 }
+smithay::delegate_fractional_scale!(App);
+smithay::delegate_viewporter!(App);
 impl PrimarySelectionHandler for App {
     fn primary_selection_state(&self) -> &PrimarySelectionState {
         &self.primary
@@ -272,6 +302,15 @@ impl App {
             .map(|w| w.id)
     }
     fn focus(&mut self, id: WindowId) {
+        if self
+            .windows
+            .iter()
+            .find(|m| m.id == id)
+            .and_then(|m| m.window.x11_surface())
+            .is_some_and(|w| w.is_override_redirect())
+        {
+            return;
+        }
         if let Some(role) = self
             .windows
             .iter()
@@ -307,11 +346,12 @@ impl App {
             .windows
             .iter()
             .find(|w| w.id == id)
-            .and_then(|w| w.window.toplevel())
-            .map(|s| s.wl_surface().clone());
+            .and_then(|w| w.window.wl_surface().map(|s| s.into_owned()));
         for mapped in &self.windows {
             if mapped.window.set_activated(mapped.id == id) {
-                mapped.window.toplevel().unwrap().send_configure();
+                if let Some(top) = mapped.window.toplevel() {
+                    top.send_configure();
+                }
             }
         }
         self.seat.get_keyboard().unwrap().set_focus(
@@ -389,12 +429,18 @@ impl App {
                 );
                 if drag.edges != 0 {
                     if let Some(window) = self.windows.iter().find(|m| m.id == drag.id) {
-                        let surface = window.window.toplevel().unwrap();
-                        surface.with_pending_state(|s| {
-                            s.size = Some((w, h).into());
-                            s.states.set(xdg_toplevel::State::Resizing);
-                        });
-                        surface.send_pending_configure();
+                        if let Some(surface) = window.window.toplevel() {
+                            surface.with_pending_state(|s| {
+                                s.size = Some((w, h).into());
+                                s.states.set(xdg_toplevel::State::Resizing);
+                            });
+                            surface.send_pending_configure();
+                        }
+                    }
+                }
+                if let Some(mapped) = self.windows.iter().find(|m| m.id == drag.id) {
+                    if let Some(x11) = mapped.window.x11_surface() {
+                        let _ = x11.configure(Rectangle::new((x, y).into(), (w, h).into()));
                     }
                 }
                 self.dirty = true;
@@ -507,7 +553,7 @@ impl App {
         let serial = SERIAL_COUNTER.next_serial();
         if let Some(client) = pointer.current_focus().and_then(|s| s.client()) {
             self.popup_input
-                .record(serial.into(), client.id(), Instant::now());
+                .record(serial.into(), client.id(), Instant::now(), pressed);
         }
         pointer.button(
             self,
@@ -526,9 +572,10 @@ impl App {
         if !pressed {
             if let Some(drag) = self.drag.take() {
                 if let Some(mapped) = self.windows.iter().find(|m| m.id == drag.id) {
-                    let s = mapped.window.toplevel().unwrap();
-                    s.with_pending_state(|p| p.states.unset(xdg_toplevel::State::Resizing));
-                    s.send_pending_configure();
+                    if let Some(s) = mapped.window.toplevel() {
+                        s.with_pending_state(|p| p.states.unset(xdg_toplevel::State::Resizing));
+                        s.send_pending_configure();
+                    }
                 }
             }
             self.reconcile_pointer(time);
@@ -787,6 +834,10 @@ impl App {
             data: DataDeviceState::new::<App>(dh),
             primary: PrimarySelectionState::new::<App>(dh),
             _outputs: OutputManagerState::new_with_xdg_output::<App>(dh),
+            _fractional: smithay::wayland::fractional_scale::FractionalScaleManagerState::new::<App>(
+                dh,
+            ),
+            _viewporter: smithay::wayland::viewporter::ViewporterState::new::<App>(dh),
             seats,
             seat,
             output: output.clone(),
@@ -815,6 +866,10 @@ impl App {
             ),
             dnd_icon: None,
             ime: ime::Ime::new(dh),
+            xwm: None,
+            xwayland_shell: smithay::wayland::xwayland_shell::XWaylandShellState::new::<Self>(dh),
+            xwayland_failed: false,
+            xwayland_handle: None,
         };
 
         Ok(state)
@@ -838,13 +893,18 @@ pub fn run() -> AppResult<()> {
         return Err("XDG_RUNTIME_DIR must be a private directory owned by the current user".into());
     }
     let args: Vec<_> = std::env::args().skip(1).collect();
+    let multiple_nested = args.as_slice() == ["--nested-multi"];
     match args.as_slice() {
         [] => {}
-        [mode] if mode == "--nested" => {}
+        [mode] if mode == "--nested" || mode == "--nested-multi" => {}
         [mode, device] if mode == "--drm" && device.starts_with("/dev/dri/card") => {
             return drm_backend::run(device);
         }
-        _ => return Err("usage: forge-compositor --nested | --drm /dev/dri/cardN".into()),
+        _ => {
+            return Err(
+                "usage: forge-compositor --nested | --nested-multi | --drm /dev/dri/cardN".into(),
+            );
+        }
     }
     let (conn, screen_index) = x11rb::connect(None)?;
     let screen = &conn.setup().roots[screen_index];
@@ -859,7 +919,7 @@ pub fn run() -> AppResult<()> {
         screen.root,
         0,
         0,
-        1280,
+        if multiple_nested { 2560 } else { 1280 },
         800,
         0,
         WindowClass::INPUT_OUTPUT,
@@ -900,14 +960,71 @@ pub fn run() -> AppResult<()> {
     let mut dh = display.handle();
     let listener = ListeningSocket::bind("forge-wayland-0")?;
     let mut state = App::new(&dh, (1280, 800), "Forge-Nested-1")?;
+    let render_output = if multiple_nested {
+        let second = Output::new(
+            "Forge-Nested-2".into(),
+            PhysicalProperties {
+                size: (0, 0).into(),
+                subpixel: Subpixel::Unknown,
+                make: "ForgeOS".into(),
+                model: "Nested test output".into(),
+            },
+        );
+        second.create_global::<App>(&dh);
+        let mode = Mode {
+            size: (1280, 800).into(),
+            refresh: 60000,
+        };
+        second.change_current_state(
+            Some(mode),
+            Some(Transform::Normal),
+            Some(smithay::output::Scale::Integer(1)),
+            Some((1280, 0).into()),
+        );
+        second.set_preferred(mode);
+        state.update_output_layout(vec![state.output.clone(), second]);
+        // A private render target joins two real wl_output regions into one
+        // host window; clients never see this canvas as another output.
+        let canvas = Output::new(
+            "Forge-Nested-Canvas".into(),
+            PhysicalProperties {
+                size: (0, 0).into(),
+                subpixel: Subpixel::Unknown,
+                make: "ForgeOS".into(),
+                model: "Nested render target".into(),
+            },
+        );
+        canvas.change_current_state(
+            Some(Mode {
+                size: (2560, 800).into(),
+                refresh: 60000,
+            }),
+            Some(Transform::Normal),
+            Some(smithay::output::Scale::Integer(1)),
+            Some((0, 0).into()),
+        );
+        canvas
+    } else {
+        state.output.clone()
+    };
+    let mut xwayland = xwayland::Runtime::new()?;
     let mut renderer = PixmanRenderer::new()?;
-    let mut target = renderer.create_buffer(Fourcc::Argb8888, state.size.into())?;
-    let mut damage = OutputDamageTracker::from_output(&state.output);
+    let mut target = renderer.create_buffer(
+        Fourcc::Argb8888,
+        render_output
+            .current_mode()
+            .unwrap()
+            .size
+            .to_logical(1)
+            .to_buffer(1, Transform::Normal),
+    )?;
+    let mut damage = OutputDamageTracker::from_output(&render_output);
     let start = Instant::now();
     let mut perf = perf::Recorder::new();
     let mut previous_frame = Instant::now() - Duration::from_millis(17);
     eprintln!("ForgeDesktop nested Pixman ready; WAYLAND_DISPLAY=forge-wayland-0");
     loop {
+        xwayland.tick(&mut state)?;
         while let Some(stream) = listener.accept()? {
             let client_state = ClientState::for_stream(&stream);
             dh.insert_client(stream, Arc::new(client_state))?;
@@ -926,7 +1043,7 @@ pub fn run() -> AppResult<()> {
                 Event::DestroyNotify(_) => return Ok(()),
                 Event::Expose(_) => {
                     state.dirty = true;
-                    damage = OutputDamageTracker::from_output(&state.output);
+                    damage = OutputDamageTracker::from_output(&render_output);
                 }
                 Event::FocusOut(e) if e.mode == NotifyMode::NORMAL => {
                     state.keyboard_active = false;
@@ -964,11 +1081,19 @@ pub fn run() -> AppResult<()> {
                     state.reconcile_pointer(0);
                 }
                 Event::ConfigureNotify(e)
-                    if (e.width as i32, e.height as i32) != state.size
+                    if render_output.current_mode().unwrap().size
+                        != (e.width as i32, e.height as i32).into()
                         && e.width > 0
                         && e.height > 0 =>
                 {
                     state.size = (i32::from(e.width), i32::from(e.height));
+                    let canvas_mode = Mode {
+                        size: state.size.into(),
+                        refresh: 60000,
+                    };
+                    if multiple_nested {
+                        state.size.0 /= 2;
+                    }
                     let mode = Mode {
                         size: state.size.into(),
                         refresh: 60000,
@@ -977,6 +1102,22 @@ pub fn run() -> AppResult<()> {
                         .output
                         .change_current_state(Some(mode), None, None, None);
                     state.output.set_preferred(mode);
+                    if multiple_nested {
+                        let second = &state.outputs[1];
+                        let second_mode = Mode {
+                            size: (i32::from(e.width) - state.size.0, state.size.1).into(),
+                            refresh: 60000,
+                        };
+                        second.change_current_state(
+                            Some(second_mode),
+                            None,
+                            None,
+                            Some((state.size.0, 0).into()),
+                        );
+                        second.set_preferred(second_mode);
+                        render_output.change_current_state(Some(canvas_mode), None, None, None);
+                        state.update_output_layout(state.outputs.clone());
+                    }
                     let roles: Vec<_> = state
                         .windows
                         .iter()
@@ -986,8 +1127,16 @@ pub fn run() -> AppResult<()> {
                     for role in roles {
                         state.update_role(&role);
                     }
-                    target = renderer.create_buffer(Fourcc::Argb8888, state.size.into())?;
-                    damage = OutputDamageTracker::from_output(&state.output);
+                    target = renderer.create_buffer(
+                        Fourcc::Argb8888,
+                        render_output
+                            .current_mode()
+                            .unwrap()
+                            .size
+                            .to_logical(1)
+                            .to_buffer(1, Transform::Normal),
+                    )?;
+                    damage = OutputDamageTracker::from_output(&render_output);
                     state.dirty = true;
                 }
                 Event::MotionNotify(e) => {
@@ -1005,6 +1154,7 @@ pub fn run() -> AppResult<()> {
             }
         }
         if state.dirty && previous_frame.elapsed() >= Duration::from_millis(16) {
+            state.sync_output_membership();
             let frame_start = Instant::now();
             let mut elements = state.pointer_elements(&mut renderer, (0, 0).into(), 1.0);
             for mapped in state.windows.iter().rev().filter(|m| state.visible(m)) {

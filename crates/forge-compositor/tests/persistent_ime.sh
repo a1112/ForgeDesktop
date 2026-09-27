@@ -41,4 +41,3 @@ input pixel 167 571 239 239 239
 cp "$work/framebuffer/Xvfb_screen0" "$work/focused.xwd"
 python crates/forge-compositor/tests/count_ime_pixels.py "$work/focused.xwd" 800
 printf 'live input-method popup reparented without stale rendering\n'
-

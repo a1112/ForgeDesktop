@@ -17,6 +17,7 @@ pub(super) struct Shell {
     next_start: Instant,
     failures: u32,
     started: Instant,
+    xdisplay: Option<String>,
 }
 impl Shell {
     pub fn new() -> Self {
@@ -31,6 +32,7 @@ impl Shell {
             next_start: Instant::now(),
             failures: 0,
             started: Instant::now(),
+            xdisplay: None,
         }
     }
     pub fn credentials(&self) -> Option<(u32, u32)> {
@@ -40,6 +42,15 @@ impl Shell {
                 smithay::reexports::rustix::process::geteuid().as_raw(),
             )
         })
+    }
+    pub fn set_xdisplay(&mut self, display: String) {
+        if self.xdisplay.as_ref() != Some(&display) {
+            self.xdisplay = Some(display);
+            if self.child.is_some() {
+                self.failed();
+                self.next_start = Instant::now();
+            }
+        }
     }
     fn failed(&mut self) {
         if let Some(mut child) = self.child.take() {
@@ -71,15 +82,19 @@ impl Shell {
             let result = (|| -> std::io::Result<()> {
                 let (server, client) = UnixStream::pair()?;
                 server.set_nonblocking(true)?;
-                let child = Process::new("/usr/libexec/forge-desktop/forge-shell")
+                let mut command = Process::new("/usr/libexec/forge-desktop/forge-shell");
+                command
                     .stdin(Stdio::from(OwnedFd::from(client)))
                     .env("WAYLAND_DISPLAY", "forge-wayland-0")
                     .env("QT_QPA_PLATFORM", "wayland")
                     .env_remove("DISPLAY")
                     .env("QT_QUICK_BACKEND", "software")
                     .env("QSG_RENDER_LOOP", "basic")
-                    .env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1")
-                    .spawn()?;
+                    .env("QT_WAYLAND_DISABLE_WINDOWDECORATION", "1");
+                if let Some(display) = &self.xdisplay {
+                    command.env("DISPLAY", display);
+                }
+                let child = command.spawn()?;
                 eprintln!("ForgeDesktop shell started pid={}", child.id());
                 self.child = Some(child);
                 self.socket = Some(server);

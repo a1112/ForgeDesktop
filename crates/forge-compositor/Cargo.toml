@@ -13,5 +13,3 @@ forge-desktop-core = { path = "../forge-desktop-core" }
 
 [target.'cfg(target_os = "linux")'.dependencies]
 smithay = { version = "=0.7.0", default-features = false, features = ["wayland_frontend", "desktop", "renderer_pixman", "x11rb_event_source", "xwayland", "backend_drm", "backend_libinput", "backend_udev", "backend_session_libseat"] }
-
-
