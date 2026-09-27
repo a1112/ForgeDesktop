@@ -20,13 +20,17 @@ bool Model::consume(const QByteArray&payload){
  auto lines=payload.split('\n');if(lines.empty())return false;
  auto h=lines.takeFirst().split('\t');int w,hgt,workspace,launcher;
  if(h.size()!=6 || h[0]!="1" || h[1]!="state" || !integer(h[2],64,16384,w) || !integer(h[3],64,16384,hgt) || !integer(h[4],0,3,workspace) || !integer(h[5],0,1,launcher))return false;
- QVariantList windows;QSet<QByteArray> ids;
+ QVariantList windows,outputs;QSet<QByteArray> ids,outputIds;bool pending=false,displayRow=false;
  for(const auto&line:lines){if(line.isEmpty())continue;auto f=line.split('\t');int ws,mini,maxi,full,focus;
+  if(f[0]=="d"){int v;if(displayRow||f.size()!=2||!integer(f[1],0,1,v))return false;displayRow=true;pending=v;continue;}
+  if(f[0]=="o"){int id,scale,x,y,pw,ph;if(outputs.size()>=4||f.size()!=7||outputIds.contains(f[1])||!integer(f[1],1,2147483647,id)||!integer(f[2],1000,2000,scale)||(scale!=1000&&scale!=1500&&scale!=2000)||!integer(f[3],0,16384,x)||!integer(f[4],0,16384,y)||!integer(f[5],64,8192,pw)||!integer(f[6],64,8192,ph))return false;outputIds.insert(f[1]);outputs.append(QVariantMap{{"id",id},{"scale",scale},{"x",x},{"y",y},{"width",pw},{"height",ph}});continue;}
   if(windows.size()>=68 || f.size()!=8 || !handle(f[0]) || ids.contains(f[0]) || !hex(f[1]) || !hex(f[2]) || !integer(f[3],0,3,ws) || !integer(f[4],0,1,mini) || !integer(f[5],0,1,maxi) || !integer(f[6],0,1,full) || !integer(f[7],0,1,focus))return false;
   ids.insert(f[0]);windows.append(QVariantMap{{"id",QString::fromLatin1(f[0])},{"title",QString::fromUtf8(QByteArray::fromHex(f[1]))},{"appId",QString::fromUtf8(QByteArray::fromHex(f[2]))},{"workspace",ws},{"minimized",bool(mini)},{"maximized",bool(maxi)},{"fullscreen",bool(full)},{"focused",bool(focus)}});
  }
- m_windows=windows;m_width=w;m_height=hgt;m_workspace=workspace;m_launcher=launcher;emit stateChanged();return true;
+ m_windows=windows;m_outputs=outputs;m_displayPending=pending;m_width=w;m_height=hgt;m_workspace=workspace;m_launcher=launcher;emit stateChanged();return true;
 }
+void Model::configureOutput(int id,int scale,int x,int y){if(id<=0||(scale!=1000&&scale!=1500&&scale!=2000)||x<0||x>16384||y<0||y>16384)return;emit command("1\toutput\t"+QByteArray::number(id)+'\t'+QByteArray::number(scale)+'\t'+QByteArray::number(x)+'\t'+QByteArray::number(y));}
+void Model::confirmDisplay(bool keep){emit command(keep?"1\tdisplay-confirm":"1\tdisplay-revert");}
 bool Model::visibleEntry(const QString&file){auto a=g_desktop_app_info_new_from_filename(file.toUtf8().constData());if(!a)return false;bool visible=!g_desktop_app_info_get_is_hidden(a) && !g_desktop_app_info_get_nodisplay(a) && g_desktop_app_info_get_show_in(a,"ForgeDesktop");g_object_unref(a);return visible;}
 void Model::scanApplications(){
  QVariantList apps;auto all=g_app_info_get_all();

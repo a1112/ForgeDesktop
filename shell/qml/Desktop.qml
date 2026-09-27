@@ -19,7 +19,24 @@ Window {
    Repeater {model: 4;Action {required property int index;label: String(index+1);selected: desktop.workspace===index;onClicked: desktop.switchWorkspace(index)}}
   }
   Text {anchors.centerIn: parent;text: desktop.clock;textFormat: Text.PlainText;color: "#e4eaf5";font.pixelSize: 12}
-  Text {anchors.right: parent.right;anchors.rightMargin: 14;anchors.verticalCenter: parent.verticalCenter;text: "ForgeDesktop";color: "#9eb1ce";font.pixelSize: 12}
+  Action {anchors.right: parent.right;anchors.rightMargin: 14;anchors.verticalCenter: parent.verticalCenter;label: "Displays";onClicked: displays.visible=true}
+ }
+ Window {
+  id: displays;visible: false;title: "ForgeDesktop — Displays";width: 600;height: 420;color: "#192436"
+  Column {anchors.fill: parent;anchors.margins: 24;spacing: 18
+   Text {text: "Displays";font.pixelSize: 24;color: "#edf3ff"}
+   Text {text: desktop.displayPending?"Keep these settings? Reverting automatically in 15 seconds.":"Scaling and layout apply immediately. Confirm to save.";color: "#adc2df";wrapMode: Text.Wrap;width: parent.width}
+   Repeater {model: desktop.outputs;Column {required property var modelData;spacing: 8
+    Text {text: "Output "+modelData.id+" · "+modelData.width+"×"+modelData.height+" · "+modelData.scale/10+"%";color: "white"}
+    Row {spacing: 8;Repeater {model: [1000,1500,2000];Action {required property int modelData;label: modelData/10+"%";enabled: !desktop.displayPending;onClicked: {var o=parent.parent.modelData;desktop.configureOutput(o.id,modelData,o.x,o.y)}}}
+     Action {label: "Place right";enabled: !desktop.displayPending;onClicked: {var o=parent.parent.modelData;desktop.configureOutput(o.id,o.scale,desktop.desktopWidth,0)}}
+    }
+   }}
+   Row {spacing: 12;visible: desktop.displayPending
+    Action {label: "Keep settings";onClicked: desktop.confirmDisplay(true)}
+    Action {label: "Revert now";onClicked: desktop.confirmDisplay(false)}
+   }
+  }
  }
  Window {
   id: dock;visible: true;title: "forge.dock";width: desktop.desktopWidth;height: 84;flags: Qt.FramelessWindowHint;color: "transparent"

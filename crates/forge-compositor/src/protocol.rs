@@ -6,6 +6,9 @@ pub enum Command {
     Workspace(u32),
     Move(String, u32),
     Launcher(bool, u32),
+    Output { id: u32, scale: u32, x: i32, y: i32 },
+    DisplayConfirm,
+    DisplayRevert,
 }
 #[derive(Default)]
 pub struct Decoder {
@@ -64,6 +67,25 @@ pub fn command(payload: &[u8]) -> Result<Command, String> {
         s.parse::<u32>().ok().filter(|n| *n < 4)
     }
     match fields.as_slice() {
+        ["1", "display-confirm"] => Some(Command::DisplayConfirm),
+        ["1", "display-revert"] => Some(Command::DisplayRevert),
+        ["1", "output", id, scale, x, y] => {
+            let parsed = (
+                id.parse::<u32>(),
+                scale.parse::<u32>(),
+                x.parse::<i32>(),
+                y.parse::<i32>(),
+            );
+            match parsed {
+                (
+                    Ok(id),
+                    Ok(scale @ (1000 | 1500 | 2000)),
+                    Ok(x @ 0..=16384),
+                    Ok(y @ 0..=16384),
+                ) if id != 0 => Some(Command::Output { id, scale, x, y }),
+                _ => None,
+            }
+        }
         ["1", "workspace", value] => workspace(value).map(Command::Workspace),
         ["1", "move", window, value] if id(window) => {
             workspace(value).map(|n| Command::Move((*window).into(), n))
@@ -108,6 +130,22 @@ pub fn hex(text: &str) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn output_controls_are_typed_and_bounded() {
+        assert!(command(b"1\toutput\t27\t1500\t1280\t0").is_ok());
+        assert!(command(b"1\tdisplay-confirm").is_ok());
+        assert!(command(b"1\tdisplay-revert").is_ok());
+        for s in [
+            "1\toutput\t0\t1500\t0\t0",
+            "1\toutput\t27\t0\t0\t0",
+            "1\toutput\t27\t1234\t0\t0",
+            "1\toutput\t27\t1000\t-1\t0",
+            "1\toutput\t27\t1000\t32768\t0",
+            "1\tdisplay-confirm\textra",
+        ] {
+            assert!(command(s.as_bytes()).is_err(), "{s}");
+        }
+    }
     #[test]
     fn partial_frames_and_multiple_messages() {
         let a = frame(b"1\tworkspace\t2").unwrap();

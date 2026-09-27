@@ -7,6 +7,8 @@
 #include <QWidget>
 #include <QResizeEvent>
 #include <QWheelEvent>
+#include <QMenu>
+#include <QWidgetAction>
 #include <iostream>
 class ProbeWindow : public QWidget {
     void wheelEvent(QWheelEvent *event) override {
@@ -29,7 +31,21 @@ int main(int argc, char **argv) {
     auto *entry = new QLineEdit;
     entry->setPlaceholderText("Keyboard input is logged by this fixture");
     layout->addWidget(entry);
-    layout->addWidget(new QPushButton("Native Qt button"));
+    auto *button = new QPushButton("Native Qt button");
+    layout->addWidget(button);
+    if (argc > 1 && QByteArray(argv[1]) == "popup") {
+        QObject::connect(button, &QPushButton::clicked, [&] {
+            auto *menu = new QMenu(&window);
+            auto *action = new QWidgetAction(menu);
+            auto *popupEntry = new QLineEdit(menu);
+            popupEntry->setMinimumWidth(220);
+            action->setDefaultWidget(popupEntry);
+            menu->addAction(action);
+            menu->popup(window.mapToGlobal(QPoint(100, 200)));
+            popupEntry->setFocus();
+            // A reused IME surface must not be inserted twice in the root tree.
+        });
+    }
     QObject::connect(entry, &QLineEdit::textChanged, [](const QString &text) {
         std::cout << "qt-entry:" << text.toUtf8().constData() << std::endl;
     });
@@ -38,3 +54,4 @@ int main(int argc, char **argv) {
     std::cout << "qt-ready" << std::endl;
     return app.exec();
 }
+

@@ -3,7 +3,10 @@ mod axis;
 mod control;
 mod drm_backend;
 mod ime;
+mod output_config;
+mod outputs;
 mod perf;
+mod popup_input;
 mod shell;
 mod visual;
 use forge_desktop_core::{Desktop, Geometry, WindowId};
@@ -98,7 +101,12 @@ struct App {
     primary: PrimarySelectionState,
     _outputs: OutputManagerState,
     output: Output,
+    output_global: Option<smithay::reexports::wayland_server::backend::GlobalId>,
+    outputs: Vec<Output>,
+    output_requests: Vec<forge_compositor::protocol::Command>,
+    output_state: String,
     popups: PopupManager,
+    popup_input: popup_input::PopupInput<smithay::reexports::wayland_server::backend::ClientId>,
     desktop: Desktop,
     windows: Vec<Mapped>,
     pointer: Point<f64, Logical>,
@@ -496,10 +504,15 @@ impl App {
             }
         }
         let pointer = self.seat.get_pointer().unwrap();
+        let serial = SERIAL_COUNTER.next_serial();
+        if let Some(client) = pointer.current_focus().and_then(|s| s.client()) {
+            self.popup_input
+                .record(serial.into(), client.id(), Instant::now());
+        }
         pointer.button(
             self,
             &ButtonEvent {
-                serial: SERIAL_COUNTER.next_serial(),
+                serial,
                 time,
                 button,
                 state: if pressed {
@@ -586,10 +599,32 @@ impl XdgShellHandler for App {
     fn fullscreen_request(
         &mut self,
         s: ToplevelSurface,
-        _: Option<smithay::reexports::wayland_server::protocol::wl_output::WlOutput>,
+        requested: Option<smithay::reexports::wayland_server::protocol::wl_output::WlOutput>,
     ) {
         if let Some(id) = self.locate(&s) {
-            if !self.desktop.window(id).unwrap().fullscreen() {
+            if let Some(output) = requested
+                .as_ref()
+                .and_then(Output::from_resource)
+                .filter(|o| self.outputs.contains(o))
+            {
+                let area = outputs::geometry(&output);
+                if self
+                    .desktop
+                    .set_fullscreen(
+                        id,
+                        Some(Geometry {
+                            x: area.loc.x,
+                            y: area.loc.y,
+                            width: area.size.w as u32,
+                            height: area.size.h as u32,
+                        }),
+                    )
+                    .is_ok()
+                {
+                    self.configure(id);
+                    self.dirty = true;
+                }
+            } else if !self.desktop.window(id).unwrap().fullscreen() {
                 let _ = self.action(id, "fullscreen");
             } else {
                 s.send_configure();
@@ -632,8 +667,7 @@ impl XdgShellHandler for App {
     }
     fn grab(&mut self, surface: PopupSurface, resource: wl_seat::WlSeat, serial: Serial) {
         let pointer = self.seat.get_pointer().unwrap();
-        if Seat::from_resource(&resource).as_ref() != Some(&self.seat) || !pointer.has_grab(serial)
-        {
+        if Seat::from_resource(&resource).as_ref() != Some(&self.seat) {
             surface.send_popup_done();
             return;
         }
@@ -642,12 +676,13 @@ impl XdgShellHandler for App {
             surface.send_popup_done();
             return;
         };
-        let Some(start) = pointer.grab_start_data() else {
+        let Some(client) = root.client() else {
             surface.send_popup_done();
             return;
         };
-        if start.focus.and_then(|(s, _)| s.client()).map(|c| c.id())
-            != root.client().map(|c| c.id())
+        if !self
+            .popup_input
+            .consume(serial.into(), &client.id(), Instant::now())
         {
             surface.send_popup_done();
             return;
@@ -720,7 +755,7 @@ impl App {
                 model: "Pixman software output".into(),
             },
         );
-        output.create_global::<App>(dh);
+        let output_global = output.create_global::<App>(dh);
         let mode = Mode {
             size: size.into(),
             refresh: 60000,
@@ -754,8 +789,13 @@ impl App {
             _outputs: OutputManagerState::new_with_xdg_output::<App>(dh),
             seats,
             seat,
-            output,
+            output: output.clone(),
+            output_global: Some(output_global),
+            outputs: vec![output],
+            output_requests: Vec::new(),
+            output_state: String::new(),
             popups: PopupManager::default(),
+            popup_input: Default::default(),
             desktop: Desktop::default(),
             windows: vec![],
             pointer: (0.0, 0.0).into(),
@@ -966,7 +1006,7 @@ pub fn run() -> AppResult<()> {
         }
         if state.dirty && previous_frame.elapsed() >= Duration::from_millis(16) {
             let frame_start = Instant::now();
-            let mut elements = state.pointer_elements(&mut renderer);
+            let mut elements = state.pointer_elements(&mut renderer, (0, 0).into(), 1.0);
             for mapped in state.windows.iter().rev().filter(|m| state.visible(m)) {
                 let g = state.geometry(mapped.id);
                 elements.extend(mapped.window.render_elements(

@@ -6,6 +6,8 @@
 class Model: public QObject {
  Q_OBJECT
  Q_PROPERTY(QVariantList windows READ windows NOTIFY stateChanged)
+ Q_PROPERTY(QVariantList outputs MEMBER m_outputs NOTIFY stateChanged)
+ Q_PROPERTY(bool displayPending MEMBER m_displayPending NOTIFY stateChanged)
  Q_PROPERTY(QVariantList applications READ applications NOTIFY applicationsChanged)
  Q_PROPERTY(int desktopWidth MEMBER m_width NOTIFY stateChanged)
  Q_PROPERTY(int desktopHeight MEMBER m_height NOTIFY stateChanged)
@@ -24,6 +26,8 @@ public:
  Q_INVOKABLE void switchWorkspace(int);
  Q_INVOKABLE void moveWindow(const QString&,int);
  Q_INVOKABLE void showLauncher(bool);
+ Q_INVOKABLE void configureOutput(int id,int scale,int x,int y);
+ Q_INVOKABLE void confirmDisplay(bool keep);
  void scanApplications();
  void launcherFrame();
  QString icon(const QString&) const;
@@ -34,6 +38,8 @@ signals:
  void command(const QByteArray&);
 private:
  QVariantList m_windows,m_apps;
+ QVariantList m_outputs;
+ bool m_displayPending=false;
  QString m_error,m_clock,m_metrics;
  int m_width=1280,m_height=800,m_workspace=0;
  bool m_launcher=false;

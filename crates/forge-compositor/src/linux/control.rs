@@ -27,7 +27,10 @@ impl App {
                             .desktop
                             .focused()
                             .and_then(|id| self.desktop.window(id))
-                            .is_some_and(|w| w.fullscreen())
+                            .is_some_and(|w| {
+                                let g=w.geometry();
+                                w.fullscreen() && outputs::geometry(&self.output).overlaps(Rectangle::new((g.x,g.y).into(),(g.width as i32,g.height as i32).into()))
+                            })
                 }
                 Some(_) => true,
                 None => self.desktop.visible(m.id),
@@ -135,11 +138,14 @@ impl App {
         if !self.windows.iter().any(|m| m.id == id && m.role.is_none()) {
             return Err(forge_desktop_core::Error::UnknownWindow);
         }
+        let output = self.window_output(id);
+        let area = outputs::geometry(output);
+        let primary = *output == self.output;
         let work = Geometry {
-            x: 0,
-            y: 38,
-            width: self.size.0 as u32,
-            height: (self.size.1 - 122).max(1) as u32,
+            x: area.loc.x,
+            y: area.loc.y + if primary { 38 } else { 0 },
+            width: area.size.w as u32,
+            height: (area.size.h - if primary { 122 } else { 0 }).max(1) as u32,
         };
         match action {
             "close" => {
@@ -165,10 +171,10 @@ impl App {
             }
             "fullscreen" => {
                 let target = (!self.desktop.window(id).unwrap().fullscreen()).then_some(Geometry {
-                    x: 0,
-                    y: 0,
-                    width: self.size.0 as u32,
-                    height: self.size.1 as u32,
+                    x: area.loc.x,
+                    y: area.loc.y,
+                    width: area.size.w as u32,
+                    height: area.size.h as u32,
                 });
                 self.desktop.set_fullscreen(id, target)?;
             }
@@ -179,7 +185,7 @@ impl App {
                     self.desktop.set_geometry(
                         id,
                         Geometry {
-                            x: if action == "left" { 0 } else { self.size.0 / 2 },
+                            x: work.x + if action == "left" { 0 } else { area.size.w / 2 },
                             width: work.width / 2,
                             ..work
                         },
@@ -290,6 +296,16 @@ impl App {
                     self.set_launcher(open, Some(serial));
                     Ok(())
                 }
+                command @ (Command::Output { .. }
+                | Command::DisplayConfirm
+                | Command::DisplayRevert) => {
+                    if self.desktop.ensure_unlocked().is_ok() && self.output_requests.len() < 32 {
+                        self.output_requests.push(command);
+                        Ok(())
+                    } else {
+                        Err(forge_desktop_core::Error::Locked)
+                    }
+                }
             };
             if let Err(e) = result {
                 eprintln!("ForgeDesktop shell request rejected: {e:?}");
@@ -325,6 +341,7 @@ impl App {
                 u8::from(self.desktop.focused() == Some(m.id))
             ));
         }
+        state.push_str(&self.output_state);
         self.shell.state(state);
     }
     pub(super) fn frame_submitted(&mut self, damaged: bool) {

@@ -15,9 +15,14 @@ smithay::render_elements! {
 }
 
 impl App {
-    pub(super) fn pointer_elements(&self, renderer: &mut PixmanRenderer) -> Vec<SoftwareElement> {
+    pub(super) fn pointer_elements(
+        &self,
+        renderer: &mut PixmanRenderer,
+        origin: Point<i32, Logical>,
+        scale: f64,
+    ) -> Vec<SoftwareElement> {
         let mut elements = Vec::new();
-        let location = self.pointer.to_i32_round();
+        let location = self.pointer.to_i32_round() - origin;
         match &self.cursor {
             CursorImageStatus::Surface(surface) if surface.is_alive() => {
                 let hotspot = with_states(surface, |states| {
@@ -30,8 +35,8 @@ impl App {
                 elements.extend(render_elements_from_surface_tree(
                     renderer,
                     surface,
-                    (location - hotspot).to_physical_precise_round(1.0),
-                    1.0,
+                    (location - hotspot).to_physical_precise_round(scale),
+                    scale,
                     1.0,
                     Kind::Cursor,
                 ));
@@ -40,8 +45,8 @@ impl App {
             _ => elements.push(
                 SolidColorRenderElement::from_buffer(
                     &self.cursor_fallback,
-                    location.to_physical_precise_round(1.0),
-                    1.0,
+                    location.to_physical_precise_round(scale),
+                    scale,
                     1.0,
                     Kind::Cursor,
                 )
@@ -52,8 +57,8 @@ impl App {
             elements.extend(render_elements_from_surface_tree(
                 renderer,
                 icon,
-                location.to_physical_precise_round(1.0),
-                1.0,
+                location.to_physical_precise_round(scale),
+                scale,
                 1.0,
                 Kind::Unspecified,
             ));
