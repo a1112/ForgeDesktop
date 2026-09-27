@@ -56,12 +56,17 @@ Compositor candidate SHA-256 values:
 - An ordinary user Wayland `output-probe` on candidate 3 returned two outputs:
   `Forge-DRM-1:0,0:1280x800:scale=1` and
   `Forge-DRM-45:1280,0:1280x800:scale=2` after restoring 200%.
+- During a 150% preview, the same client still received integer
+  `wl_output.scale=2` for head 1. Core `wl_output` has no fractional scale
+  field; the candidate has no `wp_fractional_scale_v1`/viewporter global.
+  The panel and compositor use 1500 internally, but application rendering at
+  150% and client fractional-scale negotiation have not been accepted.
 
 ## Outstanding gates
 
 The candidate 1 failure and candidate 2 persistence failure were fixed in
 later candidates, but no final committed/rebuilt artifact has passed this
-sequence. At 150%, client-facing fractional-scale protocol support and
-application appearance still need inspection. Multi-output candidate input
+sequence. At 150%, application appearance and optional client fractional-scale
+protocol support still need implementation/inspection. Multi-output candidate input
 positioning, shell crash recovery, XWayland and the broader M3/M4 matrix remain
 open. This record does not count as the 20-cycle or 8-hour acceptance run.
