@@ -1,0 +1,6 @@
+/target/
+/build/
+/.worktrees/
+/.cache/
+__pycache__/
+*.pyc
