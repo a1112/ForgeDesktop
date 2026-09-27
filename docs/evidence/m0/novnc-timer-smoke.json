@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "metric": "pointer-down-to-first-roi-pixel-change",
+  "limitations": [
+    "requestAnimationFrame sampling, not presentation timestamps",
+    "ROI must be visually checked against intended response",
+    "pixel readback adds browser overhead; unrelated ROI updates invalidate trial"
+  ],
+  "observations": [
+    {
+      "case": "fixture-focus-smoke",
+      "outcome": "changed",
+      "elapsedMs": 33.600000001490116,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        180,
+        120,
+        256,
+        40
+      ],
+      "startUtc": "2026-09-27T15:49:52.661Z"
+    },
+    {
+      "case": "fixture-focus-smoke",
+      "outcome": "timeout",
+      "elapsedMs": 3004.3000000044703,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        180,
+        120,
+        256,
+        40
+      ],
+      "startUtc": "2026-09-27T15:50:05.612Z"
+    }
+  ]
+}

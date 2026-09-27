@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><title>ForgeDesktop noVNC latency fixture</title>
+<style>
+body { margin:0;background:#111827;color:#e5e7eb;font:14px system-ui; }
+header {padding:12px;display:flex;gap:12px;align-items:center;flex-wrap:wrap;}
+input {width:65px;} #label {width:160px;} #screen {width:100%;height:800px;}
+textarea {box-sizing:border-box;width:100%;height:140px;background:#172033;color:#e5e7eb;}
+p {margin:8px 12px;color:#aab8cd;}
+</style>
+<header>
+ <strong>Local noVNC latency fixture</strong><span id="connection">Connecting</span>
+ <label>Case <input id="label" value="launcher-toggle"></label>
+ <label>ROI x <input id="x" type="number" value="512"></label>
+ <label>y <input id="y" type="number" value="304"></label>
+ <label>width <input id="w" type="number" value="256"></label>
+ <label>height <input id="h" type="number" value="192"></label>
+ <label><input id="armed" type="checkbox"> Record clicks</label>
+ <button id="reset">Reset samples</button><span id="status">Not recording</span>
+</header>
+<p>Measures browser pointer-down to first changed pixels in the selected guest ROI.
+16 ms sampling resolution at 60 Hz; includes browser/VNC/SSH/guest delay. Keep the
+ROI away from clocks/cursors and verify it represents the requested response.
+This does not measure native frame presentation or content-complete latency.</p>
+<div id="screen"></div>
+<label for="results">Bounded observations (including timeouts)</label>
+<textarea id="results" readonly></textarea>
+<script type="module" src="novnc-measure.js"></script>
+</html>
