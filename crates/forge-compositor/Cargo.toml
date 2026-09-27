@@ -1,0 +1,16 @@
+[package]
+name = "forge-compositor"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+forge-desktop-core = { path = "../forge-desktop-core" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+smithay = { version = "=0.7.0", default-features = false, features = ["wayland_frontend", "desktop", "renderer_pixman", "x11rb_event_source", "backend_drm", "backend_libinput", "backend_udev", "backend_session_libseat"] }
+

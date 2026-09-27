@@ -1,0 +1,7 @@
+gtk-ready
+gtk-entry:f
+gtk-entry:fo
+gtk-entry:for
+gtk-entry:forg
+gtk-entry:forge
+Gdk-Message: 14:43:18.535: Error reading events from display: Broken pipe
