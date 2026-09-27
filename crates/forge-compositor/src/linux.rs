@@ -1,6 +1,9 @@
 //! Unprivileged, software-only compositor. No capture/control protocol.
 mod axis;
+mod control;
 mod drm_backend;
+mod perf;
+mod shell;
 use forge_desktop_core::{Desktop, Geometry, WindowId};
 use smithay::{
     backend::{
@@ -70,6 +73,7 @@ struct Mapped {
     id: WindowId,
     window: Window,
     has_buffer: bool,
+    role: Option<String>,
 }
 struct Drag {
     id: WindowId,
@@ -96,6 +100,9 @@ struct App {
     drag: Option<Drag>,
     dirty: bool,
     size: (i32, i32),
+    shell: shell::Shell,
+    launcher: bool,
+    launcher_pending: Option<u32>,
 }
 impl BufferHandler for App {
     fn buffer_destroyed(&mut self, _: &wl_buffer::WlBuffer) {}
@@ -128,8 +135,12 @@ impl CompositorHandler for App {
                 mapped.has_buffer = has_buffer;
                 if has_buffer {
                     self.output.enter(root);
-                    let _ = self.desktop.restore(mapped.id);
-                    newly_mapped = Some(mapped.id);
+                    if mapped.role.is_none() {
+                        let _ = self.desktop.restore(mapped.id);
+                        newly_mapped = Some(mapped.id);
+                    } else if mapped.role.as_deref() == Some("forge.launcher") && self.launcher {
+                        newly_mapped = Some(mapped.id);
+                    }
                 } else {
                     self.output.leave(root);
                     let _ = self.desktop.minimize(mapped.id);
@@ -140,7 +151,11 @@ impl CompositorHandler for App {
                 }
             }
         }
-        for mapped in self.windows.iter().filter(|m| m.has_buffer) {
+        for mapped in self
+            .windows
+            .iter()
+            .filter(|m| m.has_buffer && m.role.is_none())
+        {
             if self.drag.is_none() {
                 let size = mapped.window.geometry().size;
                 if size.w > 0 && size.h > 0 {
@@ -214,6 +229,26 @@ impl App {
             .map(|w| w.id)
     }
     fn focus(&mut self, id: WindowId) {
+        if let Some(role) = self
+            .windows
+            .iter()
+            .find(|m| m.id == id)
+            .and_then(|m| m.role.clone())
+        {
+            if role != "forge.background" {
+                let mapped = self.windows.iter().find(|m| m.id == id).unwrap();
+                if mapped.window.set_activated(true) {
+                    mapped.window.toplevel().unwrap().send_configure();
+                }
+                let surface = mapped.window.toplevel().unwrap().wl_surface().clone();
+                self.seat.get_keyboard().unwrap().set_focus(
+                    self,
+                    Some(surface),
+                    SERIAL_COUNTER.next_serial(),
+                );
+            }
+            return;
+        }
         if !self.windows.iter().any(|m| m.id == id && m.has_buffer) {
             return;
         }
@@ -224,6 +259,7 @@ impl App {
             let mapped = self.windows.remove(index);
             self.windows.push(mapped);
         }
+        self.arrange();
         let surface = self
             .windows
             .iter()
@@ -266,6 +302,14 @@ impl App {
             return;
         }
         if let Some(id) = self.locate(surface) {
+            if self.windows.iter().any(|m| m.id == id && m.role.is_some())
+                || self
+                    .desktop
+                    .window(id)
+                    .is_some_and(|w| w.maximized() || w.fullscreen())
+            {
+                return;
+            }
             self.drag = Some(Drag {
                 id,
                 origin: self.pointer,
@@ -325,7 +369,7 @@ impl App {
             .windows
             .iter()
             .rev()
-            .filter(|m| self.desktop.visible(m.id))
+            .filter(|m| self.visible(m))
             .find_map(|mapped| {
                 let g = self.geometry(mapped.id);
                 let location: Point<i32, Logical> = (g.x, g.y).into();
@@ -400,7 +444,7 @@ impl App {
                 .windows
                 .iter()
                 .rev()
-                .filter(|m| self.desktop.visible(m.id))
+                .filter(|m| self.visible(m))
                 .find_map(|m| {
                     let g = self.geometry(m.id);
                     m.window
@@ -447,9 +491,20 @@ impl XdgShellHandler for App {
         &mut self.xdg
     }
     fn new_toplevel(&mut self, surface: ToplevelSurface) {
+        let shell_client = surface
+            .wl_surface()
+            .client()
+            .and_then(|c| c.get_credentials(&self.display).ok())
+            .is_some_and(|c| self.shell.credentials() == Some((c.pid as u32, c.uid)));
+        if self.windows.len() >= 52
+            || (!shell_client && self.windows.iter().filter(|m| m.role.is_none()).count() >= 48)
+        {
+            surface.send_close();
+            return;
+        }
         let offset = (self.windows.len() % 8) as i32 * 30;
         let Ok(id) = self.desktop.map(
-            0,
+            self.desktop.active_workspace(),
             Geometry {
                 x: 50 + offset,
                 y: 60 + offset,
@@ -471,7 +526,50 @@ impl XdgShellHandler for App {
             id,
             window: Window::new_wayland_window(surface),
             has_buffer: false,
+            role: None,
         });
+    }
+    fn title_changed(&mut self, s: ToplevelSurface) {
+        self.update_role(&s);
+    }
+    fn maximize_request(&mut self, s: ToplevelSurface) {
+        if let Some(id) = self.locate(&s) {
+            if !self.desktop.window(id).unwrap().maximized() {
+                let _ = self.action(id, "maximize");
+            } else {
+                s.send_configure();
+            }
+        }
+    }
+    fn unmaximize_request(&mut self, s: ToplevelSurface) {
+        if let Some(id) = self.locate(&s) {
+            let _ = self.desktop.set_maximized(id, None);
+            self.configure(id);
+        }
+    }
+    fn fullscreen_request(
+        &mut self,
+        s: ToplevelSurface,
+        _: Option<smithay::reexports::wayland_server::protocol::wl_output::WlOutput>,
+    ) {
+        if let Some(id) = self.locate(&s) {
+            if !self.desktop.window(id).unwrap().fullscreen() {
+                let _ = self.action(id, "fullscreen");
+            } else {
+                s.send_configure();
+            }
+        }
+    }
+    fn unfullscreen_request(&mut self, s: ToplevelSurface) {
+        if let Some(id) = self.locate(&s) {
+            let _ = self.desktop.set_fullscreen(id, None);
+            self.configure(id);
+        }
+    }
+    fn minimize_request(&mut self, s: ToplevelSurface) {
+        if let Some(id) = self.locate(&s) {
+            let _ = self.action(id, "minimize");
+        }
     }
     fn toplevel_destroyed(&mut self, surface: ToplevelSurface) {
         if let Some(id) = self.locate(&surface) {
@@ -589,7 +687,14 @@ impl App {
         let state = App {
             display: dh.clone(),
             compositor: CompositorState::new::<App>(dh),
-            xdg: XdgShellState::new_with_capabilities::<App>(dh, []),
+            xdg: XdgShellState::new_with_capabilities::<App>(
+                dh,
+                [
+                    xdg_toplevel::WmCapabilities::Maximize,
+                    xdg_toplevel::WmCapabilities::Fullscreen,
+                    xdg_toplevel::WmCapabilities::Minimize,
+                ],
+            ),
             shm: ShmState::new::<App>(dh, vec![]),
             data: DataDeviceState::new::<App>(dh),
             _outputs: OutputManagerState::new_with_xdg_output::<App>(dh),
@@ -605,6 +710,9 @@ impl App {
             drag: None,
             dirty: true,
             size,
+            shell: shell::Shell::new(),
+            launcher: false,
+            launcher_pending: None,
         };
 
         Ok(state)
@@ -694,6 +802,7 @@ pub fn run() -> AppResult<()> {
     let mut target = renderer.create_buffer(Fourcc::Argb8888, state.size.into())?;
     let mut damage = OutputDamageTracker::from_output(&state.output);
     let start = Instant::now();
+    let mut perf = perf::Recorder::new();
     let mut previous_frame = Instant::now() - Duration::from_millis(17);
     eprintln!("ForgeDesktop nested Pixman ready; WAYLAND_DISPLAY=forge-wayland-0");
     loop {
@@ -702,6 +811,7 @@ pub fn run() -> AppResult<()> {
         }
         display.dispatch_clients(&mut state)?;
         state.popups.cleanup();
+        state.shell_tick();
         while let Some(event) = conn.poll_for_event()? {
             match event {
                 Event::ClientMessage(e)
@@ -762,6 +872,15 @@ pub fn run() -> AppResult<()> {
                         .output
                         .change_current_state(Some(mode), None, None, None);
                     state.output.set_preferred(mode);
+                    let roles: Vec<_> = state
+                        .windows
+                        .iter()
+                        .filter(|m| m.role.is_some())
+                        .map(|m| m.window.toplevel().unwrap().clone())
+                        .collect();
+                    for role in roles {
+                        state.update_role(&role);
+                    }
                     target = renderer.create_buffer(Fourcc::Argb8888, state.size.into())?;
                     damage = OutputDamageTracker::from_output(&state.output);
                     state.dirty = true;
@@ -797,13 +916,9 @@ pub fn run() -> AppResult<()> {
             }
         }
         if state.dirty && previous_frame.elapsed() >= Duration::from_millis(16) {
+            let frame_start = Instant::now();
             let mut elements: Vec<WaylandSurfaceRenderElement<PixmanRenderer>> = Vec::new();
-            for mapped in state
-                .windows
-                .iter()
-                .rev()
-                .filter(|m| state.desktop.visible(m.id))
-            {
+            for mapped in state.windows.iter().rev().filter(|m| state.visible(m)) {
                 let g = state.geometry(mapped.id);
                 elements.extend(mapped.window.render_elements(
                     &mut renderer,
@@ -820,6 +935,7 @@ pub fn run() -> AppResult<()> {
                 &elements,
                 [0.055, 0.065, 0.09, 1.0],
             )?;
+            let damaged = result.damage.is_some();
             if let Some(rectangles) = result.damage {
                 for rect in rectangles {
                     let mapping = renderer.copy_framebuffer(
@@ -853,7 +969,7 @@ pub fn run() -> AppResult<()> {
                 }
                 conn.flush()?;
             }
-            for mapped in state.windows.iter().filter(|m| state.desktop.visible(m.id)) {
+            for mapped in state.windows.iter().filter(|m| state.visible(m)) {
                 mapped
                     .window
                     .send_frame(&state.output, start.elapsed(), None, |_, _| {
@@ -862,6 +978,8 @@ pub fn run() -> AppResult<()> {
             }
             state.dirty = false;
             previous_frame = Instant::now();
+            state.frame_submitted(damaged);
+            perf.frame(frame_start, damaged);
         }
         display.flush_clients()?;
         // Bounded poll also observes disconnects; idle iterations never repaint.

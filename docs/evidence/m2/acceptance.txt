@@ -1,0 +1,19 @@
+qt-entry:forge
+gtk-entry:forge
+qt-entry:forgeforge
+gtk-entry:forgeforge
+same GTK/Qt PIDs and existing editable text survived shell SIGKILL
+qt-size:1274x645
+qt-size:1280x800
+qt-size:634x645
+GIO-launched CMake retained its PID across shell SIGKILL; private fd not inherited
+ForgeDesktop command Window("maximize", "w0000000000000004")
+ForgeDesktop command Window("fullscreen", "w0000000000000004")
+ForgeDesktop command Window("left", "w0000000000000004")
+ForgeDesktop command Window("right", "w0000000000000004")
+ForgeDesktop command Move("w0000000000000004", 1)
+ForgeDesktop command Workspace(1)
+spoof-size:634x447
+ordinary title/app-id spoof stayed an ordinary application
+ForgeDesktop command Window("close", "w0000000000000004")
+M2 nested smoke passed; screenshots and capped timing samples recorded

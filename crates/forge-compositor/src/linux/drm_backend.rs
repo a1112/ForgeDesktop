@@ -228,6 +228,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
     let cursor = SolidColorBuffer::new((7, 16), [0.95, 0.95, 1.0, 1.0]);
     let mut damage = OutputDamageTracker::from_output(&state.app.output);
     let start = Instant::now();
+    let mut perf = perf::Recorder::new();
     let mut current = 0;
     let mut rendered = [false; 2];
     eprintln!(
@@ -244,7 +245,9 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         }
         display.dispatch_clients(&mut state.app)?;
         state.app.popups.cleanup();
+        state.app.shell_tick();
         if state.active && !state.pending && state.app.dirty {
+            let frame_start = Instant::now();
             if state.reset {
                 damage = OutputDamageTracker::from_output(&state.app.output);
                 rendered = [false; 2];
@@ -267,7 +270,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                 .windows
                 .iter()
                 .rev()
-                .filter(|w| state.app.desktop.visible(w.id))
+                .filter(|w| state.app.visible(w))
             {
                 let g = state.app.geometry(mapped.id);
                 elements.extend(mapped.window.render_elements::<SoftwareElement>(
@@ -289,6 +292,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                     [0.055, 0.065, 0.09, 1.0],
                 )
                 .map_err(|e| format!("DRM Pixman render: {e:?}"))?;
+            let damaged = result.damage.is_some();
             if let Some(rectangles) = result.damage {
                 result.sync.wait()?;
                 let clips = PlaneDamageClips::from_damage(
@@ -334,6 +338,8 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                     });
             }
             state.app.dirty = false;
+            state.app.frame_submitted(damaged);
+            perf.frame(frame_start, damaged);
         }
         display.flush_clients()?;
     }

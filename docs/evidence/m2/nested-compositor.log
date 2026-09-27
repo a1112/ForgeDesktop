@@ -1,0 +1,55 @@
+ForgeDesktop nested Pixman ready; WAYLAND_DISPLAY=forge-wayland-0
+ForgeDesktop shell started pid=32
+ForgeDesktop command Window("activate", "w0000000000000004")
+ForgeDesktop command Window("activate", "w0000000000000005")
+ForgeDesktop shell started pid=160
+ForgeDesktop command Window("activate", "w0000000000000004")
+ForgeDesktop command Window("activate", "w0000000000000005")
+ForgeDesktop command Launcher(true, 1)
+ForgeDesktop launcher-submit-us=18577
+ForgeDesktop launcher-compositor-submit-us=37239
+ForgeDesktop command Window("maximize", "w0000000000000004")
+ForgeDesktop command Launcher(false, 2)
+ForgeDesktop command Launcher(true, 3)
+ForgeDesktop launcher-submit-us=14077
+ForgeDesktop launcher-compositor-submit-us=33179
+ForgeDesktop command Window("fullscreen", "w0000000000000004")
+ForgeDesktop command Launcher(false, 4)
+ForgeDesktop command Launcher(true, 5)
+ForgeDesktop launcher-submit-us=13565
+ForgeDesktop launcher-compositor-submit-us=27987
+ForgeDesktop command Window("normal", "w0000000000000004")
+ForgeDesktop command Launcher(false, 6)
+ForgeDesktop command Launcher(true, 7)
+ForgeDesktop launcher-submit-us=13664
+ForgeDesktop launcher-compositor-submit-us=36568
+ForgeDesktop command Window("left", "w0000000000000004")
+ForgeDesktop command Launcher(false, 8)
+ForgeDesktop command Launcher(true, 9)
+ForgeDesktop launcher-submit-us=13886
+ForgeDesktop launcher-compositor-submit-us=28470
+ForgeDesktop command Window("right", "w0000000000000004")
+ForgeDesktop command Launcher(false, 10)
+ForgeDesktop command Launcher(true, 11)
+ForgeDesktop launcher-submit-us=13921
+ForgeDesktop launcher-compositor-submit-us=41119
+ForgeDesktop command Window("minimize", "w0000000000000004")
+ForgeDesktop command Launcher(false, 12)
+ForgeDesktop command Window("activate", "w0000000000000004")
+ForgeDesktop command Launcher(true, 13)
+ForgeDesktop launcher-submit-us=14528
+ForgeDesktop launcher-compositor-submit-us=41276
+ForgeDesktop command Move("w0000000000000004", 1)
+ForgeDesktop command Launcher(false, 14)
+ForgeDesktop command Workspace(1)
+ForgeDesktop command Workspace(0)
+ForgeDesktop command Launcher(true, 15)
+ForgeDesktop launcher-submit-us=13736
+ForgeDesktop launcher-compositor-submit-us=28917
+ForgeDesktop command Launcher(false, 16)
+ForgeDesktop shell started pid=368
+ForgeDesktop command Launcher(true, 1)
+ForgeDesktop launcher-submit-us=17414
+ForgeDesktop launcher-compositor-submit-us=32117
+ForgeDesktop command Window("close", "w0000000000000004")
+ForgeDesktop command Launcher(false, 2)

@@ -54,6 +54,53 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
     };
     let mode = std::env::args().nth(2);
+    if mode.as_deref() == Some("click") {
+        let x: i16 = std::env::args().nth(3).ok_or("x")?.parse()?;
+        let y: i16 = std::env::args().nth(4).ok_or("y")?.parse()?;
+        let detail: u8 = std::env::args().nth(5).unwrap_or("1".into()).parse()?;
+        let motion = MotionNotifyEvent {
+            response_type: MOTION_NOTIFY_EVENT,
+            detail: Motion::NORMAL,
+            sequence: 0,
+            time: 200,
+            root,
+            event: window,
+            child: NONE,
+            root_x: x,
+            root_y: y,
+            event_x: x,
+            event_y: y,
+            state: KeyButMask::default(),
+            same_screen: true,
+        };
+        conn.send_event(false, window, EventMask::POINTER_MOTION, motion)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(50));
+        let mut event = ButtonPressEvent {
+            response_type: BUTTON_PRESS_EVENT,
+            detail,
+            sequence: 0,
+            time: 210,
+            root,
+            event: window,
+            child: NONE,
+            root_x: x,
+            root_y: y,
+            event_x: x,
+            event_y: y,
+            state: KeyButMask::default(),
+            same_screen: true,
+        };
+        conn.send_event(false, window, EventMask::BUTTON_PRESS, event)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(80));
+        event.response_type = BUTTON_RELEASE_EVENT;
+        conn.send_event(false, window, EventMask::BUTTON_RELEASE, event)?;
+        conn.flush()?;
+        conn.get_input_focus()?.reply()?;
+        sleep(Duration::from_millis(100));
+        return Ok(());
+    }
     if mode.as_deref() == Some("focus-cycle") {
         let press = KeyPressEvent {
             response_type: KEY_PRESS_EVENT,

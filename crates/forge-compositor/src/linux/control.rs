@@ -1,0 +1,298 @@
+use super::*;
+use forge_compositor::protocol::{Command, hex, opaque_id, resolve_window, trusted_role};
+use smithay::wayland::{compositor::with_states, shell::xdg::XdgToplevelSurfaceData};
+pub(super) fn metadata(surface: &ToplevelSurface) -> (String, String) {
+    with_states(surface.wl_surface(), |states| {
+        let data = states
+            .data_map
+            .get::<XdgToplevelSurfaceData>()
+            .unwrap()
+            .lock()
+            .unwrap();
+        (
+            data.title.clone().unwrap_or_default(),
+            data.app_id.clone().unwrap_or_default(),
+        )
+    })
+}
+impl App {
+    pub(super) fn visible(&self, m: &Mapped) -> bool {
+        m.has_buffer
+            && self.desktop.ensure_unlocked().is_ok()
+            && match m.role.as_deref() {
+                Some("forge.launcher") => self.launcher,
+                Some(_) => true,
+                None => self.desktop.visible(m.id),
+            }
+    }
+    pub(super) fn arrange(&mut self) {
+        self.windows.sort_by_key(|m| match m.role.as_deref() {
+            Some("forge.background") => 0,
+            None => 1,
+            Some("forge.launcher") => 3,
+            Some(_) => 2,
+        });
+    }
+    fn role_geometry(&self, role: &str) -> Geometry {
+        let (w, h) = self.size;
+        match role {
+            "forge.panel" => Geometry {
+                x: 0,
+                y: 0,
+                width: w as u32,
+                height: 38,
+            },
+            "forge.dock" => Geometry {
+                x: 0,
+                y: h - 84,
+                width: w as u32,
+                height: 84,
+            },
+            "forge.launcher" => Geometry {
+                x: (w - 760).max(0) / 2,
+                y: 76,
+                width: w.min(760) as u32,
+                height: (h - 190).max(100) as u32,
+            },
+            _ => Geometry {
+                x: 0,
+                y: 0,
+                width: w as u32,
+                height: h as u32,
+            },
+        }
+    }
+    pub(super) fn update_role(&mut self, surface: &ToplevelSurface) {
+        let Some(id) = self.locate(surface) else {
+            return;
+        };
+        let (title, _) = metadata(surface);
+        let actual = surface
+            .wl_surface()
+            .client()
+            .and_then(|c| c.get_credentials(&self.display).ok())
+            .map(|c| (c.pid as u32, c.uid));
+        if !actual.is_some_and(|c| trusted_role(self.shell.credentials(), c, &title)) {
+            return;
+        }
+        if self
+            .windows
+            .iter()
+            .any(|m| m.id != id && m.role.as_deref() == Some(&title))
+        {
+            surface.send_close();
+            return;
+        }
+        let geometry = self.role_geometry(&title);
+        if let Some(m) = self.windows.iter_mut().find(|m| m.id == id) {
+            m.role = Some(title);
+        }
+        let _ = self.desktop.set_geometry(id, geometry);
+        let _ = self.desktop.minimize(id);
+        surface.with_pending_state(|s| {
+            s.size = Some((geometry.width as i32, geometry.height as i32).into());
+        });
+        surface.send_pending_configure();
+        self.arrange();
+        self.dirty = true;
+    }
+    pub(super) fn configure(&mut self, id: WindowId) {
+        if let Some(m) = self.windows.iter().find(|m| m.id == id) {
+            let g = self.geometry(id);
+            let p = self.desktop.window(id).unwrap();
+            let s = m.window.toplevel().unwrap();
+            s.with_pending_state(|state| {
+                state.size = Some((g.width as i32, g.height as i32).into());
+                if p.maximized() {
+                    state.states.set(xdg_toplevel::State::Maximized);
+                } else {
+                    state.states.unset(xdg_toplevel::State::Maximized);
+                }
+                if p.fullscreen() {
+                    state.states.set(xdg_toplevel::State::Fullscreen);
+                } else {
+                    state.states.unset(xdg_toplevel::State::Fullscreen);
+                }
+            });
+            s.send_pending_configure();
+        }
+        self.dirty = true;
+    }
+    pub(super) fn action(
+        &mut self,
+        id: WindowId,
+        action: &str,
+    ) -> Result<(), forge_desktop_core::Error> {
+        self.desktop.ensure_unlocked()?;
+        if !self.windows.iter().any(|m| m.id == id && m.role.is_none()) {
+            return Err(forge_desktop_core::Error::UnknownWindow);
+        }
+        let work = Geometry {
+            x: 0,
+            y: 38,
+            width: self.size.0 as u32,
+            height: (self.size.1 - 122).max(1) as u32,
+        };
+        match action {
+            "close" => {
+                self.windows
+                    .iter()
+                    .find(|m| m.id == id)
+                    .unwrap()
+                    .window
+                    .toplevel()
+                    .unwrap()
+                    .send_close();
+            }
+            "activate" | "restore" => {
+                let workspace = self.desktop.window(id).unwrap().workspace();
+                self.desktop.switch_workspace(workspace)?;
+                self.desktop.restore(id)?;
+                self.focus(id);
+            }
+            "minimize" => self.desktop.minimize(id)?,
+            "maximize" => {
+                let target = (!self.desktop.window(id).unwrap().maximized()).then_some(work);
+                self.desktop.set_maximized(id, target)?;
+            }
+            "fullscreen" => {
+                let target = (!self.desktop.window(id).unwrap().fullscreen()).then_some(Geometry {
+                    x: 0,
+                    y: 0,
+                    width: self.size.0 as u32,
+                    height: self.size.1 as u32,
+                });
+                self.desktop.set_fullscreen(id, target)?;
+            }
+            "normal" | "left" | "right" => {
+                self.desktop.set_fullscreen(id, None)?;
+                self.desktop.set_maximized(id, None)?;
+                if action != "normal" {
+                    self.desktop.set_geometry(
+                        id,
+                        Geometry {
+                            x: if action == "left" { 0 } else { self.size.0 / 2 },
+                            width: work.width / 2,
+                            ..work
+                        },
+                    )?;
+                }
+            }
+            _ => return Err(forge_desktop_core::Error::UnknownWindow),
+        }
+        self.configure(id);
+        self.restore_focus();
+        self.reconcile_pointer(0);
+        Ok(())
+    }
+    pub(super) fn shell_tick(&mut self) {
+        let previous = self.shell.credentials();
+        let commands = self.shell.poll();
+        if previous != self.shell.credentials() {
+            self.launcher = false;
+            self.launcher_pending = None;
+            self.restore_focus();
+        }
+        for cmd in commands {
+            if std::env::var_os("FORGE_DESKTOP_TRACE").is_some() {
+                eprintln!("ForgeDesktop command {cmd:?}");
+            }
+            let result = match cmd {
+                Command::Window(action, handle) => resolve_window(
+                    &handle,
+                    self.windows
+                        .iter()
+                        .filter(|m| m.role.is_none())
+                        .map(|m| m.id),
+                )
+                .ok_or(forge_desktop_core::Error::UnknownWindow)
+                .and_then(|id| self.action(id, &action)),
+                Command::Workspace(n) => {
+                    let r = self.desktop.switch_workspace(n);
+                    self.restore_focus();
+                    r
+                }
+                Command::Move(handle, n) => {
+                    let result = self
+                        .windows
+                        .iter()
+                        .find(|m| opaque_id(m.id) == handle && m.role.is_none())
+                        .map(|m| m.id)
+                        .ok_or(forge_desktop_core::Error::UnknownWindow)
+                        .and_then(|id| self.desktop.move_to_workspace(id, n));
+                    self.restore_focus();
+                    result
+                }
+                Command::Launcher(open, serial) => {
+                    self.launcher = open;
+                    self.launcher_pending = open.then_some(serial);
+                    if open {
+                        if let Some(surface) = self
+                            .windows
+                            .iter()
+                            .find(|m| m.role.as_deref() == Some("forge.launcher"))
+                            .and_then(|m| m.window.toplevel())
+                            .map(|s| s.wl_surface().clone())
+                        {
+                            self.seat.get_keyboard().unwrap().set_focus(
+                                self,
+                                Some(surface),
+                                SERIAL_COUNTER.next_serial(),
+                            );
+                        }
+                    } else {
+                        self.restore_focus();
+                    }
+                    Ok(())
+                }
+            };
+            if let Err(e) = result {
+                eprintln!("ForgeDesktop shell request rejected: {e:?}");
+            }
+            self.dirty = true;
+            self.reconcile_pointer(0);
+        }
+        let mut state = format!(
+            "1\tstate\t{}\t{}\t{}\t{}\n",
+            self.size.0,
+            self.size.1,
+            self.desktop.active_workspace(),
+            u8::from(self.launcher)
+        );
+        let mut normal: Vec<_> = self
+            .windows
+            .iter()
+            .filter(|m| m.role.is_none() && m.has_buffer)
+            .collect();
+        normal.sort_by_key(|m| m.id);
+        for m in normal {
+            let (title, app) = metadata(m.window.toplevel().unwrap());
+            let p = self.desktop.window(m.id).unwrap();
+            state.push_str(&format!(
+                "{}\t{}\t{}\t{}\t{}\t{}\t{}\t{}\n",
+                opaque_id(m.id),
+                hex(&title),
+                hex(&app),
+                p.workspace(),
+                u8::from(p.minimized()),
+                u8::from(p.maximized()),
+                u8::from(p.fullscreen()),
+                u8::from(self.desktop.focused() == Some(m.id))
+            ));
+        }
+        self.shell.state(state);
+    }
+    pub(super) fn frame_submitted(&mut self, damaged: bool) {
+        if damaged
+            && self.launcher
+            && self
+                .windows
+                .iter()
+                .any(|m| m.role.as_deref() == Some("forge.launcher") && self.visible(m))
+        {
+            if let Some(serial) = self.launcher_pending.take() {
+                self.shell.presented(serial);
+            }
+        }
+    }
+}

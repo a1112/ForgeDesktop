@@ -1,4 +1,5 @@
 #![forbid(unsafe_code)]
+pub mod protocol;
 
 /// Wayland sockets must live in a directory private to the compositor user.
 pub fn private_runtime_directory(owner: u32, user: u32, mode: u32, is_directory: bool) -> bool {
