@@ -176,12 +176,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         type_word()?;
         return Ok(());
     }
-    if !matches!(mode.as_deref(), Some("pointer" | "click-wheel")) {
+    if !matches!(mode.as_deref(), Some("pointer" | "click-wheel" | "drag")) {
         type_word()?;
     }
     if matches!(
         mode.as_deref(),
-        Some("qt" | "focus" | "pointer" | "click-wheel")
+        Some("qt" | "focus" | "pointer" | "click-wheel" | "drag")
     ) {
         let motion = |x, y| -> Result<(), Box<dyn std::error::Error>> {
             let event = MotionNotifyEvent {
@@ -239,7 +239,28 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Ok(())
         };
         if mode.as_deref() == Some("pointer") {
-            motion(300, 200)?;
+            let x = std::env::args().nth(3).unwrap_or("300".into()).parse()?;
+            let y = std::env::args().nth(4).unwrap_or("200".into()).parse()?;
+            motion(x, y)?;
+            return Ok(());
+        }
+        if mode.as_deref() == Some("drag") {
+            let a: Vec<i16> = std::env::args()
+                .skip(3)
+                .map(|v| v.parse())
+                .collect::<Result<_, _>>()?;
+            if a.len() != 4 {
+                return Err("drag needs x1 y1 x2 y2".into());
+            }
+            motion(a[0], a[1])?;
+            button(a[0], a[1], true, 1)?;
+            // Multiple steps exercise the source threshold and target enter/negotiation.
+            for n in 1..=10 {
+                motion(a[0] + (a[2] - a[0]) * n / 10, a[1] + (a[3] - a[1]) * n / 10)?;
+            }
+            motion(a[2], a[3] + 1)?;
+            sleep(Duration::from_millis(300));
+            button(a[2], a[3], false, 1)?;
             return Ok(());
         }
         if mode.as_deref() == Some("click-wheel") {

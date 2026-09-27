@@ -2,8 +2,10 @@
 mod axis;
 mod control;
 mod drm_backend;
+mod ime;
 mod perf;
 mod shell;
+mod visual;
 use forge_desktop_core::{Desktop, Geometry, WindowId};
 use smithay::{
     backend::{
@@ -17,8 +19,9 @@ use smithay::{
             utils::{on_commit_buffer_handler, with_renderer_surface_state},
         },
     },
-    delegate_compositor, delegate_data_device, delegate_output, delegate_seat, delegate_shm,
-    delegate_xdg_shell,
+    delegate_compositor, delegate_data_device, delegate_input_method_manager, delegate_output,
+    delegate_primary_selection, delegate_seat, delegate_shm, delegate_text_input_manager,
+    delegate_virtual_keyboard_manager, delegate_xdg_shell,
     desktop::{
         PopupKeyboardGrab, PopupManager, PopupPointerGrab, Window, WindowSurfaceType,
         find_popup_root_surface,
@@ -53,6 +56,9 @@ use smithay::{
             data_device::{
                 ClientDndGrabHandler, DataDeviceHandler, DataDeviceState, ServerDndGrabHandler,
                 set_data_device_focus,
+            },
+            primary_selection::{
+                PrimarySelectionHandler, PrimarySelectionState, set_primary_focus,
             },
         },
         shell::xdg::{
@@ -89,6 +95,7 @@ struct App {
     seats: SeatState<Self>,
     seat: Seat<Self>,
     data: DataDeviceState,
+    primary: PrimarySelectionState,
     _outputs: OutputManagerState,
     output: Output,
     popups: PopupManager,
@@ -104,6 +111,10 @@ struct App {
     launcher: bool,
     launcher_key_down: bool,
     launcher_pending: Option<u32>,
+    cursor: CursorImageStatus,
+    cursor_fallback: smithay::backend::renderer::element::solid::SolidColorBuffer,
+    dnd_icon: Option<WlSurface>,
+    ime: ime::Ime,
 }
 impl BufferHandler for App {
     fn buffer_destroyed(&mut self, _: &wl_buffer::WlBuffer) {}
@@ -185,12 +196,31 @@ impl OutputHandler for App {}
 impl SelectionHandler for App {
     type SelectionUserData = ();
 }
+impl PrimarySelectionHandler for App {
+    fn primary_selection_state(&self) -> &PrimarySelectionState {
+        &self.primary
+    }
+}
 impl DataDeviceHandler for App {
     fn data_device_state(&self) -> &DataDeviceState {
         &self.data
     }
 }
-impl ClientDndGrabHandler for App {}
+impl ClientDndGrabHandler for App {
+    fn started(
+        &mut self,
+        _: Option<smithay::reexports::wayland_server::protocol::wl_data_source::WlDataSource>,
+        icon: Option<WlSurface>,
+        _: Seat<Self>,
+    ) {
+        self.dnd_icon = icon;
+        self.dirty = true;
+    }
+    fn dropped(&mut self, _: Option<WlSurface>, _: bool, _: Seat<Self>) {
+        self.dnd_icon = None;
+        self.dirty = true;
+    }
+}
 impl ServerDndGrabHandler for App {
     fn send(&mut self, _: String, _: OwnedFd, _: Seat<Self>) {}
 }
@@ -203,8 +233,12 @@ impl SeatHandler for App {
     }
     fn focus_changed(&mut self, seat: &Seat<Self>, focused: Option<&WlSurface>) {
         set_data_device_focus(&self.display, seat, focused.and_then(Resource::client));
+        set_primary_focus(&self.display, seat, focused.and_then(Resource::client));
     }
-    fn cursor_image(&mut self, _: &Seat<Self>, _: CursorImageStatus) {}
+    fn cursor_image(&mut self, _: &Seat<Self>, image: CursorImageStatus) {
+        self.cursor = image;
+        self.dirty = true;
+    }
 }
 impl App {
     fn restore_focus(&mut self) {
@@ -320,6 +354,7 @@ impl App {
         }
     }
     fn motion(&mut self, point: Point<f64, Logical>, time: u32) {
+        self.dirty |= self.pointer != point;
         self.pointer = point;
         if let Some(drag) = &self.drag {
             let g = drag.geometry;
@@ -642,6 +677,18 @@ impl XdgShellHandler for App {
 #[derive(Default)]
 struct ClientState {
     compositor: CompositorClientState,
+    credentials: Option<(u32, u32)>,
+}
+impl ClientState {
+    fn for_stream(stream: &std::os::unix::net::UnixStream) -> Self {
+        let credentials = smithay::reexports::rustix::net::sockopt::socket_peercred(stream)
+            .ok()
+            .map(|c| (c.pid.as_raw_nonzero().get() as u32, c.uid.as_raw()));
+        Self {
+            compositor: CompositorClientState::default(),
+            credentials,
+        }
+    }
 }
 impl ClientData for ClientState {
     fn initialized(&self, _: ClientId) {}
@@ -652,6 +699,10 @@ delegate_xdg_shell!(App);
 delegate_shm!(App);
 delegate_seat!(App);
 delegate_data_device!(App);
+delegate_primary_selection!(App);
+delegate_text_input_manager!(App);
+delegate_input_method_manager!(App);
+delegate_virtual_keyboard_manager!(App);
 delegate_output!(App);
 
 impl App {
@@ -685,6 +736,7 @@ impl App {
         let mut seat = seats.new_wl_seat(dh, "seat0");
         seat.add_keyboard(Default::default(), 500, 25)?;
         seat.add_pointer();
+        smithay::wayland::text_input::TextInputManagerState::new::<App>(dh);
         let state = App {
             display: dh.clone(),
             compositor: CompositorState::new::<App>(dh),
@@ -698,6 +750,7 @@ impl App {
             ),
             shm: ShmState::new::<App>(dh, vec![]),
             data: DataDeviceState::new::<App>(dh),
+            primary: PrimarySelectionState::new::<App>(dh),
             _outputs: OutputManagerState::new_with_xdg_output::<App>(dh),
             seats,
             seat,
@@ -715,6 +768,13 @@ impl App {
             launcher: false,
             launcher_key_down: false,
             launcher_pending: None,
+            cursor: CursorImageStatus::default_named(),
+            cursor_fallback: smithay::backend::renderer::element::solid::SolidColorBuffer::new(
+                (7, 16),
+                [0.95, 0.95, 1.0, 1.0],
+            ),
+            dnd_icon: None,
+            ime: ime::Ime::new(dh),
         };
 
         Ok(state)
@@ -809,11 +869,13 @@ pub fn run() -> AppResult<()> {
     eprintln!("ForgeDesktop nested Pixman ready; WAYLAND_DISPLAY=forge-wayland-0");
     loop {
         while let Some(stream) = listener.accept()? {
-            dh.insert_client(stream, Arc::new(ClientState::default()))?;
+            let client_state = ClientState::for_stream(&stream);
+            dh.insert_client(stream, Arc::new(client_state))?;
         }
         display.dispatch_clients(&mut state)?;
         state.popups.cleanup();
         state.shell_tick();
+        state.ime.tick();
         while let Some(event) = conn.poll_for_event()? {
             match event {
                 Event::ClientMessage(e)
@@ -904,7 +966,7 @@ pub fn run() -> AppResult<()> {
         }
         if state.dirty && previous_frame.elapsed() >= Duration::from_millis(16) {
             let frame_start = Instant::now();
-            let mut elements: Vec<WaylandSurfaceRenderElement<PixmanRenderer>> = Vec::new();
+            let mut elements = state.pointer_elements(&mut renderer);
             for mapped in state.windows.iter().rev().filter(|m| state.visible(m)) {
                 let g = state.geometry(mapped.id);
                 elements.extend(mapped.window.render_elements(

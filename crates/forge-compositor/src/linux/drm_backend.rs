@@ -12,10 +12,6 @@ use smithay::{
             PointerAxisEvent, PointerButtonEvent, PointerMotionEvent,
         },
         libinput::{LibinputInputBackend, LibinputSessionInterface},
-        renderer::element::{
-            Kind,
-            solid::{SolidColorBuffer, SolidColorRenderElement},
-        },
         session::{Event as SessionEvent, Session, libseat::LibSeatSession},
     },
     reexports::{
@@ -27,11 +23,7 @@ use smithay::{
     utils::DeviceFd,
 };
 
-smithay::render_elements! {
-    SoftwareElement<=PixmanRenderer>;
-    Surface=WaylandSurfaceRenderElement<PixmanRenderer>,
-    Cursor=SolidColorRenderElement,
-}
+use super::visual::SoftwareElement;
 struct Runtime {
     app: App,
     drm: DrmDevice,
@@ -221,7 +213,6 @@ pub(super) fn run(path: &str) -> AppResult<()> {
         .map_err(|error| error.error)?;
     let mut renderer =
         PixmanRenderer::new().map_err(|e| format!("DRM Pixman initialization: {e}"))?;
-    let cursor = SolidColorBuffer::new((7, 16), [0.95, 0.95, 1.0, 1.0]);
     let mut damage = OutputDamageTracker::from_output(&state.app.output);
     let start = Instant::now();
     let mut perf = perf::Recorder::new();
@@ -237,30 +228,20 @@ pub(super) fn run(path: &str) -> AppResult<()> {
             return Err(error.into());
         }
         while let Some(stream) = listener.accept()? {
-            dh.insert_client(stream, Arc::new(ClientState::default()))?;
+            let client_state = ClientState::for_stream(&stream);
+            dh.insert_client(stream, Arc::new(client_state))?;
         }
         display.dispatch_clients(&mut state.app)?;
         state.app.popups.cleanup();
         state.app.shell_tick();
+        state.app.ime.tick();
         if state.active && !state.pending && state.app.dirty {
             let frame_start = Instant::now();
             if state.reset {
                 damage = OutputDamageTracker::from_output(&state.app.output);
                 rendered = [false; 2];
             }
-            let mut elements: Vec<SoftwareElement> = vec![
-                SolidColorRenderElement::from_buffer(
-                    &cursor,
-                    (
-                        state.app.pointer.x.round() as i32,
-                        state.app.pointer.y.round() as i32,
-                    ),
-                    1.0,
-                    1.0,
-                    Kind::Cursor,
-                )
-                .into(),
-            ];
+            let mut elements = state.app.pointer_elements(&mut renderer);
             for mapped in state
                 .app
                 .windows
