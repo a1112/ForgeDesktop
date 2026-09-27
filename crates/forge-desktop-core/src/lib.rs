@@ -365,15 +365,20 @@ impl OutputTransaction {
         now_ms: u64,
         timeout_ms: u64,
     ) -> Result<(), Error> {
-        self.tick(now_ms)?;
-        if self.pending() {
-            return Err(Error::PendingOutputChange);
+        if now_ms < self.last_ms {
+            return Err(Error::TimeWentBackwards);
         }
+        // Invalid requests must not consume the pending rollback notification.
+        // Validate everything that can fail before tick changes active state.
         validate_outputs(&outputs)?;
         let deadline = now_ms
             .checked_add(timeout_ms)
             .filter(|_| timeout_ms != 0)
             .ok_or(Error::InvalidTimeout)?;
+        self.tick(now_ms)?;
+        if self.pending() {
+            return Err(Error::PendingOutputChange);
+        }
         self.staged = Some((outputs, deadline));
         Ok(())
     }

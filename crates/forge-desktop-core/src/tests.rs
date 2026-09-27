@@ -198,6 +198,33 @@ fn output_expired_confirmation_rolls_back_at_exact_deadline() {
 }
 
 #[test]
+fn invalid_output_layout_at_expiry_does_not_consume_rollback() {
+    let mut t = OutputTransaction::new(outputs(1280), 0).unwrap();
+    t.stage(outputs(800), 1, 10).unwrap();
+    assert_eq!(t.stage(vec![], 11, 10), Err(Error::InvalidOutputs));
+    assert_eq!(t.active(), outputs(800));
+    assert!(t.pending());
+    assert!(t.tick(11).unwrap());
+    assert_eq!(t.active(), outputs(1280));
+}
+
+#[test]
+fn invalid_output_timeout_at_expiry_does_not_consume_rollback() {
+    for (now, timeout) in [(11, 0), (u64::MAX, 1)] {
+        let mut t = OutputTransaction::new(outputs(1280), 0).unwrap();
+        t.stage(outputs(800), 1, 10).unwrap();
+        assert_eq!(
+            t.stage(outputs(1024), now, timeout),
+            Err(Error::InvalidTimeout)
+        );
+        assert_eq!(t.active(), outputs(800));
+        assert!(t.pending());
+        assert!(t.tick(now).unwrap());
+        assert_eq!(t.active(), outputs(1280));
+    }
+}
+
+#[test]
 fn output_changes_reject_invalid_or_ambiguous_layouts_atomically() {
     let mut invalid = vec![vec![]];
     let mut disabled = outputs(1280);
