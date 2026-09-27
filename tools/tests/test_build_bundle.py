@@ -7,7 +7,7 @@ from pathlib import Path
 import tempfile
 import unittest
 
-from tools.build_bundle import create_bundle
+from tools.build_bundle import create_bundle, eligible_path
 
 
 ELF = b"\x7fELF\x02\x01\x01" + bytes(9) + b"\x03\x00\x3e\x00" + bytes(44)
@@ -60,6 +60,13 @@ class BundleProducerTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.build()
         self.assertFalse(self.output.exists())
+
+    def test_rejects_consumer_reserved_and_oversize_paths(self):
+        for name in ("usr/share/forge-desktop/bundle.json",
+                     "usr/share/forge-desktop/bundle.json/extra",
+                     "usr/share/forge-desktop/" + "a" * 513):
+            with self.subTest(name=name):
+                self.assertFalse(eligible_path(name))
 
     def test_rejects_symlink_and_hardlink(self):
         target = self.stage / "usr/bin/forge-compositor"

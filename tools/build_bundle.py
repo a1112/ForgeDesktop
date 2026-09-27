@@ -46,7 +46,10 @@ def unique_pairs(pairs):
 
 
 def eligible_path(name):
-    if not re.fullmatch(r"[A-Za-z0-9_./+-]+", name) or ".." in name.split("/"):
+    if (len(name) > 512 or not re.fullmatch(r"[A-Za-z0-9_./+-]+", name)
+            or any(part in ("", ".", "..") for part in name.split("/"))
+            or name == "usr/share/forge-desktop/bundle.json"
+            or name.startswith("usr/share/forge-desktop/bundle.json/")):
         return False
     return (name in BINARIES or name.startswith("usr/share/forge-desktop/")
             or name.startswith("usr/share/licenses/forge-desktop/"))
