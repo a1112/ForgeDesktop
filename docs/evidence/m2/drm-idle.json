@@ -1,0 +1,1555 @@
+{
+  "schemaVersion": 1,
+  "duration_seconds": 60.000233381999976,
+  "uid": 1000,
+  "selection": {
+    "desktop": {
+      "names": [
+        "forge-compositor",
+        "forge-shell"
+      ],
+      "descendants": false
+    }
+  },
+  "clock_ticks_per_second": 100,
+  "summary": {
+    "desktop": {
+      "stable_process_set": true,
+      "complete_pss": true,
+      "cpu_percent_one_core": 1.6333269801813803,
+      "pss_mib_mean": 71.19816214139344,
+      "pss_mib_max": 71.4853515625
+    }
+  },
+  "samples": [
+    {
+      "seconds": 1.549999808503344e-07,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 197,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 1.0055649099999755,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 199,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 2.009434600999981,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 200,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 3.0128396709999947,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 202,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 4.016253694999989,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 203,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 5.01973750099998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 205,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 6.023127326999997,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 206,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 7.02697890799999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 208,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 8.03189999899999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 209,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 9.036555679999992,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 211,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 10.040617991999994,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 212,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 11.045664539,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 213,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 12.049730580999977,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 215,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 7,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 13.05488593199999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 217,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 8,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 14.060320222000001,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 218,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 8,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 15.065110289999978,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 219,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 8,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 16.069252118999998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 221,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 8,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62257
+          }
+        }
+      }
+    },
+    {
+      "seconds": 17.072851754,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 222,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 18.076805955999987,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 224,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 19.08134413899998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 225,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 20.08577281999999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 226,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 21.091029778999996,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 228,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 22.095591942999988,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 229,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 23.099179969999994,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 231,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 24.10418993899998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 232,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 25.108988659999994,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 234,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 26.11423210199999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 237,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62293
+          }
+        }
+      }
+    },
+    {
+      "seconds": 27.11939549599998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 239,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 28.124124987999977,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 241,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 29.129632284999985,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 243,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 30.13503339899998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 244,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 31.14013471299998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 246,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 32.14637829,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 247,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 33.150811084,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 248,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 34.154325520999976,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 250,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 35.157869116,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 251,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 36.16203678099998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 253,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 9,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62294
+          }
+        }
+      }
+    },
+    {
+      "seconds": 37.16715887799998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 255,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 38.17239592999999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 257,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 39.17732279499998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 258,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 40.18285218699998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 259,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 41.18765135299998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 260,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 42.19132389499998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 262,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 43.19639194199999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 263,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 44.201793606999985,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 265,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 45.206555563999984,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 266,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 46.21002406299999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 268,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 47.214756455999975,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 269,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 48.21971990199998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 271,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 49.224549854,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 273,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 50.22950334699999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 274,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 51.233000834999984,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 276,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 52.23667224599998,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 277,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 53.240821584,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 279,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 54.244281613,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 280,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 55.248825926999984,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 282,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 56.25290372699999,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 284,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 62298
+          }
+        }
+      }
+    },
+    {
+      "seconds": 57.259254003999985,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 287,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 55962
+          }
+        }
+      }
+    },
+    {
+      "seconds": 58.26465782,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 288,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 10,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 55962
+          }
+        }
+      }
+    },
+    {
+      "seconds": 59.269467313999996,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 289,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 11,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 60058
+          }
+        }
+      }
+    },
+    {
+      "seconds": 60.000233381999976,
+      "groups": {
+        "desktop": {
+          "1117": {
+            "pid": 1117,
+            "name": "forge-compositor",
+            "ppid": 1109,
+            "ticks": 291,
+            "start": 3766,
+            "uid": 1000,
+            "pss_kib": 10903
+          },
+          "1230": {
+            "pid": 1230,
+            "name": "forge-shell",
+            "ppid": 1117,
+            "ticks": 11,
+            "start": 8813,
+            "uid": 1000,
+            "pss_kib": 60058
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "CPU comparison is valid only for stable process sets.",
+    "No frame time, input latency or noVNC latency is inferred."
+  ]
+}

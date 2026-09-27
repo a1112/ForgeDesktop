@@ -1,0 +1,1 @@
+{"exitcode": 0, "out-data": "    PID    PPID   UID COMMAND\n   1117    1109  1000 forge-composito\n   1152       1  1000 mousepad\n   1230    1117  1000 forge-shell\n", "out-truncated": false, "exited": true}
