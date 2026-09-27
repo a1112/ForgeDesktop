@@ -89,3 +89,36 @@ queries primary-plane XRGB8888 support and allocates that format directly, so
 both modern and legacy framebuffer creation use XRGB8888. Initial atomic state
 testing preserves kernel error context. Actual DRM acceptance is recorded by the
 separate VM test; compilation alone does not establish that acceptance.
+
+## Follow-up: mapping and input focus lifecycle
+
+Quality review identified focus before first buffer, NULL-buffer unmapping,
+stale pointer focus after scene changes, and stuck modifiers after X11 host
+focus loss. `tests/lifecycle_smoke.sh` reproduced the first failure before the
+fix and then passed the complete regression sequence using two real libwayland
+clients. The fixture deliberately retains the same wl_surface/xdg_toplevel when
+it hides; it does not substitute destroying and recreating a window.
+
+- Creating an unbuffered B leaves keyboard input with A.
+- Mapping B beneath a stationary pointer transfers click and wheel to B only.
+- B attaching NULL transfers keyboard focus to A; attaching a buffer again
+  restores B focus after configure acknowledgement.
+- Shift pressed inside the nested window, followed by X11 focus moving to the
+  host root without a corresponding key release, produces `key:42:0` and
+  `modifiers:0`. On return, host `query_keymap` reconciles held keys before focus
+  is restored.
+- Existing active pointer grabs are retained; scene reconciliation emits motion
+  only when the target/origin actually changes, avoiding commit-driven motion
+  loops.
+
+Logs: `nested-lifecycle-a.log` and `nested-lifecycle-b.log`. Same isolated Xvfb
+and ordinary Arch build user as above. The existing Qt move/resize/two-client
+focus/wheel/socket/crash suite was rerun successfully. Arch workspace tests
+remain 20 passing and all-target Clippy passes with warnings denied.
+Binary SHA-256:
+`171b35ef88413ce69fbb5faaf1dd6bdd1dbf209cd26b7218a3bac4ac6d90fb55`.
+
+Reproduce with `dbus-run-session -- sh
+/work/forge-desktop/crates/forge-compositor/tests/lifecycle_smoke.sh` after
+building the compositor and examples. The fixture compiles an xdg-shell client
+with the installed Wayland scanner and Qt-provided standard protocol XML.

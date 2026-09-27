@@ -207,6 +207,7 @@ pub(super) fn run(path: &str) -> AppResult<()> {
                     );
                 }
                 InputEvent::PointerAxis { event } => {
+                    state.app.reconcile_pointer(event.time_msec());
                     let samples =
                         [Axis::Horizontal, Axis::Vertical].map(|axis| super::axis::AxisInput {
                             pixels: event.amount(axis),

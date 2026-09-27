@@ -11,7 +11,7 @@ use smithay::{
             damage::OutputDamageTracker,
             element::{AsRenderElements, surface::WaylandSurfaceRenderElement},
             pixman::PixmanRenderer,
-            utils::on_commit_buffer_handler,
+            utils::{on_commit_buffer_handler, with_renderer_surface_state},
         },
     },
     delegate_compositor, delegate_data_device, delegate_output, delegate_seat, delegate_shm,
@@ -69,6 +69,7 @@ type AppResult<T> = std::result::Result<T, Box<dyn Error>>;
 struct Mapped {
     id: WindowId,
     window: Window,
+    has_buffer: bool,
 }
 struct Drag {
     id: WindowId,
@@ -90,6 +91,8 @@ struct App {
     desktop: Desktop,
     windows: Vec<Mapped>,
     pointer: Point<f64, Logical>,
+    pointer_target: Option<(WlSurface, Point<f64, Logical>)>,
+    keyboard_active: bool,
     drag: Option<Drag>,
     dirty: bool,
     size: (i32, i32),
@@ -110,9 +113,34 @@ impl CompositorHandler for App {
     fn commit(&mut self, surface: &WlSurface) {
         on_commit_buffer_handler::<Self>(surface);
         self.popups.commit(surface);
-        self.output.enter(surface);
-        for mapped in &self.windows {
+        let mut newly_mapped = None;
+        let mut unmapped = false;
+        for mapped in &mut self.windows {
             mapped.window.on_commit();
+            let toplevel = mapped.window.toplevel().unwrap();
+            let root = toplevel.wl_surface();
+            if root == surface && !toplevel.is_initial_configure_sent() {
+                toplevel.send_configure();
+            }
+            let has_buffer =
+                with_renderer_surface_state(root, |s| s.buffer().is_some()).unwrap_or(false);
+            if has_buffer != mapped.has_buffer {
+                mapped.has_buffer = has_buffer;
+                if has_buffer {
+                    self.output.enter(root);
+                    let _ = self.desktop.restore(mapped.id);
+                    newly_mapped = Some(mapped.id);
+                } else {
+                    self.output.leave(root);
+                    let _ = self.desktop.minimize(mapped.id);
+                    if self.drag.as_ref().is_some_and(|d| d.id == mapped.id) {
+                        self.drag = None;
+                    }
+                    unmapped = true;
+                }
+            }
+        }
+        for mapped in self.windows.iter().filter(|m| m.has_buffer) {
             if self.drag.is_none() {
                 let size = mapped.window.geometry().size;
                 if size.w > 0 && size.h > 0 {
@@ -123,6 +151,12 @@ impl CompositorHandler for App {
                 }
             }
         }
+        if let Some(id) = newly_mapped {
+            self.focus(id);
+        } else if unmapped {
+            self.restore_focus();
+        }
+        self.reconcile_pointer(0);
         self.dirty = true;
     }
 }
@@ -157,6 +191,16 @@ impl SeatHandler for App {
     fn cursor_image(&mut self, _: &Seat<Self>, _: CursorImageStatus) {}
 }
 impl App {
+    fn restore_focus(&mut self) {
+        if let Some(id) = self.desktop.focused() {
+            self.focus(id);
+        } else {
+            self.seat
+                .get_keyboard()
+                .unwrap()
+                .set_focus(self, None, SERIAL_COUNTER.next_serial());
+        }
+    }
     fn geometry(&self, id: WindowId) -> Geometry {
         self.desktop
             .window(id)
@@ -170,6 +214,9 @@ impl App {
             .map(|w| w.id)
     }
     fn focus(&mut self, id: WindowId) {
+        if !self.windows.iter().any(|m| m.id == id && m.has_buffer) {
+            return;
+        }
         if self.desktop.focus(id).is_err() {
             return;
         }
@@ -188,10 +235,11 @@ impl App {
                 mapped.window.toplevel().unwrap().send_configure();
             }
         }
-        self.seat
-            .get_keyboard()
-            .unwrap()
-            .set_focus(self, surface, SERIAL_COUNTER.next_serial());
+        self.seat.get_keyboard().unwrap().set_focus(
+            self,
+            surface.filter(|_| self.keyboard_active),
+            SERIAL_COUNTER.next_serial(),
+        );
         self.dirty = true;
     }
     fn begin_drag(
@@ -264,6 +312,15 @@ impl App {
                 self.dirty = true;
             }
         }
+        self.send_pointer_motion(time, true);
+    }
+    fn reconcile_pointer(&mut self, time: u32) {
+        if !self.seat.get_pointer().unwrap().is_grabbed() {
+            self.send_pointer_motion(time, false);
+        }
+    }
+    fn send_pointer_motion(&mut self, time: u32, moved: bool) {
+        let point = self.pointer;
         let focus = self
             .windows
             .iter()
@@ -278,6 +335,13 @@ impl App {
                     .map(|(s, p)| (s, (p + location).to_f64()))
             });
         let pointer = self.seat.get_pointer().unwrap();
+        if !moved
+            && self.pointer_target == focus
+            && pointer.current_focus() == focus.as_ref().map(|(s, _)| s.clone())
+        {
+            return;
+        }
+        self.pointer_target = focus.clone();
         pointer.motion(
             self,
             focus,
@@ -290,6 +354,7 @@ impl App {
         pointer.frame(self);
     }
     fn button(&mut self, detail: u8, pressed: bool, time: u32) {
+        self.reconcile_pointer(time);
         if (4..=7).contains(&detail) {
             if pressed {
                 let axis = if detail < 6 {
@@ -347,6 +412,7 @@ impl App {
                 })
             {
                 self.focus(id);
+                self.reconcile_pointer(time);
             }
         }
         let pointer = self.seat.get_pointer().unwrap();
@@ -372,6 +438,7 @@ impl App {
                     s.send_pending_configure();
                 }
             }
+            self.reconcile_pointer(time);
         }
     }
 }
@@ -397,19 +464,21 @@ impl XdgShellHandler for App {
             s.size = Some((640, 480).into());
         });
         surface.send_configure();
+        // Policy IDs exist before the client attaches its first buffer.
+        // Keep that role out of focus/visibility until it actually maps.
+        let _ = self.desktop.minimize(id);
         self.windows.push(Mapped {
             id,
             window: Window::new_wayland_window(surface),
+            has_buffer: false,
         });
-        self.focus(id);
     }
     fn toplevel_destroyed(&mut self, surface: ToplevelSurface) {
         if let Some(id) = self.locate(&surface) {
             self.windows.retain(|m| m.id != id);
             let _ = self.desktop.unmap(id);
-            if let Some(id) = self.windows.last().map(|m| m.id) {
-                self.focus(id);
-            }
+            self.restore_focus();
+            self.reconcile_pointer(0);
             self.dirty = true;
         }
     }
@@ -531,6 +600,8 @@ impl App {
             desktop: Desktop::default(),
             windows: vec![],
             pointer: (0.0, 0.0).into(),
+            pointer_target: None,
+            keyboard_active: true,
             drag: None,
             dirty: true,
             size,
@@ -592,7 +663,8 @@ pub fn run() -> AppResult<()> {
                     | EventMask::BUTTON_PRESS
                     | EventMask::BUTTON_RELEASE
                     | EventMask::KEY_PRESS
-                    | EventMask::KEY_RELEASE,
+                    | EventMask::KEY_RELEASE
+                    | EventMask::FOCUS_CHANGE,
             ),
     )?;
     conn.change_property8(
@@ -641,6 +713,40 @@ pub fn run() -> AppResult<()> {
                 Event::Expose(_) => {
                     state.dirty = true;
                     damage = OutputDamageTracker::from_output(&state.output);
+                }
+                Event::FocusOut(e) if e.mode == NotifyMode::NORMAL => {
+                    state.keyboard_active = false;
+                    let keyboard = state.seat.get_keyboard().unwrap();
+                    for code in keyboard.pressed_keys() {
+                        keyboard.input::<(), _>(
+                            &mut state,
+                            code,
+                            KeyState::Released,
+                            SERIAL_COUNTER.next_serial(),
+                            0,
+                            |_, _, _| FilterResult::Forward,
+                        );
+                    }
+                    keyboard.set_focus(&mut state, None, SERIAL_COUNTER.next_serial());
+                }
+                Event::FocusIn(e) if e.mode == NotifyMode::NORMAL => {
+                    let keyboard = state.seat.get_keyboard().unwrap();
+                    let keys = conn.query_keymap()?.reply()?.keys;
+                    for code in 8..256u32 {
+                        if keys[code as usize / 8] & (1 << (code % 8)) != 0 {
+                            keyboard.input::<(), _>(
+                                &mut state,
+                                code.into(),
+                                KeyState::Pressed,
+                                SERIAL_COUNTER.next_serial(),
+                                0,
+                                |_, _, _| FilterResult::Forward,
+                            );
+                        }
+                    }
+                    state.keyboard_active = true;
+                    state.restore_focus();
+                    state.reconcile_pointer(0);
                 }
                 Event::ConfigureNotify(e)
                     if (e.width as i32, e.height as i32) != state.size

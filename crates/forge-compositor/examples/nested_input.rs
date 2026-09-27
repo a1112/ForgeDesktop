@@ -53,9 +53,43 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
         Ok(())
     };
-    type_word()?;
     let mode = std::env::args().nth(2);
-    if matches!(mode.as_deref(), Some("qt" | "focus")) {
+    if mode.as_deref() == Some("focus-cycle") {
+        let press = KeyPressEvent {
+            response_type: KEY_PRESS_EVENT,
+            detail: 50,
+            sequence: 0,
+            time: 100,
+            root,
+            event: window,
+            child: NONE,
+            root_x: 300,
+            root_y: 200,
+            event_x: 300,
+            event_y: 200,
+            state: KeyButMask::default(),
+            same_screen: true,
+        };
+        conn.send_event(false, window, EventMask::KEY_PRESS, press)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(100));
+        conn.set_input_focus(InputFocus::POINTER_ROOT, root, CURRENT_TIME)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(100));
+        // Release happened elsewhere; query_keymap is empty upon return.
+        conn.set_input_focus(InputFocus::PARENT, window, CURRENT_TIME)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(100));
+        type_word()?;
+        return Ok(());
+    }
+    if !matches!(mode.as_deref(), Some("pointer" | "click-wheel")) {
+        type_word()?;
+    }
+    if matches!(
+        mode.as_deref(),
+        Some("qt" | "focus" | "pointer" | "click-wheel")
+    ) {
         let motion = |x, y| -> Result<(), Box<dyn std::error::Error>> {
             let event = MotionNotifyEvent {
                 response_type: MOTION_NOTIFY_EVENT,
@@ -111,6 +145,17 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             sleep(Duration::from_millis(100));
             Ok(())
         };
+        if mode.as_deref() == Some("pointer") {
+            motion(300, 200)?;
+            return Ok(());
+        }
+        if mode.as_deref() == Some("click-wheel") {
+            for detail in [1, 4] {
+                button(300, 200, true, detail)?;
+                button(300, 200, false, detail)?;
+            }
+            return Ok(());
+        }
         if mode.as_deref() == Some("focus") {
             motion(820, 568)?;
             button(820, 568, true, 1)?;
