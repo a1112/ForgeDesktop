@@ -1,0 +1,15 @@
+pixel (100,15) = [32, 180, 100]
+pixel (640,765) = [32, 180, 100]
+click:100,15
+click:640,765
+pixel (150,300) = [32, 180, 100]
+pixel (50,400) = [32, 180, 100]
+pixel (700,400) = [40, 100, 220]
+pixel (400,400) = [40, 100, 220]
+pixel (900,400) = [32, 180, 100]
+pixel (700,400) = [40, 100, 220]
+pixel (900,400) = [32, 180, 100]
+pixel (700,400) = [40, 100, 220]
+pixel (900,400) = [32, 180, 100]
+fullscreen edges rendered + received input; intentional launcher accessible
+left/right pixels, minimize/restore visibility+input, workspace visibility+input passed

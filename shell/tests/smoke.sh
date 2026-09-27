@@ -54,6 +54,7 @@ control 470 # maximize
 grep -Fx 'qt-size:1274x645' "$work/qt.log"
 control 550 # fullscreen
 grep -Fx 'qt-size:1280x800' "$work/qt.log"
+input key 133 # deliberate launcher access while fullscreen hides chrome
 control 625 # normal
 control 682 # snap left
 grep -Fx 'qt-size:634x645' "$work/qt.log"

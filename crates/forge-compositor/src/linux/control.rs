@@ -21,6 +21,14 @@ impl App {
             && self.desktop.ensure_unlocked().is_ok()
             && match m.role.as_deref() {
                 Some("forge.launcher") => self.launcher,
+                Some("forge.panel" | "forge.dock") => {
+                    self.launcher
+                        || !self
+                            .desktop
+                            .focused()
+                            .and_then(|id| self.desktop.window(id))
+                            .is_some_and(|w| w.fullscreen())
+                }
                 Some(_) => true,
                 None => self.desktop.visible(m.id),
             }
@@ -180,10 +188,65 @@ impl App {
             }
             _ => return Err(forge_desktop_core::Error::UnknownWindow),
         }
+        if matches!(
+            action,
+            "maximize" | "fullscreen" | "normal" | "left" | "right"
+        ) && self.windows.iter().any(|m| m.id == id && m.has_buffer)
+        {
+            let workspace = self.desktop.window(id).unwrap().workspace();
+            self.desktop.switch_workspace(workspace)?;
+            self.desktop.restore(id)?;
+            self.focus(id);
+        }
         self.configure(id);
         self.restore_focus();
         self.reconcile_pointer(0);
         Ok(())
+    }
+    pub(super) fn set_launcher(&mut self, open: bool, serial: Option<u32>) {
+        if self.desktop.ensure_unlocked().is_err() {
+            return;
+        }
+        self.launcher = open;
+        self.launcher_pending = if open { serial } else { None };
+        if open {
+            if let Some(id) = self
+                .windows
+                .iter()
+                .find(|m| m.role.as_deref() == Some("forge.launcher") && m.has_buffer)
+                .map(|m| m.id)
+            {
+                self.focus(id);
+            }
+        } else {
+            self.restore_focus();
+        }
+        self.dirty = true;
+        self.reconcile_pointer(0);
+    }
+    pub(super) fn keyboard_event(&mut self, code: u32, state: KeyState, time: u32) {
+        let reserved = matches!(code, 133 | 134);
+        let keyboard = self.seat.get_keyboard().unwrap();
+        keyboard.input::<(), _>(
+            self,
+            code.into(),
+            state,
+            SERIAL_COUNTER.next_serial(),
+            time,
+            |_, _, _| {
+                if reserved {
+                    FilterResult::Intercept(())
+                } else {
+                    FilterResult::Forward
+                }
+            },
+        );
+        if reserved {
+            if state == KeyState::Pressed && !self.launcher_key_down {
+                self.set_launcher(!self.launcher, None);
+            }
+            self.launcher_key_down = state == KeyState::Pressed;
+        }
     }
     pub(super) fn shell_tick(&mut self) {
         let previous = self.shell.credentials();
@@ -224,25 +287,7 @@ impl App {
                     result
                 }
                 Command::Launcher(open, serial) => {
-                    self.launcher = open;
-                    self.launcher_pending = open.then_some(serial);
-                    if open {
-                        if let Some(surface) = self
-                            .windows
-                            .iter()
-                            .find(|m| m.role.as_deref() == Some("forge.launcher"))
-                            .and_then(|m| m.window.toplevel())
-                            .map(|s| s.wl_surface().clone())
-                        {
-                            self.seat.get_keyboard().unwrap().set_focus(
-                                self,
-                                Some(surface),
-                                SERIAL_COUNTER.next_serial(),
-                            );
-                        }
-                    } else {
-                        self.restore_focus();
-                    }
+                    self.set_launcher(open, Some(serial));
                     Ok(())
                 }
             };

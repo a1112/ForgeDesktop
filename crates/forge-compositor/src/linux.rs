@@ -102,6 +102,7 @@ struct App {
     size: (i32, i32),
     shell: shell::Shell,
     launcher: bool,
+    launcher_key_down: bool,
     launcher_pending: Option<u32>,
 }
 impl BufferHandler for App {
@@ -712,6 +713,7 @@ impl App {
             size,
             shell: shell::Shell::new(),
             launcher: false,
+            launcher_key_down: false,
             launcher_pending: None,
         };
 
@@ -826,6 +828,7 @@ pub fn run() -> AppResult<()> {
                 }
                 Event::FocusOut(e) if e.mode == NotifyMode::NORMAL => {
                     state.keyboard_active = false;
+                    state.launcher_key_down = false;
                     let keyboard = state.seat.get_keyboard().unwrap();
                     for code in keyboard.pressed_keys() {
                         keyboard.input::<(), _>(
@@ -891,26 +894,10 @@ pub fn run() -> AppResult<()> {
                 Event::ButtonPress(e) => state.button(e.detail, true, e.time),
                 Event::ButtonRelease(e) => state.button(e.detail, false, e.time),
                 Event::KeyPress(e) => {
-                    let keyboard = state.seat.get_keyboard().unwrap();
-                    keyboard.input::<(), _>(
-                        &mut state,
-                        u32::from(e.detail).into(),
-                        KeyState::Pressed,
-                        SERIAL_COUNTER.next_serial(),
-                        e.time,
-                        |_, _, _| FilterResult::Forward,
-                    );
+                    state.keyboard_event(u32::from(e.detail), KeyState::Pressed, e.time)
                 }
                 Event::KeyRelease(e) => {
-                    let keyboard = state.seat.get_keyboard().unwrap();
-                    keyboard.input::<(), _>(
-                        &mut state,
-                        u32::from(e.detail).into(),
-                        KeyState::Released,
-                        SERIAL_COUNTER.next_serial(),
-                        e.time,
-                        |_, _, _| FilterResult::Forward,
-                    );
+                    state.keyboard_event(u32::from(e.detail), KeyState::Released, e.time)
                 }
                 _ => {}
             }

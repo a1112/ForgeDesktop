@@ -168,14 +168,10 @@ pub(super) fn run(path: &str) -> AppResult<()> {
             }
             match event {
                 InputEvent::Keyboard { event } => {
-                    let keyboard = state.app.seat.get_keyboard().unwrap();
-                    keyboard.input::<(), _>(
-                        &mut state.app,
-                        event.key_code(),
+                    state.app.keyboard_event(
+                        u32::from(event.key_code()),
                         event.state(),
-                        SERIAL_COUNTER.next_serial(),
                         event.time_msec(),
-                        |_, _, _| FilterResult::Forward,
                     );
                 }
                 InputEvent::PointerMotion { event } => {

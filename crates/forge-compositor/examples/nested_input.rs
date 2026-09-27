@@ -54,6 +54,52 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         Ok(())
     };
     let mode = std::env::args().nth(2);
+    if mode.as_deref() == Some("pixel") {
+        let a: Vec<_> = std::env::args().skip(3).collect();
+        if a.len() != 5 {
+            return Err("pixel requires x y r g b".into());
+        }
+        let x: i16 = a[0].parse()?;
+        let y: i16 = a[1].parse()?;
+        let expected: [u8; 3] = [a[2].parse()?, a[3].parse()?, a[4].parse()?];
+        let bytes = conn
+            .get_image(ImageFormat::Z_PIXMAP, window, x, y, 1, 1, u32::MAX)?
+            .reply()?
+            .data;
+        let actual = [bytes[2], bytes[1], bytes[0]];
+        if actual != expected {
+            return Err(format!("pixel ({x},{y}) expected {expected:?}, got {actual:?}").into());
+        }
+        println!("pixel ({x},{y}) = {actual:?}");
+        return Ok(());
+    }
+    if mode.as_deref() == Some("key") {
+        let detail: u8 = std::env::args().nth(3).ok_or("keycode")?.parse()?;
+        let mut event = KeyPressEvent {
+            response_type: KEY_PRESS_EVENT,
+            detail,
+            sequence: 0,
+            time: 300,
+            root,
+            event: window,
+            child: NONE,
+            root_x: 0,
+            root_y: 0,
+            event_x: 0,
+            event_y: 0,
+            state: KeyButMask::default(),
+            same_screen: true,
+        };
+        conn.send_event(false, window, EventMask::KEY_PRESS, event)?;
+        conn.flush()?;
+        sleep(Duration::from_millis(60));
+        event.response_type = KEY_RELEASE_EVENT;
+        conn.send_event(false, window, EventMask::KEY_RELEASE, event)?;
+        conn.flush()?;
+        conn.get_input_focus()?.reply()?;
+        sleep(Duration::from_millis(100));
+        return Ok(());
+    }
     if mode.as_deref() == Some("click") {
         let x: i16 = std::env::args().nth(3).ok_or("x")?.parse()?;
         let y: i16 = std::env::args().nth(4).ok_or("y")?.parse()?;

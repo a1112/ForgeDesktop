@@ -46,8 +46,30 @@ capture/clipboard/XWayland and Forge broker integration remain pending, as do
 M4/M5 stability/performance/release gates. This is not a complete daily desktop.
 
 Validated debug compositor SHA-256:
-`ae3dacc41d0adf3b684136b4fe0fbba45228ccba14f56c6150250cda8b2f4c7e`.
+`c8d451a7f618712bf59e82073276181096e24439b4d8c58ea9285cb2ca2342eb`.
 Shell SHA-256:
 `520be9d6e8b1bf1b9bcc30129b18c56ffcef0d5c3bd9541c52a8d38f56e6015b`.
 Paths: `/srv/forge-desktop-build/arch-target/debug/forge-compositor` and
 `/srv/forge-desktop-build/work/m2-shell-build/forge-shell`.
+
+## Specification review corrections (2026-09-28)
+
+The first implementation kept persistent panels above fullscreen and its smoke
+test did not assert several resulting window states. The new independent real
+Qt fixture `shell/tests/window_probe.cpp` paints exact, distinct colors and logs
+all keyboard/mouse events; `window_policy.sh` checks the compositor framebuffer
+through the isolated X11 output, not control-command logs.
+
+Before the fix, the fullscreen top pixel failed: expected client RGB
+`[32,180,100]`, observed panel RGB `[130,148,193]` (`policy-red.txt`). After the
+fix, both former chrome regions (100,15 and 640,765) show client pixels and the
+client receives clicks at those exact coordinates. `fullscreen-policy.png`
+confirms the full client covers the output. Super deliberately opens controls.
+
+`policy-green.txt` records exact left/right snap pixel checks, minimize removal,
+restore reappearance, workspace transfer/removal and workspace reappearance.
+The script also asserts per-client keyboard **and pointer** counts do not change
+while minimized/on another workspace, and verifies restored/switched clients
+receive subsequent input. These checks exercise actual scene visibility and
+focus, rather than just command receipt or configured dimensions. Existing
+GTK/Qt/CMake restart/launcher/close smoke coverage remains in place.

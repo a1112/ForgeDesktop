@@ -40,6 +40,12 @@ the currently live spawned child's exact PID and UID. Title/app-id alone is
 never authorization; duplicate privileged roles are rejected. Normal apps
 are below panels; launcher receives keyboard focus when intentionally opened.
 Top 38/bottom 84 pixels are reserved from maximized/snapped work area.
+For the active fullscreen client the top bar and Dock are excluded from both
+rendering and pointer hit testing. Super opens/closes the intentional launcher,
+temporarily revealing its controls even over fullscreen; this binding is shared
+by nested and DRM input paths. Maximize/fullscreen/normal/snap commands activate
+the targeted mapped client and its workspace. An inactive fullscreen client
+does not suppress the foreground workspace's controls.
 
 Shell exit/EOF/protocol failure tears down only the child/socket, preserving
 all other Wayland connections. Restart backoff is 0.5s, 1s, 2s, 4s, 8s, 16s
