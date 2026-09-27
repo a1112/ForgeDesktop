@@ -23,6 +23,14 @@ class BundleProducerTests(unittest.TestCase):
         self.files = {
             "usr/bin/forge-compositor": (ELF, 0o755),
             "usr/libexec/forge-desktop/forge-shell": (ELF, 0o755),
+            "usr/libexec/forge-desktop/forge-notificationd": (ELF, 0o755),
+            "usr/libexec/forge-desktop/forge-session": (
+                b"#!/bin/sh\nexec /usr/bin/forge-compositor\n", 0o755),
+            "usr/share/wayland-sessions/forgedesktop.desktop": (
+                b"[Desktop Entry]\nName=ForgeDesktop\n"
+                b"Exec=/usr/libexec/forge-desktop/forge-session\n"
+                b"TryExec=/usr/bin/forge-compositor\nType=Application\n"
+                b"DesktopNames=ForgeDesktop\n", 0o644),
             "usr/share/forge-desktop/dependencies.json": (
                 b'{"schemaVersion":1,"archSnapshot":"2026/08/01"}', 0o644),
             "usr/share/licenses/forge-desktop/LICENSE": (b"MIT license test fixture\n", 0o644),
@@ -100,6 +108,14 @@ class BundleProducerTests(unittest.TestCase):
             compositor.chmod(0o755)
         with self.assertRaises(ValueError):
             create_bundle(self.stage, self.output, "latest", "a" * 40)
+
+    def test_rejects_substituted_session_command(self):
+        entry = self.stage / "usr/share/wayland-sessions/forgedesktop.desktop"
+        entry.write_bytes(self.files["usr/share/wayland-sessions/forgedesktop.desktop"][0]
+                          .replace(b"forge-session", b"other-session"))
+        with self.assertRaises(ValueError):
+            self.build()
+        self.assertFalse(self.output.exists())
 
     def test_does_not_replace_existing_release(self):
         self.output.mkdir()

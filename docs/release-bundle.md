@@ -10,14 +10,20 @@ Stage the audited release files under these exact relative paths:
 ```
 usr/bin/forge-compositor
 usr/libexec/forge-desktop/forge-shell
+usr/libexec/forge-desktop/forge-notificationd
+usr/libexec/forge-desktop/forge-session
+usr/share/wayland-sessions/forgedesktop.desktop
 usr/share/forge-desktop/dependencies.json
 usr/share/licenses/forge-desktop/LICENSE
 ```
 
+The session script and three ELF binaries have mode `0755`; the login entry
+and data files have mode `0644`. The login entry is constrained to the fixed
+`forge-session` and `forge-compositor` paths and only makes ForgeDesktop
+selectable in the login manager; it does not change the default session.
 Additional non-executable data may be staged only under
 `usr/share/forge-desktop/`, and license notices only under
-`usr/share/licenses/forge-desktop/`. Binary files must have mode `0755`, data
-files `0644`; links and all other paths are rejected. Copy this repository's
+`usr/share/licenses/forge-desktop/`; links and all other paths are rejected. Copy this repository's
 `LICENSE-MIT` to the required `LICENSE` path. `dependencies.json` must be a JSON
 object with `schemaVersion: 1` and `archSnapshot: "2026/08/01"`. For release,
 populate it with the exact signed Arch package closure, Rust crates, Qt runtime,
