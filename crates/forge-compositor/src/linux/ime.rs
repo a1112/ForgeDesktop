@@ -95,7 +95,13 @@ impl InputMethodHandler for App {
         let _ = self.popups.track_popup(popup.into());
         self.dirty = true;
     }
-    fn dismiss_popup(&mut self, _: PopupSurface) {
+    fn dismiss_popup(&mut self, popup: PopupSurface) {
+        if let Some(parent) = popup.get_parent() {
+            // The IME may reuse this still-live surface after focus changes.
+            // cleanup() alone only drops dead surfaces, leaving stale trees.
+            let root = parent.surface.clone();
+            let _ = PopupManager::dismiss_popup(&root, &popup.into());
+        }
         self.popups.cleanup();
         self.dirty = true;
     }

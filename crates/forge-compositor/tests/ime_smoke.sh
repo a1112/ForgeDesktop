@@ -30,8 +30,8 @@ else
  c++ -fPIC crates/forge-compositor/tests/qt_probe.cpp -o "$work/probe" $(pkg-config --cflags --libs Qt6Widgets)
 fi
 Xvfb :92 -screen 0 1280x800x24 -nolisten tcp -fbdir "$work/framebuffer" >"$work/xvfb.log" 2>&1 &
-xvfb=$!; compositor=; client=
-trap 'for p in "$client" "$compositor" "$xvfb"; do test -z "$p" || kill "$p" 2>/dev/null || true; done' EXIT
+xvfb=$!; compositor=; client=; second=
+trap 'for p in "$second" "$client" "$compositor" "$xvfb"; do test -z "$p" || kill "$p" 2>/dev/null || true; done' EXIT
 sleep 1
 /target/debug/forge-compositor --nested >"$work/compositor.log" 2>&1 &
 compositor=$!
@@ -53,6 +53,25 @@ cp "$work/framebuffer/Xvfb_screen0" "$work/candidate.xwd"
 input key 65
 sleep 0.5
 grep -Fx "$toolkit-entry:你好" "$work/client.log"
+if test "$toolkit" = qt; then
+ env WAYLAND_DISPLAY=forge-wayland-0 QT_QPA_PLATFORM=wayland QT_IM_MODULE=wayland QT_WAYLAND_TEXT_INPUT_PROTOCOL=zwp_text_input_v3 "$work/probe" >"$work/second.log" 2>&1 &
+ second=$!
+ sleep 1
+ input drag 400 195 900 195
+ fcitx5-remote -s pinyin
+ fcitx5-remote -o
+ sleep 0.5
+ for key in 57 31 43 38 32; do input key "$key"; done
+ sleep 0.5
+ # The shared IME popup is now attached only to the second window. No duplicate
+ # may remain at the old first-window caret; this pixel is plain Qt background.
+ input pixel 167 571 239 239 239
+ cp "$work/framebuffer/Xvfb_screen0" "$work/focus-candidate.xwd"
+ input key 65
+ grep -Fx 'qt-entry:你好' "$work/second.log"
+ kill "$second"; wait "$second" 2>/dev/null || true; second=
+ sleep 0.5
+fi
 # Kill only our compositor's supervised child; recovery must reconnect its role.
 ime=$(sed -n 's/^ForgeDesktop input method started pid=//p' "$work/compositor.log" | tail -1)
 test -n "$ime"

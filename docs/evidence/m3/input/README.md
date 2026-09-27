@@ -79,3 +79,20 @@ Candidate compositor SHA-256 (debug, for isolated testing only):
 Artifact: `/srv/forge-desktop-build/arch-target/debug/forge-compositor`.
 QML shell is unchanged. Multi-output/scaling, XWayland, Electron/CompatForge,
 focus-change/edge-of-output IME cases and lock gating remain M3.1/M3.2 work.
+
+## Review correction: live popup focus changes
+
+The additional two-Qt/Fcitx focus test passed because Fcitx itself recreated its
+popup. A protocol fixture that intentionally retains one live popup reproduced
+the review finding: after moving the second window right and focusing it, the
+old caret `(167,571)` still rendered green instead of the Qt background
+`(239,239,239)`. `dismiss_popup` now explicitly removes the live surface from its
+old root before Smithay reparents it. The same fixture now observes green only
+at the new caret `(697,601)` and background at the old one.
+
+`tests/persistent_ime.c` is compiled with `wayland-scanner` against the existing
+locked `wayland-protocols-misc 0.3.12` input-method-v2 XML. Its executable is
+mounted over `/usr/bin/fcitx5` **only in the disposable nspawn namespace** with
+`--bind-ro=/srv/forge-desktop-build/work/persistent-ime:/usr/bin/fcitx5`, then run
+with `dbus-run-session -- sh crates/forge-compositor/tests/persistent_ime.sh`.
+No production bypass or process-name authorization was introduced.
