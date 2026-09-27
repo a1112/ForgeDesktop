@@ -1,0 +1,10 @@
+[package]
+name = "forge-desktop-core"
+version = "0.1.0"
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Window, lock and output transaction state for ForgeDesktop"
+
+[lints]
+workspace = true
