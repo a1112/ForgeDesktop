@@ -1,0 +1,319 @@
+{
+  "schemaVersion": 1,
+  "snapshot": "2026/08/01",
+  "packages": [
+    {
+      "name": "enchant",
+      "version": "2.8.15-2",
+      "filename": "enchant-2.8.15-2-x86_64.pkg.tar.zst",
+      "size": 78892,
+      "sha256": "bbfe24f6a21ae1ad6beb56531deb49b4468d104e0c646b680fd982d4d54b7ba4",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/enchant-2.8.15-2-x86_64.pkg.tar.zst",
+      "signatureSha256": "a99059cdc994f992bc11601edb1f25a94e15b19fe68c7846959fcb2cf3b81ad8",
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "name": "xcb-imdkit",
+      "version": "1.0.9-1",
+      "filename": "xcb-imdkit-1.0.9-1-x86_64.pkg.tar.zst",
+      "size": 332168,
+      "sha256": "7dfad7fdb583c5dcae9da3a1dd4e52d63233803aec340ef5c9f2a4f423660c34",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/xcb-imdkit-1.0.9-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "394915ebe1fc4d341944ef28512a6f0217790b5fd216bfa9b5d1a58d5d624f76",
+      "licenses": [
+        "GPL"
+      ]
+    },
+    {
+      "name": "yoga",
+      "version": "3.2.1-1",
+      "filename": "yoga-3.2.1-1-x86_64.pkg.tar.zst",
+      "size": 81956,
+      "sha256": "8214f2ee66943a7e1e24fe4955fa2cab5e44a263e1b06e52e85ee662dd7fd1e3",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/yoga-3.2.1-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "8ed5a3ac487d8a8f82f706dc180224e203028cb23c4d30c7fc24c7464540e8ed",
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "name": "fcitx5",
+      "version": "5.1.21-1",
+      "filename": "fcitx5-5.1.21-1-x86_64.pkg.tar.zst",
+      "size": 8944927,
+      "sha256": "d5117c44026445c80aa7ea85a80c447c5f61f7ae64a910a684fbb29fea59fd36",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/fcitx5-5.1.21-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "4875988adebfc2ae85525b9b395628742d549142463e62adbdd87e0cc1e96e72",
+      "licenses": [
+        "LGPL-2.1-or-later AND Unicode-DFS-2016"
+      ]
+    },
+    {
+      "name": "boost-libs",
+      "version": "1.91.0-2",
+      "filename": "boost-libs-1.91.0-2-x86_64.pkg.tar.zst",
+      "size": 6444794,
+      "sha256": "62cfd278b0260bd2ce5c93f6ab4669d2eefe840eab19e2c3854762f295924655",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/boost-libs-1.91.0-2-x86_64.pkg.tar.zst",
+      "signatureSha256": "19f010ca07031a7b4a3666648e6e909f409f6a92f9c9f12016ca32019646a3e1",
+      "licenses": [
+        "BSL-1.0"
+      ]
+    },
+    {
+      "name": "fcitx5-qt",
+      "version": "5.1.14-1",
+      "filename": "fcitx5-qt-5.1.14-1-x86_64.pkg.tar.zst",
+      "size": 471253,
+      "sha256": "cc4ec04000b241cd4822f96dfe6ca56706f7c3dd1c39a65ca70660ffc167c213",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/fcitx5-qt-5.1.14-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "f363d7f4d5192008515f2b4ea924b0621c83b8baca7a17c28490c87b6307a0a9",
+      "licenses": [
+        "LGPL-2.1-or-later AND BSD-3-Clause"
+      ]
+    },
+    {
+      "name": "libime",
+      "version": "1.1.15-1",
+      "filename": "libime-1.1.15-1-x86_64.pkg.tar.zst",
+      "size": 39341956,
+      "sha256": "8aa6e3d09add2e6bc14b233ecde5054d95d16ef2370c5f0b71cfebc696b32aa0",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/libime-1.1.15-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "de26088787b3f0e8e460c81b23acd1a73b6520bdb3ba8c246f5b2e55215d5678",
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "name": "marisa",
+      "version": "0.3.1-1",
+      "filename": "marisa-0.3.1-1-x86_64.pkg.tar.zst",
+      "size": 112662,
+      "sha256": "ad6aa2b6cf3dd4f41dba48c8ca28c49830c8ba8ea4f9bfe45d4a9b9762d0497a",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/marisa-0.3.1-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "40a1839fdee5e78cf1e5f8180333a68b45d9315c38b0a6751b776b8f5da837d0",
+      "licenses": [
+        "BSD-2-Clause OR LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "name": "opencc",
+      "version": "1.3.2-1",
+      "filename": "opencc-1.3.2-1-x86_64.pkg.tar.zst",
+      "size": 6082811,
+      "sha256": "3f9c1a55ba0a6518f7075a4339377b18609b45b64b8d5e4ecc653ba3294ad71e",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/opencc-1.3.2-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "0392043c03d52ff44be72a49d575f1cb1933601df1de11baebf776e3fb011fd6",
+      "licenses": [
+        "Apache-2.0"
+      ]
+    },
+    {
+      "name": "libxslt",
+      "version": "1.1.45-2",
+      "filename": "libxslt-1.1.45-2-x86_64.pkg.tar.zst",
+      "size": 210625,
+      "sha256": "05777116162528f360cf50c411c232176f64dc856c2199f6eb5199af77362c6a",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/libxslt-1.1.45-2-x86_64.pkg.tar.zst",
+      "signatureSha256": "2a60c2751ef5a934c2622da9adddc8645e66f5ac77cfeeda9848f132b931cd0a",
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "name": "minizip",
+      "version": "1:1.3.2-3",
+      "filename": "minizip-1:1.3.2-3-x86_64.pkg.tar.zst",
+      "size": 32341,
+      "sha256": "0f9f3f2c9ab387416f066b1a43b3124f2c475ff75dd32b00ae40e423f5a58f87",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/core/os/x86_64/minizip-1:1.3.2-3-x86_64.pkg.tar.zst",
+      "signatureSha256": "f4cc7efd0dd3cbbfbb9253efd7a7208af0503b4dd36ccccb6cf27fc88081b1e1",
+      "licenses": [
+        "Zlib"
+      ]
+    },
+    {
+      "name": "openh264",
+      "version": "2.6.0-2",
+      "filename": "openh264-2.6.0-2-x86_64.pkg.tar.zst",
+      "size": 667382,
+      "sha256": "2b775d7a4e330c37510e590ade35ad43ba6ea5e9f3f5e0d522c62ade4390937e",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/openh264-2.6.0-2-x86_64.pkg.tar.zst",
+      "signatureSha256": "93368ed5b6a8c33922ccd6f90802232a3c5328a61dca0efc001a5f3d54eb380f",
+      "licenses": [
+        "BSD-2-Clause"
+      ]
+    },
+    {
+      "name": "qt6-positioning",
+      "version": "6.11.1-1",
+      "filename": "qt6-positioning-6.11.1-1-x86_64.pkg.tar.zst",
+      "size": 406961,
+      "sha256": "73eb42791ef20fddfd996461193dff585faeed34ec844fbf3c664e69c930eee9",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/qt6-positioning-6.11.1-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "a1dfecf9c8e69a7c3ae4b175772afb200df7b9069410cd05d13eee846475a6e9",
+      "licenses": [
+        "GPL-3.0-only",
+        "LGPL-3.0-only",
+        "LicenseRef-Qt-Commercial",
+        "Qt-GPL-exception-1.0"
+      ]
+    },
+    {
+      "name": "qt6-webchannel",
+      "version": "6.11.1-1",
+      "filename": "qt6-webchannel-6.11.1-1-x86_64.pkg.tar.zst",
+      "size": 146777,
+      "sha256": "297280df6d58c4069e5db5e8b39205c54ab5ca55d65bd2dfeeed1c93c52bc483",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/qt6-webchannel-6.11.1-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "18ea9fb7c376ec47734b4bd4cc397637bc23bf7d11682f934521e87c25a65d09",
+      "licenses": [
+        "GPL-3.0-only",
+        "LGPL-3.0-only",
+        "LicenseRef-Qt-Commercial",
+        "Qt-GPL-exception-1.0"
+      ]
+    },
+    {
+      "name": "re2",
+      "version": "2:2025.11.05-5",
+      "filename": "re2-2:2025.11.05-5-x86_64.pkg.tar.zst",
+      "size": 244484,
+      "sha256": "231c9c089db6ed2f6bba5745261fbb4f103895183375933e23250c40f4a7ec9b",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/re2-2:2025.11.05-5-x86_64.pkg.tar.zst",
+      "signatureSha256": "2b40bcca979401b93258154d81cd6881a639b54c12e4fb5ccb651fab7b3e3f02",
+      "licenses": [
+        "BSD-3-Clause"
+      ]
+    },
+    {
+      "name": "qt6-webengine",
+      "version": "6.11.1-4",
+      "filename": "qt6-webengine-6.11.1-4-x86_64.pkg.tar.zst",
+      "size": 99095767,
+      "sha256": "3e4a3ecea4b09959e9ee718e2c78d76518058ca4f3a5078a572af83fcbacb7df",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/qt6-webengine-6.11.1-4-x86_64.pkg.tar.zst",
+      "signatureSha256": "4a2affbbf1e4de296325fe45f9ef8943d1001d2b93af0ad04ee85b3cef400b45",
+      "licenses": [
+        "GPL-3.0-only",
+        "LGPL-3.0-only",
+        "LicenseRef-Qt-Commercial",
+        "Qt-GPL-exception-1.0"
+      ]
+    },
+    {
+      "name": "fcitx5-chinese-addons",
+      "version": "5.1.13-2",
+      "filename": "fcitx5-chinese-addons-5.1.13-2-x86_64.pkg.tar.zst",
+      "size": 1623305,
+      "sha256": "5a19fe4388f3b864300f083328968bec0c2ebdcbb4241b903fafbff607de0503",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/fcitx5-chinese-addons-5.1.13-2-x86_64.pkg.tar.zst",
+      "signatureSha256": "8bd3698e560e05dca6dc4b8656095d8e8b2827b6ee52511297af1b6c389136a0",
+      "licenses": [
+        "GPL-2.0-or-later"
+      ]
+    },
+    {
+      "name": "fcitx5-gtk",
+      "version": "5.1.7-1",
+      "filename": "fcitx5-gtk-5.1.7-1-x86_64.pkg.tar.zst",
+      "size": 82695,
+      "sha256": "eaa2ce0e99f27e36df70a9eaad3dd60bb988f8a7ba4307e82fcc4c975e34e8f2",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/fcitx5-gtk-5.1.7-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "327d4121bd6e3b684d6c02f00a253e6e4bb91b802a25b4ad49cb801870bb420d",
+      "licenses": [
+        "LGPL-2.1-or-later"
+      ]
+    },
+    {
+      "name": "kdbusaddons",
+      "version": "6.28.0-1",
+      "filename": "kdbusaddons-6.28.0-1-x86_64.pkg.tar.zst",
+      "size": 76728,
+      "sha256": "233d9be3a0f3a4db2f071a5b2475dac524b9a15647443746ae65acbf785493fe",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/kdbusaddons-6.28.0-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "3980a5e9be80b0a668d22eb7bbcdacdaafea9da3271093296276040c2f2f353c",
+      "licenses": [
+        "LGPL-2.0-only",
+        "LGPL-3.0-only"
+      ]
+    },
+    {
+      "name": "kwidgetsaddons",
+      "version": "6.28.0-1",
+      "filename": "kwidgetsaddons-6.28.0-1-x86_64.pkg.tar.zst",
+      "size": 2284925,
+      "sha256": "6bc855282d3d13aebfa94fd3a684f84d3061647ff1b60de52a2a3a87ee19fcc5",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/kwidgetsaddons-6.28.0-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "b5fab5c57f9299d7c8ea2d57e1afc76051b27274aca79440bf2eaa2455063fc7",
+      "licenses": [
+        "LGPL-2.0-only",
+        "LGPL-3.0-only"
+      ]
+    },
+    {
+      "name": "kitemviews",
+      "version": "6.28.0-1",
+      "filename": "kitemviews-6.28.0-1-x86_64.pkg.tar.zst",
+      "size": 133553,
+      "sha256": "38d46466bf302074a2dbf93375814a91ea25fe8271610f8215576a3e5530aada",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/kitemviews-6.28.0-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "55e6ef49ca4c3fe34cb72617d7fcd2c6a2dc1b2489bb344381534fcce9b8fe64",
+      "licenses": [
+        "LGPL-2.0-only",
+        "LGPL-3.0-only"
+      ]
+    },
+    {
+      "name": "kwindowsystem",
+      "version": "6.28.0-1",
+      "filename": "kwindowsystem-6.28.0-1-x86_64.pkg.tar.zst",
+      "size": 254082,
+      "sha256": "784a3d030534ff2491eb8b6052dd4824d0c25d1e08d2422cf35a273a2917737a",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/kwindowsystem-6.28.0-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "95949357ff20ecae9e020930bd4e5d1145fdb7cf80dda723159059bc033ee948",
+      "licenses": [
+        "LGPL-2.0-only",
+        "LGPL-3.0-only"
+      ]
+    },
+    {
+      "name": "fcitx5-configtool",
+      "version": "5.1.14-1",
+      "filename": "fcitx5-configtool-5.1.14-1-x86_64.pkg.tar.zst",
+      "size": 567863,
+      "sha256": "48d957e064fe80f1ca0806d61a2af8012f08e4616eb8634d5a6291933fe2f100",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/fcitx5-configtool-5.1.14-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "301e6e9e99688860872129eb8c6cf73c2ce18cf17b397353db9bd8b57442d323",
+      "licenses": [
+        "GPL-2.0-or-later"
+      ]
+    },
+    {
+      "name": "swaylock",
+      "version": "1.8.6-1",
+      "filename": "swaylock-1.8.6-1-x86_64.pkg.tar.zst",
+      "size": 32444,
+      "sha256": "4662cc18b71e2875e1d766c63e68d21a9370abb167c0968970c966d5e6044ad5",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/swaylock-1.8.6-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "0f5493542a50906678882481e468510b3af6301e43961ad9716bd38107df4b9a",
+      "licenses": [
+        "MIT"
+      ]
+    },
+    {
+      "name": "wl-clipboard",
+      "version": "1:2.3.0-1",
+      "filename": "wl-clipboard-1:2.3.0-1-x86_64.pkg.tar.zst",
+      "size": 31757,
+      "sha256": "3ba82e724f496eeafe16a6e6f2a54f0bbf5e64f28bf8555a0d3ce4efa8c17693",
+      "url": "https://archive.archlinux.org/repos/2026/08/01/extra/os/x86_64/wl-clipboard-1:2.3.0-1-x86_64.pkg.tar.zst",
+      "signatureSha256": "98ba8728ec1b7609751dbafc049395ba9d526b1b3e1a4cfd5249a29992686314",
+      "licenses": [
+        "GPL-3.0-or-later"
+      ]
+    }
+  ]
+}
