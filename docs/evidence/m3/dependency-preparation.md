@@ -33,4 +33,13 @@ software renderer. Include its notices in the final complete image inventory.
 The current test base already had XWayland, PipeWire/WirePlumber and the GTK
 portal; protocol/provider integration and real application tests are still next.
 
-The test VM is stopped after this preparation, pending the reviewed M2 binaries.
+The test VM subsequently booted with the reviewed M2 binaries for separate
+acceptance. The user VM remains unchanged.
+
+## Builder installation
+
+The same snapshot was resolved separately against the actual builder package
+database. Its 96-package missing closure was installed offline with required
+package signatures; `builder-session-packages.json` retains archive URLs and
+SHA-256 values. The builder now has Fcitx 5, Chinese add-ons, GTK/Qt modules,
+configuration tools, swaylock and wl-clipboard for real integration tests.

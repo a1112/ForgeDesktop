@@ -1,0 +1,491 @@
+{
+  "schemaVersion": 1,
+  "metric": "pointer-down-to-first-roi-pixel-change",
+  "limitations": [
+    "requestAnimationFrame sampling, not presentation timestamps",
+    "ROI must be visually checked against intended response",
+    "pixel readback adds browser overhead; unrelated ROI updates invalidate trial"
+  ],
+  "observations": [
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 440.1000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:24:49.954Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 440.6000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:24:52.411Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 427.30000000447035,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:24:54.898Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 437.8999999985099,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:24:57.241Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 441.20000000298023,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:24:59.746Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 440.69999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:19.482Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 442.09999999403954,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:21.863Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 447.69999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:24.245Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 450.1000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:26.752Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 449.3999999985099,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:29.259Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 449,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:31.565Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 449.79999999701977,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:33.988Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 669.6999999955297,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:36.498Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 437.79999999701977,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:38.932Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 422.8999999985099,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:41.237Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 443,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:54.105Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 447.6000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:56.440Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 440.5,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:25:58.746Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 442,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:01.099Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 444.40000000596046,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:03.411Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 448,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:05.792Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 449.6000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:08.258Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 446.19999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:10.508Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 435.30000000447035,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:12.883Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 446.5,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:15.257Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 449.69999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:30.431Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 450.70000000298023,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:32.799Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 443.3999999985099,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:35.181Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 444.69999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:37.674Z"
+    },
+    {
+      "case": "ros-launcher-open-stable",
+      "outcome": "changed",
+      "elapsedMs": 445.3999999985099,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:26:40.167Z"
+    }
+  ]
+}

@@ -1,0 +1,107 @@
+{
+  "schemaVersion": 1,
+  "metric": "pointer-down-to-first-roi-pixel-change",
+  "limitations": [
+    "requestAnimationFrame sampling, not presentation timestamps",
+    "ROI must be visually checked against intended response",
+    "pixel readback adds browser overhead; unrelated ROI updates invalidate trial"
+  ],
+  "observations": [
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 440.5,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:21:53.405Z"
+    },
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 47.30000000447035,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:22:18.894Z"
+    },
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 12.699999995529652,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:22:19.311Z"
+    },
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 398.6000000014901,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:22:19.752Z"
+    },
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 170.19999999552965,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:22:20.410Z"
+    },
+    {
+      "case": "ros-launcher-open",
+      "outcome": "changed",
+      "elapsedMs": 35.20000000298023,
+      "canvas": [
+        1280,
+        800
+      ],
+      "roi": [
+        240,
+        200,
+        256,
+        48
+      ],
+      "startUtc": "2026-09-27T16:22:20.850Z"
+    }
+  ]
+}
