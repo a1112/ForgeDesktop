@@ -1,0 +1,28 @@
+Sep 27 15:01:35 forgeos-dev forge-ready[402]: FORGEOS_READY contract=1 kernel=6.18.41-1-lts serviced=ready permissiond=ready sandboxd=ready appd=ready state=writable
+Sep 27 15:01:35 forgeos-dev (env)[567]: pam_unix(login:session): session opened for user forge-graphics(uid=964) by forge-graphics(uid=0)
+Sep 27 15:01:35 forgeos-dev (systemd)[580]: pam_unix(systemd-user:session): session opened for user forge-graphics(uid=964) by forge-graphics(uid=0)
+Sep 27 15:01:36 forgeos-dev env[567]: ForgeDesktop DRM Pixman ready; WAYLAND_DISPLAY=forge-wayland-0; 1280x800
+Sep 27 15:01:36 forgeos-dev m1-qt-client[569]: qt-size:640x480
+Sep 27 15:01:36 forgeos-dev m1-qt-client[569]: qt-size:634x447
+Sep 27 15:02:49 forgeos-dev m1-gtk-client[568]: gtk-entry:f
+Sep 27 15:02:49 forgeos-dev m1-gtk-client[568]: gtk-entry:fo
+Sep 27 15:02:50 forgeos-dev m1-gtk-client[568]: gtk-entry:for
+Sep 27 15:02:50 forgeos-dev m1-gtk-client[568]: gtk-entry:forg
+Sep 27 15:02:50 forgeos-dev m1-gtk-client[568]: gtk-entry:forge
+Sep 27 15:02:51 forgeos-dev m1-qt-client[569]: qt-entry:f
+Sep 27 15:02:51 forgeos-dev m1-qt-client[569]: qt-entry:fo
+Sep 27 15:02:51 forgeos-dev m1-qt-client[569]: qt-entry:for
+Sep 27 15:02:51 forgeos-dev m1-qt-client[569]: qt-entry:forg
+Sep 27 15:02:52 forgeos-dev m1-qt-client[569]: qt-entry:forge
+Sep 27 15:03:11 forgeos-dev m1-qt-client[569]: qt-wheel:0,120
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:644x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:654x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:664x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:674x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:684x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:694x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:704x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:714x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:724x447
+Sep 27 15:03:12 forgeos-dev m1-qt-client[569]: qt-size:734x447
+Sep 27 15:04:51 forgeos-dev systemd-logind[363]: Powering off...

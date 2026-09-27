@@ -1,0 +1,41 @@
+[Unit]
+Description=ForgeDesktop isolated M1 DRM acceptance session
+Requires=forge-ready.service systemd-logind.service
+After=forge-ready.service systemd-logind.service systemd-user-sessions.service
+Conflicts=getty@tty1.service
+OnFailure=getty@tty1.service
+
+[Service]
+Type=simple
+User=forge-graphics
+Group=forge-graphics
+PAMName=login
+WorkingDirectory=/
+RuntimeDirectory=forge-desktop-m1
+RuntimeDirectoryMode=0700
+Environment=XDG_RUNTIME_DIR=/run/forge-desktop-m1 LIBSEAT_BACKEND=logind XDG_SESSION_TYPE=wayland XDG_CURRENT_DESKTOP=ForgeDesktop
+TTYPath=/dev/tty1
+StandardInput=tty-fail
+StandardOutput=journal+console
+StandardError=journal+console
+TTYReset=yes
+TTYVHangup=yes
+TTYVTDisallocate=yes
+UtmpIdentifier=tty1
+UtmpMode=user
+ExecStart=/usr/bin/env XDG_RUNTIME_DIR=/run/forge-desktop-m1 /usr/bin/forge-compositor --drm /dev/dri/card1
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectHome=yes
+ProtectSystem=strict
+ReadWritePaths=/tmp
+ProtectControlGroups=yes
+ProtectKernelTunables=yes
+ProtectKernelModules=yes
+ProtectKernelLogs=yes
+RestrictAddressFamilies=AF_UNIX AF_NETLINK
+LockPersonality=yes
+SystemCallArchitectures=native
+
+[Install]
+WantedBy=multi-user.target

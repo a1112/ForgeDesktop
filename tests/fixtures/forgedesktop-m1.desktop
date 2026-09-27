@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=ForgeDesktop M1 (isolated test)
+Comment=Native Pixman compositor with real GTK and Qt probes
+Exec=/usr/libexec/forge-desktop/m1-session
+TryExec=/usr/bin/forge-compositor
+Type=Application
+DesktopNames=ForgeDesktop

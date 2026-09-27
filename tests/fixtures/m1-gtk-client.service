@@ -1,0 +1,20 @@
+[Unit]
+Description=Real GTK client for isolated ForgeDesktop M1 acceptance
+Requires=forgedesktop-m1.service
+After=forgedesktop-m1.service
+
+[Service]
+User=forge-graphics
+Group=forge-graphics
+Environment=XDG_RUNTIME_DIR=/run/forge-desktop-m1 WAYLAND_DISPLAY=forge-wayland-0 GDK_BACKEND=wayland
+ExecStart=/usr/libexec/forge-desktop/m1-gtk-client
+StandardOutput=journal+console
+StandardError=journal+console
+NoNewPrivileges=yes
+CapabilityBoundingSet=
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/tmp
+
+[Install]
+WantedBy=multi-user.target

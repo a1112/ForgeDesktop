@@ -1,0 +1,12 @@
+[Unit]
+Description=Disposable ForgeDesktop M1 compositor crash test
+After=lightdm.service
+Requires=lightdm.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/forge-desktop/m1-fault
+TimeoutStartSec=150
+
+[Install]
+WantedBy=graphical.target

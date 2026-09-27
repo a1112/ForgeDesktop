@@ -1,0 +1,27 @@
+[    9.488785] forge-ready[402]: FORGEOS_READY contract=1 kernel=6.18.41-1-lts serviced=ready permissiond=ready sandboxd=ready appd=ready state=writable
+[   10.039625] env[567]: ForgeDesktop DRM Pixman ready; WAYLAND_DISPLAY=forge-wayland-0; 1280x800
+[   10.129189] m1-qt-client[569]: qt-size:640x480
+[   10.130655] m1-qt-client[569]: qt-ready
+[   10.136165] m1-qt-client[569]: qt-size:634x447
+[   12.236751] m1-gtk-client[568]: gtk-ready
+forgeos-dev login: [   83.794744] m1-gtk-client[568]: gtk-entry:f
+[   83.895006] m1-gtk-client[568]: gtk-entry:fo
+[   83.996624] m1-gtk-client[568]: gtk-entry:for
+[   84.098767] m1-gtk-client[568]: gtk-entry:forg
+[   84.200599] m1-gtk-client[568]: gtk-entry:forge
+[   85.602605] m1-qt-client[569]: qt-entry:f
+[   85.700108] m1-qt-client[569]: qt-entry:fo
+[   85.802063] m1-qt-client[569]: qt-entry:for
+[   85.903530] m1-qt-client[569]: qt-entry:forg
+[   86.004618] m1-qt-client[569]: qt-entry:forge
+[  105.916194] m1-qt-client[569]: qt-wheel:0,120
+[  106.240020] m1-qt-client[569]: qt-size:644x447
+[  106.320788] m1-qt-client[569]: qt-size:654x447
+[  106.402985] m1-qt-client[569]: qt-size:664x447
+[  106.486473] m1-qt-client[569]: qt-size:674x447
+[  106.564566] m1-qt-client[569]: qt-size:684x447
+[  106.645425] m1-qt-client[569]: qt-size:694x447
+[  106.729743] m1-qt-client[569]: qt-size:704x447
+[  106.808219] m1-qt-client[569]: qt-size:714x447
+[  106.889559] m1-qt-client[569]: qt-size:724x447
+[  106.969309] m1-qt-client[569]: qt-size:734x447

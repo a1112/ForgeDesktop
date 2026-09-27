@@ -1,0 +1,38 @@
+M1_FAULT_SIGKILL pid=597
+    PID   UID COMMAND
+    597  1000 forge-composito
+● lightdm.service - Light Display Manager
+     Loaded: loaded (/usr/lib/systemd/system/lightdm.service; enabled; preset: enabled)
+     Active: active (running) since Sun 2026-09-27 15:08:56 UTC; 1min 10s ago
+ Invocation: ef552bd7864046319cea0eb09792109e
+       Docs: man:lightdm(1)
+   Main PID: 371 (lightdm)
+      Tasks: 7 (limit: 4437)
+     Memory: 220.8M (peak: 223.4M)
+        CPU: 223ms
+     CGroup: /system.slice/lightdm.service
+             ├─371 /usr/bin/lightdm
+             ├─803 /usr/lib/Xorg :0 -seat seat0 -auth /run/lightdm/root/:0 -nolisten tcp vt8 -novtswitch
+             └─920 lightdm --session-child 13 20
+
+Sep 27 15:08:55 forgeos-daily systemd[1]: Starting Light Display Manager...
+Sep 27 15:08:56 forgeos-daily systemd[1]: Started Light Display Manager.
+Sep 27 15:08:56 forgeos-daily lightdm[426]: pam_succeed_if(lightdm-autologin:auth): requirement "user ingroup autologin" was met by user "forge"
+Sep 27 15:08:56 forgeos-daily lightdm[426]: gkr-pam: no password is available for user
+Sep 27 15:08:56 forgeos-daily lightdm[426]: pam_unix(lightdm-autologin:session): session opened for user forge(uid=1000) by forge(uid=0)
+Sep 27 15:08:56 forgeos-daily lightdm[426]: gkr-pam: couldn't unlock the login keyring.
+Sep 27 15:09:57 forgeos-daily lightdm[821]: pam_unix(lightdm-greeter:session): session opened for user lightdm(uid=961) by (uid=0)
+SESSION  UID USER    SEAT  LEADER CLASS         TTY IDLE SINCE
+      2 1000 forge   -     484    manager       -   no   -
+      3  961 lightdm -     827    manager-early -   no   -
+     c1  961 lightdm seat0 821    greeter       -   no   -
+
+3 sessions listed.
+Sep 27 15:08:55 forgeos-daily systemd[1]: Starting Light Display Manager...
+Sep 27 15:08:56 forgeos-daily systemd[1]: Started Light Display Manager.
+Sep 27 15:08:56 forgeos-daily lightdm[426]: pam_succeed_if(lightdm-autologin:auth): requirement "user ingroup autologin" was met by user "forge"
+Sep 27 15:08:56 forgeos-daily lightdm[426]: gkr-pam: no password is available for user
+Sep 27 15:08:56 forgeos-daily lightdm[426]: pam_unix(lightdm-autologin:session): session opened for user forge(uid=1000) by forge(uid=0)
+Sep 27 15:08:56 forgeos-daily lightdm[426]: gkr-pam: couldn't unlock the login keyring.
+Sep 27 15:09:57 forgeos-daily lightdm[821]: pam_unix(lightdm-greeter:session): session opened for user lightdm(uid=961) by (uid=0)
+M1_FAULT_CHECK_FINISHED
