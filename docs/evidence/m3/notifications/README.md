@@ -62,3 +62,15 @@ surviving notice still appeared in the center
 ([latest screenshot](latest-shell-restart.png)); the notification daemon and
 guest remained running. Reviewer followup found no remaining blocking issue
 in this notification slice.
+
+An isolated fault test then sent `SIGKILL` to notification daemon PID 609.
+The compositor (PID 583) stayed alive and started daemon PID 996; shell PID
+963 also stayed alive. As specified, notices held only in the crashed daemon
+were lost, and the center showed an online, empty state rather than stale
+content. A fresh independent D-Bus client still received `AccessDenied` from
+`Snapshot`, while standard `Notify` returned ID 1 and the new Chinese notice
+appeared in the unchanged shell
+([recovery screenshot](daemon-crash-recovery.png)). All three processes remained
+UID 1000, with the compositor as the daemon and shell parent. This tests
+recovery of the service boundary, not persistence of in-memory notices across
+a daemon crash.
