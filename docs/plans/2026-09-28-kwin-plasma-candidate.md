@@ -19,6 +19,8 @@ The approved architecture is in `docs/plans/2026-09-28-kwin-plasma-desktop-desig
 - Modify: `docs/STATUS.md`
 - Modify: `docs/plans/native-desktop.md`
 - Create (ForgeOS): `docs/adr/0014-kwin-plasma-candidate.md`
+- Modify (ForgeOS): `docs/architecture/overview.md`
+- Modify (ForgeOS): `docs/roadmap.md`
 
 **Steps:**
 1. Mark the Smithay plan and evidence as retained experimental work; set KWin/Plasma as the approved main route and keep all M3-M5 gates pending.

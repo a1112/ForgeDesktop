@@ -1,4 +1,11 @@
-# Approved native ForgeDesktop implementation plan
+# Historical native ForgeDesktop implementation plan
+
+This Rust/Smithay design was approved on 2026-09-27 and produced scoped M1/M2
+evidence. The user approved KWin/Plasma as the main window-management route on
+2026-09-28; see `2026-09-28-kwin-plasma-desktop-design.md`. Retain the Smithay
+implementation as an experimental session and preserve its evidence. The
+original requirements and performance gates below remain recorded until the
+new route is measured and accepted.
 
 User approved 2026-09-27: Rust/Smithay compositor, Qt 6/QML native shell,
 complete daily desktop in current x86_64 VM, reusing mature Linux applications.
