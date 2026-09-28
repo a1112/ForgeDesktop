@@ -71,7 +71,7 @@ def put(home, path, raw):
 
 def ini_set(raw, group, key, value):
     """Change only the chosen entry, retaining other lines and comments."""
-    lines = (raw or b"").decode("utf-8").splitlines(keepends=True)
+    lines, _, _ = ini_entry(raw, group, key)
     header = "[" + group + "]" if group else None
     start = 0 if header is None else next((i + 1 for i, line in enumerate(lines) if line.strip() == header), None)
     if start is None:
@@ -101,14 +101,29 @@ def updates(before):
     # Release this exact shortcut from previous terminal launchers only.
     text = shortcuts.decode()
     for group in ("xfce4-terminal.desktop", "org.kde.konsole.desktop"):
+        ini_entry(shortcuts, group, "_launch")
         match = re.search(r"(?ms)^\[" + re.escape(group) + r"\]\n(.*?)(?=^\[|\Z)", text)
         if match and re.search(r"(?m)^_launch=Ctrl\+Alt\+T,", match.group(1)):
             text = ini_set(text.encode(), group, "_launch", "none,none,Terminal").decode()
     layout = before[CONFIGS[3]]
     if layout is not None:
         # Only launcher-list lines, never arbitrary applet settings or the whole layout.
-        layout = re.sub(rb"(?m)^launchers=([^\r\n]*)", lambda m: m.group(0).replace(
-            b"applications:xfce4-terminal.desktop", b"applications:org.forge.RTerm.desktop"), layout)
+        lines = layout.splitlines(keepends=True)
+        group = ""
+        old_id, new_id = b"applications:xfce4-terminal.desktop", b"applications:org.forge.RTerm.desktop"
+        for index, line in enumerate(lines):
+            if line.startswith(b"["):
+                group = line.decode().strip().split("[$", 1)[0][1:-1]
+            key, separator, value = line.partition(b"=")
+            if key != b"launchers" and not key.startswith(b"launchers["):
+                continue
+            content = value.rstrip(b"\r\n")
+            tokens = content.split(b",")
+            if separator and old_id in tokens:
+                ini_entry(layout, group, "launchers")
+                lines[index] = key + separator + b",".join(
+                    new_id if token == old_id else token for token in tokens) + value[len(content):]
+        layout = b"".join(lines)
     return dict(zip(CONFIGS, (kde, helpers, text.encode(), layout)))
 
 

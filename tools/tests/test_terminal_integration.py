@@ -20,6 +20,45 @@ def module(name):
 
 
 class TerminalIntegrationTests(unittest.TestCase):
+    def test_apply_changes_only_the_complete_dock_launcher_token(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            config = home / ".config"
+            config.mkdir()
+            path = config / "plasma-org.kde.plasma.desktop-appletsrc"
+            original = (b"[Containments][7][Applets][9][Configuration][General]\n"
+                        b"launchers=applications:xfce4-terminal.desktop.custom,applications:xfce4-terminal.desktop,applications:custom.desktop\r\n")
+            path.write_bytes(original)
+            migration.apply(home)
+            self.assertEqual(path.read_bytes(), original.replace(
+                b",applications:xfce4-terminal.desktop,", b",applications:org.forge.RTerm.desktop,"))
+
+    def test_apply_rejects_owned_ini_conflicts_before_receipt_or_settings_writes(self):
+        migration = module("terminal_defaults")
+        cases = (
+            ("kdeglobals", b"[General][$i]\nTerminalApplication=personal\n"),
+            ("kdeglobals", b"[General]\nTerminalApplication[$i]=personal\n"),
+            ("kdeglobals", b"[General]\nTerminalApplication=one\n[General]\nTerminalApplication=two\n"),
+            ("kglobalshortcutsrc", b"[org.forge.RTerm.desktop][$i]\n_launch=Meta+T,none,Personal\n"),
+            ("kglobalshortcutsrc", b"[org.forge.RTerm.desktop]\n_launch[$i]=Meta+T,none,Personal\n"),
+            ("kglobalshortcutsrc", b"[org.forge.RTerm.desktop]\n_launch=one\n[org.forge.RTerm.desktop]\n_launch=two\n"),
+            ("kglobalshortcutsrc", b"[org.kde.konsole.desktop][$i]\n_launch=Ctrl+Alt+T,none,Terminal\n"),
+            ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7][$i]\nlaunchers=applications:xfce4-terminal.desktop\n"),
+            ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7]\nlaunchers[$i]=applications:xfce4-terminal.desktop\n"),
+            ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7]\nlaunchers=applications:xfce4-terminal.desktop\n[Containments][7]\nlaunchers=applications:custom.desktop\n"),
+        )
+        for filename, raw in cases:
+            with self.subTest(filename=filename, raw=raw), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                (home / ".config").mkdir()
+                (home / ".config" / filename).write_bytes(raw)
+                before = {name: migration.read(home / name) for name in migration.CONFIGS}
+                with self.assertRaises(ValueError):
+                    migration.apply(home)
+                self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+                self.assertFalse((home / migration.STATE).exists())
+
     def test_new_account_skeleton_selects_the_packaged_forge_layout(self):
         from tools.stage_plasma_bundle import stage
         with tempfile.TemporaryDirectory() as temporary:
