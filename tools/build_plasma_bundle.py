@@ -16,7 +16,10 @@ import shutil
 import stat
 import tempfile
 
-from tools.build_bundle import no_links, require, source_commit
+if __package__:
+    from tools.build_bundle import no_links, require, source_commit
+else:
+    from build_bundle import no_links, require, source_commit
 
 
 ARCH_SNAPSHOT = "2026/08/01"

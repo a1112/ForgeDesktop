@@ -5,6 +5,8 @@ import json
 import os
 from pathlib import Path
 import shutil
+import subprocess
+import sys
 import tempfile
 import unittest
 
@@ -184,6 +186,14 @@ class PlasmaBundleTests(unittest.TestCase):
                         self.stage / "usr/share/licenses/forge-desktop/LICENSE")
         pin = self.build()
         self.assertEqual(verify_bundle(self.output, pin)["kind"], "plasma-session")
+
+    def test_documented_direct_cli_starts(self):
+        repo = Path(__file__).resolve().parents[2]
+        result = subprocess.run([sys.executable,
+                                 str(repo / "tools/build_plasma_bundle.py"), "--help"],
+                                cwd=repo, capture_output=True, text=True, check=False)
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertIn("--staging", result.stdout)
 
 
 if __name__ == "__main__":
