@@ -1,0 +1,4 @@
+#!/bin/sh
+set -eu
+[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1
+exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland

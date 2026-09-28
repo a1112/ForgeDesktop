@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=ForgeDesktop (KWin)
+Comment=ForgeOS KWin and Plasma Wayland candidate
+Exec=/usr/libexec/forge-desktop/forge-kwin-session
+TryExec=/usr/bin/startplasma-wayland
+Type=Application
+DesktopNames=KDE;ForgeDesktop;
