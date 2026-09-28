@@ -21,7 +21,17 @@ var dock = new Panel;
 dock.location = "bottom";
 dock.height = 62;
 dock.alignment = "center";
+dock.lengthMode = "custom";
+dock.length = 560;
 dock.minimumLength = 560;
 dock.maximumLength = 560;
-dock.addWidget("org.kde.plasma.icontasks");
+var tasks = dock.addWidget("org.kde.plasma.icontasks");
+tasks.currentConfigGroup = ["General"];
+tasks.writeConfig("launchers", [
+    "applications:thunar.desktop",
+    "applications:xfce4-terminal.desktop",
+    "applications:org.xfce.mousepad.desktop",
+    "applications:firefox.desktop",
+    "applications:systemsettings.desktop"
+].join(","));
 dock.addWidget("org.kde.plasma.showdesktop");

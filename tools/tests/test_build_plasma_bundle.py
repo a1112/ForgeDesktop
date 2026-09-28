@@ -208,6 +208,14 @@ class PlasmaBundleTests(unittest.TestCase):
         pin = self.build()
         self.assertEqual(set(verify_bundle(self.output, pin)["files"]),
                          set(self.files) | set(visual_files.values()))
+        layout = (self.output / visual_files[
+            "plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js"])
+        layout_bytes = layout.read_bytes()
+        self.assertIn(b'dock.lengthMode = "custom";', layout_bytes)
+        for desktop_id in (b'thunar.desktop', b'xfce4-terminal.desktop',
+                           b'org.xfce.mousepad.desktop', b'firefox.desktop',
+                           b'systemsettings.desktop'):
+            self.assertIn(b'applications:' + desktop_id, layout_bytes)
 
     def test_rejects_private_window_api_in_theme_layout(self):
         relative = ("usr/share/plasma/look-and-feel/org.forge.desktop/contents/"
