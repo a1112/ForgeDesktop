@@ -167,6 +167,8 @@ def ini_entry(raw, group, key):
     """Locate one owned key without normalizing unrelated KConfig text."""
     lines = (raw or b"").decode("utf-8").splitlines(keepends=True)
     if group:
+        require(not any(line.strip().startswith("[" + group + "][$") for line in lines),
+                "modified terminal configuration group flags")
         starts = [i + 1 for i, line in enumerate(lines) if line.strip() == "[" + group + "]"]
         require(len(starts) <= 1, "duplicate terminal configuration group")
         if not starts:

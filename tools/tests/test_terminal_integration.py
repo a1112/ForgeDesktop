@@ -243,6 +243,23 @@ class TerminalIntegrationTests(unittest.TestCase):
                     migration.restore(home)
                 self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
 
+    def test_restore_rejects_owned_group_flags_before_any_write(self):
+        migration = module("terminal_defaults")
+        for filename, group in (("kdeglobals", "General"),
+                                ("kglobalshortcutsrc", "org.forge.RTerm.desktop")):
+            for flag in ("$i", "$d"):
+                with self.subTest(filename=filename, flag=flag), tempfile.TemporaryDirectory() as temporary:
+                    home = Path(temporary)
+                    migration.apply(home)
+                    path = home / ".config" / filename
+                    header = ("[" + group + "]").encode()
+                    path.write_bytes(path.read_bytes().replace(header, header + ("[" + flag + "]").encode()))
+                    before = {name: migration.read(home / name) for name in migration.CONFIGS}
+                    with self.assertRaisesRegex(ValueError, "group flags"):
+                        migration.restore(home)
+                    self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+                    self.assertEqual(migration.load_state(home)["status"], "applied")
+
     def test_interrupted_semantic_restore_can_be_retried_from_original_receipt(self):
         migration = module("terminal_defaults")
         with tempfile.TemporaryDirectory() as temporary:
