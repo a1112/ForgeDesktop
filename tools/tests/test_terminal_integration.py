@@ -239,12 +239,30 @@ class TerminalIntegrationTests(unittest.TestCase):
         self.assertEqual(actual, ["/usr/bin/rterm", "window", "--renderer", "cpu",
                                   "--display-backend", "wayland", "--class", "org.forge.RTerm", *args])
 
+    def test_wayland_session_never_falls_back_to_inherited_x11_display(self):
+        launcher = module("forge_terminal")
+        actual = launcher.command([], {"XDG_SESSION_TYPE": "wayland", "DISPLAY": ":0"})
+        self.assertEqual(actual[actual.index("--display-backend") + 1], "wayland")
+
+    def test_x11_session_ignores_nested_wayland_display(self):
+        launcher = module("forge_terminal")
+        actual = launcher.command([], {"XDG_SESSION_TYPE": "x11", "DISPLAY": ":0",
+                                       "WAYLAND_DISPLAY": "nested-wayland"})
+        self.assertEqual(actual[actual.index("--display-backend") + 1], "x11")
+
+    def test_unknown_session_type_uses_available_display_and_pure_tty_is_rejected(self):
+        launcher = module("forge_terminal")
+        actual = launcher.command([], {"XDG_SESSION_TYPE": "unknown", "WAYLAND_DISPLAY": "wayland-0"})
+        self.assertEqual(actual[actual.index("--display-backend") + 1], "wayland")
+        with self.assertRaises(ValueError):
+            launcher.command([], {"XDG_SESSION_TYPE": "tty"})
+
     def test_launcher_inherits_desktop_working_directory_without_shell_expansion(self):
         launcher = module("forge_terminal")
         arguments = ["-e", "/usr/bin/program", "含 空格", "$(literal)"]
         with mock.patch.object(launcher.os, "getcwd", return_value="/home/forge/项目 space"):
             with mock.patch.object(launcher.sys, "argv", ["forge-terminal", *arguments]):
-                with mock.patch.dict(launcher.os.environ, {"WAYLAND_DISPLAY": "wayland-0"}):
+                with mock.patch.dict(launcher.os.environ, {"WAYLAND_DISPLAY": "wayland-0"}, clear=True):
                     with mock.patch.object(launcher.os, "execv") as execute:
                         launcher.main()
         execute.assert_called_once_with("/usr/bin/rterm", [

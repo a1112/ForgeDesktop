@@ -6,8 +6,13 @@ so staging on Windows and Linux produces identical payload bytes and modes.
 
 Plasma bundle 0.5.0 contains the terminal launcher, desktop entry and new-user
 defaults. ForgeOS separately verifies and installs the native R-Term binary.
-The launcher selects CPU rendering and explicitly selects Wayland when
-`WAYLAND_DISPLAY` is set, otherwise X11 when `DISPLAY` is set. It executes an
+The launcher selects CPU rendering and uses `XDG_SESSION_TYPE=wayland` or
+`XDG_SESSION_TYPE=x11` to require the matching backend, even when an inherited
+display variable names another backend or the session's display variable is
+missing. A failed connection cannot silently select the other backend.
+When the session type is missing or unknown, it selects Wayland when
+`WAYLAND_DISPLAY` is set, otherwise X11 when `DISPLAY` is set; without either
+display it refuses to launch. It executes an
 argument array without shell interpolation. R-Term uses `org.forge.RTerm` as
 its Wayland app ID, matching `org.forge.RTerm.desktop`.
 The launcher forwards its inherited working directory as `--cwd`, preserving

@@ -5,7 +5,10 @@ import sys
 
 
 def command(arguments, environment):
-    if environment.get("WAYLAND_DISPLAY"):
+    session_type = environment.get("XDG_SESSION_TYPE")
+    if session_type in ("wayland", "x11"):
+        backend = session_type
+    elif environment.get("WAYLAND_DISPLAY"):
         backend = "wayland"
     elif environment.get("DISPLAY"):
         backend = "x11"
