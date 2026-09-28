@@ -15,6 +15,7 @@
     "usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg": "MIT",
     "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT"
   }
 }

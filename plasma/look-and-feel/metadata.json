@@ -3,7 +3,9 @@
   "KPlugin": {
     "Id": "org.forge.desktop",
     "Name": "ForgeDesktop",
+    "Name[zh_CN]": "ForgeDesktop 桌面",
     "Description": "ForgeOS dark desktop with a top bar and compact dock",
+    "Description[zh_CN]": "带有顶栏和简洁程序坞的 ForgeOS 深色桌面",
     "Version": "0.2.0",
     "License": "MIT"
   }

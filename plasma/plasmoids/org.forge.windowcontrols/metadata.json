@@ -4,7 +4,9 @@
   "KPlugin": {
     "Id": "org.forge.windowcontrols",
     "Name": "Forge Window Controls",
+    "Name[zh_CN]": "Forge 窗口控制",
     "Description": "Active maximized window controls for the Forge top panel",
+    "Description[zh_CN]": "在 Forge 顶栏控制当前最大化窗口",
     "Version": "1.0.0",
     "License": "MIT",
     "Icon": "preferences-system-windows",

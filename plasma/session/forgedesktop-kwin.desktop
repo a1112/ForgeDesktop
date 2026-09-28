@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=ForgeDesktop (KWin)
+Name[zh_CN]=ForgeDesktop 桌面（KWin）
 Comment=ForgeOS KWin and Plasma Wayland candidate
+Comment[zh_CN]=ForgeOS 的 KWin 与 Plasma Wayland 桌面
 Exec=/usr/libexec/forge-desktop/forge-kwin-session
 TryExec=/usr/bin/startplasma-wayland
 Type=Application

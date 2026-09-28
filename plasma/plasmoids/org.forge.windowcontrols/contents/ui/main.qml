@@ -8,7 +8,7 @@ import org.kde.taskmanager as TaskManager
 PlasmoidItem {
     id: root
 
-    Plasmoid.title: qsTr("Window controls")
+    Plasmoid.title: i18n("Window controls")
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
     Layout.minimumWidth: fused ? 270 : 0
     Layout.preferredWidth: fused ? 270 : 0
@@ -92,7 +92,7 @@ PlasmoidItem {
             color: "#f0f4fb"
             elide: Text.ElideRight
             verticalAlignment: Text.AlignVCenter
-            Accessible.name: qsTr("Active window: %1").arg(text)
+            Accessible.name: i18n("Active window: %1", text)
         }
 
         Controls.Button {
@@ -102,7 +102,10 @@ PlasmoidItem {
             text: "−"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsMinimizable) === true
-            Accessible.name: qsTr("Minimize active window")
+            Accessible.name: i18n("Minimize active window")
+            Controls.ToolTip.text: Accessible.name
+            Controls.ToolTip.visible: hovered
+            Controls.ToolTip.delay: 500
             onClicked: root.actOnActiveTask("minimize")
             contentItem: Text {
                 text: minimizeButton.text
@@ -123,7 +126,10 @@ PlasmoidItem {
             text: "▣"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsMaximizable) === true
-            Accessible.name: qsTr("Restore active window")
+            Accessible.name: i18n("Restore active window")
+            Controls.ToolTip.text: Accessible.name
+            Controls.ToolTip.visible: hovered
+            Controls.ToolTip.delay: 500
             onClicked: root.actOnActiveTask("restore")
             contentItem: Text {
                 text: restoreButton.text
@@ -144,7 +150,10 @@ PlasmoidItem {
             text: "×"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsClosable) === true
-            Accessible.name: qsTr("Close active window")
+            Accessible.name: i18n("Close active window")
+            Controls.ToolTip.text: Accessible.name
+            Controls.ToolTip.visible: hovered
+            Controls.ToolTip.delay: 500
             onClicked: root.actOnActiveTask("close")
             contentItem: Text {
                 text: closeButton.text

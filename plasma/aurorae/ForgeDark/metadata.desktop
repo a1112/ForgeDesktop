@@ -1,6 +1,8 @@
 [Desktop Entry]
 Name=Forge Dark
+Name[zh_CN]=Forge 深色
 Comment=ForgeDesktop compact dark window controls
+Comment[zh_CN]=ForgeDesktop 简洁深色窗口控制
 X-KDE-PluginInfo-Name=ForgeDark
 X-KDE-PluginInfo-Version=1.0
 X-KDE-PluginInfo-Author=ForgeDesktop contributors

@@ -248,6 +248,8 @@ class PlasmaBundleTests(unittest.TestCase):
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json",
             "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml":
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml",
+            "plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo":
+                "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo",
         }
         for source, destination in assets.items():
             with self.subTest(source=source):
@@ -334,6 +336,16 @@ class PlasmaBundleTests(unittest.TestCase):
         wrong_id[metadata] = (payloads[metadata][0].replace(
             b'"org.forge.windowcontrols"', b'"other"'), 0o644)
         variants.append(wrong_id)
+        catalogue = ("usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/"
+                     "locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo")
+        missing_catalogue = dict(payloads)
+        missing_catalogue.pop(catalogue)
+        variants.append(missing_catalogue)
+        for data in (b"\xde\x12\x04\x95", payloads[catalogue][0].replace(
+                "当前窗口：%1".encode(), "当前窗口：%2".encode())):
+            invalid_catalogue = dict(payloads)
+            invalid_catalogue[catalogue] = (data, 0o644)
+            variants.append(invalid_catalogue)
         for variant in variants:
             with self.subTest(variant=len(variant), digest=hashlib.sha256(
                     b"".join(value[0] for value in variant.values())).hexdigest()[:8]):

@@ -7,13 +7,16 @@ pin the receipt digest independently and verify its own signed Arch closure.
 
 import argparse
 import configparser
+import gettext
 import hashlib
+import io
 import json
 import os
 from pathlib import Path
 import re
 import shutil
 import stat
+import struct
 import tempfile
 import xml.etree.ElementTree as ET
 
@@ -42,6 +45,8 @@ WINDOW_DECOR_REQUIRED = {WINDOW_DECOR_ROOT + name for name in (
 WINDOW_WIDGET_ROOT = "usr/share/plasma/plasmoids/org.forge.windowcontrols/"
 WINDOW_WIDGET_METADATA = WINDOW_WIDGET_ROOT + "metadata.json"
 WINDOW_WIDGET_QML = WINDOW_WIDGET_ROOT + "contents/ui/main.qml"
+WINDOW_CATALOG = (WINDOW_WIDGET_ROOT + "contents/locale/zh_CN/LC_MESSAGES/"
+                  "plasma_applet_org.forge.windowcontrols.mo")
 WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML}
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
@@ -68,7 +73,7 @@ def eligible_path(name):
             or any(part in ("", ".", "..") for part in name.split("/"))):
         return False
     return (name in REQUIRED
-            or name in WINDOW_REQUIRED
+            or name in WINDOW_REQUIRED or name == WINDOW_CATALOG
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
             or name.startswith("usr/share/plasma/desktoptheme/forge/")
             or name.startswith("usr/share/kwin/scripts/org.forge.desktop/"))
@@ -82,6 +87,12 @@ def validate_session_entry(data):
         require(parser.sections() == ["Desktop Entry"] and not parser.defaults(),
                 "unexpected session group or defaults")
         values = dict(parser.items("Desktop Entry"))
+        for key in ("Name[zh_CN]", "Comment[zh_CN]"):
+            if key in values:
+                display = values.pop(key)
+                require(0 < len(display) <= 512
+                        and all(ord(char) >= 32 for char in display),
+                        "invalid localized session display field")
         require(values == {
             "Name": "ForgeDesktop (KWin)",
             "Comment": "ForgeOS KWin and Plasma Wayland candidate",
@@ -213,6 +224,22 @@ def validate_window_assets(payloads):
             and widget["KPlugin"].get("License") == "MIT",
             "invalid Forge window-control widget metadata")
     qml = payloads[WINDOW_WIDGET_QML][0].decode("utf-8")
+    messages = set(re.findall(r'\bi18n\("([^"\n]+)"', qml))
+    if messages:
+        require(WINDOW_CATALOG in payloads, "Chinese window-control catalogue missing")
+        raw = payloads[WINDOW_CATALOG][0]
+        require(len(raw) <= 64 * 1024, "window-control catalogue exceeds limit")
+        try:
+            catalog = gettext.GNUTranslations(io.BytesIO(raw))
+        except (OSError, UnicodeError, ValueError, IndexError, struct.error) as error:
+            raise ValueError("invalid window-control catalogue") from error
+        require(catalog.info().get("language") == "zh_CN", "wrong catalogue language")
+        for message in messages:
+            translated = catalog.gettext(message)
+            require(translated != message and bool(translated.strip())
+                    and sorted(re.findall(r"%[1-9][0-9]*", message))
+                    == sorted(re.findall(r"%[1-9][0-9]*", translated)),
+                    "missing translation or changed placeholder")
     require(len(qml) <= 32 * 1024
             and "TaskManager.TasksModel" in qml
             and "requestToggleMinimized" in qml
