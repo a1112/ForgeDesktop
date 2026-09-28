@@ -101,7 +101,10 @@ def directory(path):
 
 def read_regular(path, maximum):
     try:
-        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0))
+        # Type validation happens on the opened descriptor. A foreign FIFO must
+        # not block open waiting for a writer before fstat can reject it.
+        descriptor = os.open(path, os.O_RDONLY | getattr(os, "O_NONBLOCK", 0)
+                             | getattr(os, "O_NOFOLLOW", 0) | getattr(os, "O_BINARY", 0))
     except FileNotFoundError:
         return None
     with os.fdopen(descriptor, "rb") as handle:

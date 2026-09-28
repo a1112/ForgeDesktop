@@ -1,5 +1,8 @@
 import importlib.util
 import json
+import os
+import subprocess
+import sys
 import tempfile
 import unittest
 from unittest import mock
@@ -63,6 +66,47 @@ class ReconcileTests(unittest.TestCase):
         self.assertEqual(self.sync(export("Changed"))["conflicts"], [entry.name])
         self.assertEqual(self.sync({"schemaVersion": "1", "entries": []})["conflicts"], [entry.name])
         self.assertEqual(entry.read_text(), "user edit")
+
+    @unittest.skipUnless(os.name == "posix" and hasattr(os, "mkfifo"), "requires POSIX FIFO semantics")
+    def test_foreign_fifo_is_rejected_promptly_without_blocking_other_entries(self):
+        data = export()
+        blocked = data["entries"][0]["entryId"]
+        other = json.loads(json.dumps(data["entries"][0]))
+        other["entryId"] = other["entryId"].replace("7zip", "another")
+        other["applicationId"] = "another"
+        other["desktopEntry"] = other["desktopEntry"].replace("desktop-launch 7zip", "desktop-launch another")
+        data["entries"].append(other)
+        self.apps.mkdir(parents=True, mode=0o700)
+        fifo = self.apps / blocked
+        os.mkfifo(fifo)
+        child = """
+import importlib.util, json, pathlib, stat, sys
+spec = importlib.util.spec_from_file_location('desktop', sys.argv[1])
+desktop = importlib.util.module_from_spec(spec)
+spec.loader.exec_module(desktop)
+apps, state = pathlib.Path(sys.argv[2]), pathlib.Path(sys.argv[3])
+data = json.load(sys.stdin)
+fifo = apps / data['entries'][0]['entryId']
+try:
+    desktop.read_regular(fifo, desktop.MAX_ENTRY)
+except ValueError:
+    pass
+else:
+    raise AssertionError('FIFO was accepted as a regular desktop entry')
+result = desktop.reconcile(data, apps, state)
+assert result['conflicts'] == [fifo.name], result
+assert result['written'] == [data['entries'][1]['entryId']], result
+assert stat.S_ISFIFO(fifo.lstat().st_mode), 'foreign FIFO was replaced'
+assert (apps / data['entries'][1]['entryId']).is_file()
+print('fifo-rejected-and-other-entry-installed')
+"""
+        try:
+            result = subprocess.run([sys.executable, "-c", child, str(MODULE.resolve()), str(self.apps), str(self.state)],
+                                    input=json.dumps(data), text=True, capture_output=True, timeout=2, check=False)
+        except subprocess.TimeoutExpired:
+            self.fail("opening a foreign FIFO blocked read_regular before type validation")
+        self.assertEqual(result.returncode, 0, result.stderr)
+        self.assertEqual(result.stdout.strip(), "fifo-rejected-and-other-entry-installed")
 
     def test_invalid_entry_or_corrupt_manifest_fails_before_mutation(self):
         data = export()
