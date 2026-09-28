@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6">
+  <rect id="decoration-topleft" x="0" y="0" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-top" x="1" y="0" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-topright" x="2" y="0" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-left" x="0" y="1" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-center" x="1" y="1" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-right" x="2" y="1" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-bottomleft" x="0" y="2" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-bottom" x="1" y="2" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-bottomright" x="2" y="2" width="1" height="1" fill="#1c2535"/>
+  <rect id="decoration-inactive-center" x="4" y="1" width="1" height="1" fill="#171d29"/>
+</svg>

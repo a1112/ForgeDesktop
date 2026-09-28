@@ -206,9 +206,12 @@ class PlasmaBundleTests(unittest.TestCase):
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(repo / source, destination)
         dependencies = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
-        shutil.copyfile(repo / "plasma/dependencies.json", dependencies)
-        declared = json.loads(dependencies.read_bytes())["assetLicenses"]
-        self.assertEqual(set(declared), set(visual_files.values()))
+        visual_inventory = json.loads((repo / "plasma/dependencies.json").read_bytes())
+        declared = visual_inventory["assetLicenses"]
+        self.assertTrue(set(visual_files.values()) <= set(declared))
+        visual_inventory["assetLicenses"] = {
+            key: declared[key] for key in visual_files.values()}
+        dependencies.write_text(json.dumps(visual_inventory))
         pin = self.build()
         self.assertEqual(set(verify_bundle(self.output, pin)["files"]),
                          set(self.files) | set(visual_files.values()))
@@ -229,6 +232,59 @@ class PlasmaBundleTests(unittest.TestCase):
                            b'org.xfce.mousepad.desktop', b'firefox.desktop',
                            b'systemsettings.desktop'):
             self.assertIn(b'applications:' + desktop_id, layout_bytes)
+
+    def test_window_control_assets_are_closed_and_licensed(self):
+        repo = Path(__file__).resolve().parents[2]
+        assets = {
+            "plasma/aurorae/ForgeDark/metadata.desktop":
+                "usr/share/aurorae/themes/ForgeDark/metadata.desktop",
+            "plasma/aurorae/ForgeDark/ForgeDarkrc":
+                "usr/share/aurorae/themes/ForgeDark/ForgeDarkrc",
+            **{f"plasma/aurorae/ForgeDark/{name}.svg":
+               f"usr/share/aurorae/themes/ForgeDark/{name}.svg"
+               for name in ("decoration", "minimize", "maximize", "restore", "close")},
+            "plasma/plasmoids/org.forge.windowcontrols/metadata.json":
+                "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json",
+            "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml":
+                "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml",
+        }
+        for source, destination in assets.items():
+            with self.subTest(source=source):
+                self.assertTrue((repo / source).is_file())
+                self.assertTrue(eligible_path(destination))
+                path = self.stage / destination
+                path.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(repo / source, path)
+        shutil.copyfile(repo / "plasma/dependencies.json",
+                        self.stage / "usr/share/forge-desktop/plasma/dependencies.json")
+        # The reviewed product bundle includes both the look-and-feel and
+        # window-control assets, so stage the complete visual package.
+        look_root = repo / "plasma/look-and-feel"
+        for source in look_root.rglob("*"):
+            if source.is_file():
+                destination = (self.stage / "usr/share/plasma/look-and-feel/org.forge.desktop"
+                               / source.relative_to(look_root))
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, destination)
+        declared = json.loads((repo / "plasma/dependencies.json").read_bytes())[
+            "assetLicenses"]
+        self.assertTrue(set(assets.values()) <= set(declared))
+        pin = self.build()
+        self.assertTrue(set(assets.values()) <= set(verify_bundle(self.output, pin)["files"]))
+
+    def test_fusion_widget_controls_only_current_eligible_task(self):
+        repo = Path(__file__).resolve().parents[2]
+        qml = (repo / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml")
+        self.assertTrue(qml.is_file())
+        source = qml.read_text()
+        for role in ("IsWindow", "IsActive", "IsMaximized", "IsFullScreen",
+                     "IsMinimized", "IsClosable", "IsMinimizable",
+                     "IsMaximizable", "CanSetNoBorder", "HasNoBorder"):
+            self.assertIn("TaskManager.AbstractTasksModel." + role, source)
+        self.assertIn("tasks.activeTask", source)
+        self.assertIn("function actOnActiveTask", source)
+        self.assertIn("if (!eligible(index))", source)
+        self.assertNotRegex(source, r"\b(?:Process|DBus|openUrlExternally|eval)\b")
 
     def test_rejects_private_window_api_in_theme_layout(self):
         relative = ("usr/share/plasma/look-and-feel/org.forge.desktop/contents/"

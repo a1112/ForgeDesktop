@@ -35,6 +35,14 @@ LOOK_DEFAULTS = LOOK_ROOT + "contents/defaults"
 LOOK_LAYOUT = LOOK_ROOT + "contents/layouts/org.kde.plasma.desktop-layout.js"
 LOOK_WALLPAPER = LOOK_ROOT + "contents/wallpapers/forge.svg"
 LOOK_REQUIRED = {LOOK_METADATA, LOOK_DEFAULTS, LOOK_LAYOUT, LOOK_WALLPAPER}
+WINDOW_DECOR_ROOT = "usr/share/aurorae/themes/ForgeDark/"
+WINDOW_DECOR_REQUIRED = {WINDOW_DECOR_ROOT + name for name in (
+    "metadata.desktop", "ForgeDarkrc", "decoration.svg", "minimize.svg",
+    "maximize.svg", "restore.svg", "close.svg")}
+WINDOW_WIDGET_ROOT = "usr/share/plasma/plasmoids/org.forge.windowcontrols/"
+WINDOW_WIDGET_METADATA = WINDOW_WIDGET_ROOT + "metadata.json"
+WINDOW_WIDGET_QML = WINDOW_WIDGET_ROOT + "contents/ui/main.qml"
+WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML}
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
@@ -60,6 +68,7 @@ def eligible_path(name):
             or any(part in ("", ".", "..") for part in name.split("/"))):
         return False
     return (name in REQUIRED
+            or name in WINDOW_REQUIRED
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
             or name.startswith("usr/share/plasma/desktoptheme/forge/")
             or name.startswith("usr/share/kwin/scripts/org.forge.desktop/"))
@@ -151,6 +160,68 @@ def validate_visual_assets(payloads):
             "Forge wallpaper contains unsupported SVG elements")
 
 
+def validate_window_assets(payloads):
+    present = set(payloads) & WINDOW_REQUIRED
+    if not present:
+        return
+    require(present == WINDOW_REQUIRED, "incomplete Forge window-control assets")
+    metadata = payloads[WINDOW_DECOR_ROOT + "metadata.desktop"][0].decode("utf-8")
+    require(metadata.startswith("[Desktop Entry]\n")
+            and re.search(r"(?m)^X-KDE-PluginInfo-Name=ForgeDark$", metadata)
+            and re.search(r"(?m)^X-KDE-PluginInfo-License=MIT$", metadata)
+            and len(metadata) <= 4096,
+            "invalid Forge decoration metadata")
+    config = payloads[WINDOW_DECOR_ROOT + "ForgeDarkrc"][0].decode("utf-8")
+    require("RightButtons=IAX\n" in config
+            and "TitleHeight=32\n" in config
+            and "ButtonWidth=48\n" in config
+            and len(config) <= 4096,
+            "invalid Forge decoration layout")
+    expected_frame = {"decoration-" + part for part in (
+        "center", "top", "bottom", "left", "right", "topleft",
+        "topright", "bottomleft", "bottomright")}
+    for name in ("decoration", "minimize", "maximize", "restore", "close"):
+        raw = payloads[WINDOW_DECOR_ROOT + name + ".svg"][0]
+        require(len(raw) <= 1024 * 1024 and b"<!DOCTYPE" not in raw
+                and b"<!ENTITY" not in raw, "unsafe Forge decoration SVG")
+        try:
+            svg = ET.fromstring(raw)
+        except ET.ParseError as error:
+            raise ValueError("invalid Forge decoration SVG") from error
+        require(svg.tag == "{http://www.w3.org/2000/svg}svg",
+                "invalid Forge decoration root")
+        ids = {element.attrib.get("id") for element in svg.iter()}
+        require((expected_frame if name == "decoration" else
+                 {"active-center", "hover-center", "inactive-center"}) <= ids,
+                "Forge decoration SVG misses required states")
+        allowed = {"svg", "g", "rect", "path", "line"}
+        require(all(element.tag in {"{http://www.w3.org/2000/svg}" + tag
+                                    for tag in allowed}
+                    and all(not key.lower().startswith("on")
+                            and "href" not in key.lower()
+                            and not re.search(r"url\s*\(|https?://|file://",
+                                              value, re.IGNORECASE)
+                            for key, value in element.attrib.items())
+                    for element in svg.iter()),
+                "Forge decoration SVG contains external or active content")
+    widget = json.loads(payloads[WINDOW_WIDGET_METADATA][0],
+                        object_pairs_hook=unique_pairs)
+    require(type(widget) is dict and widget.get("KPackageStructure") == "Plasma/Applet"
+            and widget.get("X-Plasma-API-Minimum-Version") == "6.0"
+            and type(widget.get("KPlugin")) is dict
+            and widget["KPlugin"].get("Id") == "org.forge.windowcontrols"
+            and widget["KPlugin"].get("License") == "MIT",
+            "invalid Forge window-control widget metadata")
+    qml = payloads[WINDOW_WIDGET_QML][0].decode("utf-8")
+    require(len(qml) <= 32 * 1024
+            and "TaskManager.TasksModel" in qml
+            and "requestToggleMinimized" in qml
+            and "requestToggleMaximized" in qml
+            and "requestClose" in qml
+            and not re.search(r"\b(?:Process|Qt\.openUrlExternally|DBus|eval)\b", qml),
+            "Forge window-control widget uses unreviewed controls")
+
+
 def collect_files(root, *, receipt=False):
     root = Path(root).absolute()
     no_links(root)
@@ -196,6 +267,7 @@ def collect_files(root, *, receipt=False):
     require(set(dependencies["assetLicenses"]) == assets,
             "asset license records differ from bundled assets")
     validate_visual_assets(result)
+    validate_window_assets(result)
     return result
 
 

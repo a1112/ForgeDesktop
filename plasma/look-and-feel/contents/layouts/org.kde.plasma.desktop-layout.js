@@ -16,6 +16,7 @@ topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.digitalclock");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.systemtray");
+topPanel.addWidget("org.forge.windowcontrols");
 
 var dock = new Panel;
 dock.location = "bottom";

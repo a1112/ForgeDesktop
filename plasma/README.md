@@ -22,6 +22,15 @@ usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json
 usr/share/plasma/look-and-feel/org.forge.desktop/contents/defaults
 usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js
 usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg
+usr/share/aurorae/themes/ForgeDark/metadata.desktop
+usr/share/aurorae/themes/ForgeDark/ForgeDarkrc
+usr/share/aurorae/themes/ForgeDark/decoration.svg
+usr/share/aurorae/themes/ForgeDark/minimize.svg
+usr/share/aurorae/themes/ForgeDark/maximize.svg
+usr/share/aurorae/themes/ForgeDark/restore.svg
+usr/share/aurorae/themes/ForgeDark/close.svg
+usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json
+usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml
 ```
 
 Only the session script is executable. The producer records the source commit
@@ -34,3 +43,10 @@ as an option: selecting it in the isolated user session applies the Forge
 wallpaper, dark Breeze palette, top status panel and compact bottom task panel.
 The bundle never changes the default login session or an existing user's
 Plasma configuration. The Smithay and XFCE login entries remain available.
+
+The Forge Dark Aurorae decoration handles ordinary server-decorated windows.
+The top-panel widget requests actions for the current maximized task through
+Plasma's task model. KWin still owns focus, movement, tiling and permissions.
+Applications with client-drawn headers retain their own controls. The optional
+Forge theme sets borderless maximized windows for Fusion Mode; do not apply
+that setting to another session or an existing user's profile automatically.

@@ -21,6 +21,13 @@ Dark, Breeze icons and window decoration come from the pinned upstream Arch
 packages under their own licenses. The theme is optional and does not rewrite
 existing user settings during bundle installation.
 
+The Forge Dark Aurorae SVG frame/buttons and the Fusion Plasma widget are
+original MIT assets drawn from the R-OS interaction description, not copied
+R-OS source or images. The button dimensions, dark surfaces, pale glyphs and
+red close hover follow the observed interaction pattern. Their runtime uses
+the already pinned KWin and plasma-workspace packages; no new binary library
+is bundled. R-OS application tabs are not replicated for arbitrary clients.
+
 New build dependencies are the existing pinned Arch snapshot 2026/08/01:
 Qt6 base 6.11.1-1, declarative 6.11.1-3, wayland 6.11.1-1, svg 6.11.1-1;
 GIO/glib2 2.88.3-1, GCC 16.1.1, CMake/Ninja. Package signature/digest receipts
