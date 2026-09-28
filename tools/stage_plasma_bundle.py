@@ -34,8 +34,9 @@ def stage(repo, output):
         path = output / name
         path.parent.mkdir(parents=True, exist_ok=True)
         data = (repo / source).read_bytes()
-        if mode == 0o755:
-            data = data.replace(b"\r\n", b"\n")
+        # This closed bundle contains text assets only. Normalize every asset
+        # so Windows checkouts and Linux git archives produce identical bytes.
+        data = data.replace(b"\r\n", b"\n")
         path.write_bytes(data)
         path.chmod(mode)
 

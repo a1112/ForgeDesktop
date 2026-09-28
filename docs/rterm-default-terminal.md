@@ -1,5 +1,9 @@
 # R-Term terminal integration
 
+Create a clean source export with `git -c core.autocrlf=false archive HEAD`.
+`tools/stage_plasma_bundle.py` normalizes the closed set of text assets to LF,
+so staging on Windows and Linux produces identical payload bytes and modes.
+
 Plasma bundle 0.5.0 contains the terminal launcher, desktop entry and new-user
 defaults. ForgeOS separately verifies and installs the native R-Term binary.
 The launcher selects CPU rendering and explicitly selects Wayland when
