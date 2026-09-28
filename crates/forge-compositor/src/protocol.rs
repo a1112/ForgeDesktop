@@ -117,7 +117,7 @@ pub fn trusted_role(expected: Option<(u32, u32)>, actual: (u32, u32), role: &str
     expected == Some(actual)
         && matches!(
             role,
-            "forge.background" | "forge.panel" | "forge.dock" | "forge.launcher"
+            "forge.background" | "forge.panel" | "forge.dock" | "forge.launcher" | "forge.traymenu"
         )
 }
 pub fn opaque_id(id: forge_desktop_core::WindowId) -> String {
@@ -208,6 +208,12 @@ mod tests {
     #[test]
     fn roles_require_exact_live_child_credentials() {
         assert!(trusted_role(Some((12, 1000)), (12, 1000), "forge.panel"));
+        assert!(trusted_role(Some((12, 1000)), (12, 1000), "forge.traymenu"));
+        assert!(!trusted_role(
+            Some((12, 1000)),
+            (13, 1000),
+            "forge.traymenu"
+        ));
         assert!(!trusted_role(Some((12, 1000)), (13, 1000), "forge.panel"));
         assert!(!trusted_role(Some((12, 1000)), (12, 0), "forge.panel"));
         assert!(!trusted_role(None, (12, 1000), "forge.panel"));

@@ -69,6 +69,12 @@ impl App {
                 width: w.min(760) as u32,
                 height: (h - 190).max(100) as u32,
             },
+            "forge.traymenu" => Geometry {
+                x: (w - 334).max(0),
+                y: 38,
+                width: w.clamp(1, 320) as u32,
+                height: (h - 38).clamp(1, 320) as u32,
+            },
             _ => Geometry {
                 x: 0,
                 y: 0,

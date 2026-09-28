@@ -19,9 +19,65 @@ Window {
    Repeater {model: 4;Action {required property int index;label: String(index+1);selected: desktop.workspace===index;onClicked: desktop.switchWorkspace(index)}}
   }
   Text {anchors.centerIn: parent;text: desktop.clock;textFormat: Text.PlainText;color: "#e4eaf5";font.pixelSize: 12}
+  property string trayHint: ""
   Row {anchors.right: parent.right;anchors.rightMargin: 14;anchors.verticalCenter: parent.verticalCenter;spacing: 8
+   Text {visible: panel.trayHint.length>0;text: panel.trayHint;textFormat: Text.PlainText;color: "#adc2df";font.pixelSize: 11;width: Math.min(128,implicitWidth);elide: Text.ElideRight;anchors.verticalCenter: parent.verticalCenter}
+   Repeater {model: tray.entries.slice(0,6)
+    Rectangle {id: trayItem;required property var modelData;width: 28;height: 28;radius: 7;color: trayMouse.containsMouse ? "#405775" : "#27374d";border.color: modelData.status==="NeedsAttention" ? "#e3b864" : "#4b5a70"
+     Image {id: itemIcon;anchors.centerIn: parent;width: 20;height: 20;visible: trayItem.modelData.iconName.length>0;source: visible ? "image://tray/"+trayItem.modelData.iconName : "";sourceSize.width: 24;sourceSize.height: 24}
+     Text {anchors.centerIn: parent;visible: !itemIcon.visible || itemIcon.status!==Image.Ready;text: trayItem.modelData.title.charAt(0).toUpperCase();textFormat: Text.PlainText;color: "#edf3ff";font.pixelSize: 13}
+     MouseArea {id: trayMouse;anchors.fill: parent;hoverEnabled: true;acceptedButtons: Qt.LeftButton|Qt.RightButton;onEntered: panel.trayHint=trayItem.modelData.title;onExited: panel.trayHint="";onClicked: function(mouse){var point=mapToGlobal(mouse.x,mouse.y);if((mouse.button===Qt.RightButton || trayItem.modelData.itemIsMenu) && trayItem.modelData.hasMenu){trayMenu.itemId=trayItem.modelData.id;trayMenu.parentId=0;trayMenu.x=Math.max(0,Math.min(Math.round(point.x)-140,desktop.desktopWidth-trayMenu.width));trayMenu.y=40;tray.requestMenu(trayMenu.itemId,0);trayMenu.visible=true}else if(!trayItem.modelData.itemIsMenu) tray.activate(trayItem.modelData.id,Math.round(point.x),Math.round(point.y),mouse.button===Qt.RightButton)}}
+    }
+   }
+   Action {visible: tray.entries.length>6;label: "+"+(tray.entries.length-6);onClicked: trayOverflow.visible=true}
    Action {label: notices.entries.length ? "Notices ("+notices.entries.length+")" : "Notices";onClicked: notificationCenter.visible=true}
    Action {label: "Displays";onClicked: displays.visible=true}
+  }
+ }
+ Window {
+  id: trayMenu;visible: false;title: "forge.traymenu";width: 320;height: Math.min(440,Math.max(110,currentMenu.length*38+68));color: "#192436";flags: Qt.FramelessWindowHint
+  property string itemId: ""
+  property int parentId: 0
+  property var currentItem: tray.entries.filter(function(item){return item.id===trayMenu.itemId})[0]
+  property var currentMenu: currentItem && currentItem.menuParent===parentId ? currentItem.menu : []
+  Column {anchors.fill: parent;anchors.margins: 12;spacing: 7
+   Row {width: parent.width;spacing: 8
+    Action {visible: trayMenu.parentId!==0;label: "‹";onClicked: {trayMenu.parentId=0;tray.requestMenu(trayMenu.itemId,0)}}
+    Text {text: trayMenu.currentItem ? trayMenu.currentItem.title : "Application menu";textFormat: Text.PlainText;color: "#edf3ff";font.pixelSize: 15;width: parent.width-(trayMenu.parentId!==0?70:42);elide: Text.ElideRight;anchors.verticalCenter: parent.verticalCenter}
+    Action {label: "×";onClicked: trayMenu.visible=false}
+   }
+   Text {visible: trayMenu.currentMenu.length===0;text: trayMenu.currentItem && trayMenu.currentItem.menuFailed ? "Menu unavailable" : trayMenu.currentItem && trayMenu.currentItem.menuLoading ? "Loading menu…" : "No actions";textFormat: Text.PlainText;color: "#adc2df"}
+   Flickable {width: parent.width;height: parent.height-48;contentWidth: width;contentHeight: menuRows.implicitHeight;clip: true
+    Column {id: menuRows;width: parent.width;spacing: 2
+     Repeater {model: trayMenu.currentMenu
+      Rectangle {id: menuRow;required property var modelData;width: menuRows.width;height: modelData.separator?12:34;radius: 5;color: !modelData.enabled ? "transparent" : menuMouse.containsMouse ? "#3a4f6c" : "transparent"
+       Rectangle {visible: menuRow.modelData.separator;x: 8;anchors.verticalCenter: parent.verticalCenter;width: parent.width-16;height: 1;color: "#54647b"}
+       Text {visible: !menuRow.modelData.separator;x: 10;anchors.verticalCenter: parent.verticalCenter;width: parent.width-20;text: (menuRow.modelData.checked?"✓  ":"")+menuRow.modelData.label+(menuRow.modelData.submenu?"  ›":"");textFormat: Text.PlainText;color: menuRow.modelData.enabled?"#edf3ff":"#7d8ca4";elide: Text.ElideRight;font.pixelSize: 13}
+       MouseArea {id: menuMouse;anchors.fill: parent;hoverEnabled: true;enabled: menuRow.modelData.enabled && !menuRow.modelData.separator;onClicked: {if(menuRow.modelData.submenu){trayMenu.parentId=menuRow.modelData.id;tray.requestMenu(trayMenu.itemId,trayMenu.parentId)}else{tray.selectMenu(trayMenu.itemId,menuRow.modelData.id);trayMenu.visible=false}}}
+      }
+     }
+    }
+   }
+  }
+ }
+ Window {
+  id: trayOverflow;visible: false;title: "ForgeDesktop — Tray";width: 320;height: Math.min(500,Math.max(92,tray.entries.length*42));color: "#192436"
+  Column {anchors.fill: parent;anchors.margins: 16;spacing: 10
+   Row {width: parent.width
+    Text {text: "Tray";color: "#edf3ff";font.pixelSize: 20;width: parent.width-42}
+    Action {label: "×";onClicked: trayOverflow.visible=false}
+   }
+   Flickable {width: parent.width;height: parent.height-46;contentWidth: width;contentHeight: overflowItems.implicitHeight;clip: true
+    Column {id: overflowItems;width: parent.width;spacing: 4
+     Repeater {model: tray.entries.slice(6)
+      Rectangle {id: overflowItem;required property var modelData;width: overflowItems.width;height: 36;radius: 6;color: overflowMouse.containsMouse ? "#354964" : "#27374d"
+       Image {x: 8;anchors.verticalCenter: parent.verticalCenter;width: 22;height: 22;source: overflowItem.modelData.iconName.length ? "image://tray/"+overflowItem.modelData.iconName : ""}
+       Text {x: 42;anchors.verticalCenter: parent.verticalCenter;width: parent.width-50;text: overflowItem.modelData.title;textFormat: Text.PlainText;color: "#edf3ff";elide: Text.ElideRight}
+       MouseArea {id: overflowMouse;anchors.fill: parent;hoverEnabled: true;acceptedButtons: Qt.LeftButton|Qt.RightButton;onClicked: function(mouse){var point=mapToGlobal(mouse.x,mouse.y);if((mouse.button===Qt.RightButton || overflowItem.modelData.itemIsMenu) && overflowItem.modelData.hasMenu){trayMenu.itemId=overflowItem.modelData.id;trayMenu.parentId=0;tray.requestMenu(trayMenu.itemId,0);trayMenu.visible=true}else if(!overflowItem.modelData.itemIsMenu) tray.activate(overflowItem.modelData.id,Math.round(point.x),Math.round(point.y),mouse.button===Qt.RightButton);trayOverflow.visible=false}}
+      }
+     }
+    }
+   }
   }
  }
  Window {

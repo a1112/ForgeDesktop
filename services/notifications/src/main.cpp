@@ -1,5 +1,6 @@
 #include "store.h"
 #include "authority.h"
+#include "tray.h"
 
 #include <QCoreApplication>
 #include <QDBusAbstractAdaptor>
@@ -116,6 +117,146 @@ private:
     NotificationStore *m_store;
 };
 
+class WatcherObject final : public QObject, public QDBusContext {
+    Q_OBJECT
+public:
+    WatcherObject(TrayStore *store, ShellAuthority *authority)
+        : m_store(store), m_authority(authority) {}
+    TrayStore *store() const { return m_store; }
+    bool registerItem(const QString &service, const QString &interface) {
+        if (!calledFromDBus()) return false;
+        QString error;
+        if (m_store->registerItem(message().service(), service, interface, &error)) return true;
+        sendErrorReply(QDBusError::AccessDenied, error);
+        return false;
+    }
+    void registerHost(const QString &service) {
+        if (!calledFromDBus()) return;
+        QString error;
+        if (!m_store->registerHost(message().service(), service, &error))
+            sendErrorReply(QDBusError::AccessDenied, error);
+    }
+    bool authorizeView() {
+        if (calledFromDBus() && m_authority->allowed(message().service())) return true;
+        if (calledFromDBus())
+            sendErrorReply(QDBusError::AccessDenied,
+                           QStringLiteral("tray controls require the live desktop shell"));
+        return false;
+    }
+private:
+    TrayStore *m_store;
+    ShellAuthority *m_authority;
+};
+
+class KdeWatcherAdaptor final : public QDBusAbstractAdaptor {
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.kde.StatusNotifierWatcher")
+    Q_PROPERTY(QStringList RegisteredStatusNotifierItems READ RegisteredStatusNotifierItems)
+    Q_PROPERTY(bool IsStatusNotifierHostRegistered READ IsStatusNotifierHostRegistered)
+    Q_PROPERTY(int ProtocolVersion READ ProtocolVersion)
+public:
+    explicit KdeWatcherAdaptor(WatcherObject *object)
+        : QDBusAbstractAdaptor(object), m_object(object) {
+        connect(object->store(), &TrayStore::itemRegistered, this,
+                &KdeWatcherAdaptor::StatusNotifierItemRegistered);
+        connect(object->store(), &TrayStore::itemUnregistered, this,
+                &KdeWatcherAdaptor::StatusNotifierItemUnregistered);
+        connect(object->store(), &TrayStore::hostBecameRegistered, this,
+                &KdeWatcherAdaptor::StatusNotifierHostRegistered);
+        connect(object->store(), &TrayStore::hostBecameUnregistered, this,
+                &KdeWatcherAdaptor::StatusNotifierHostUnregistered);
+    }
+    QStringList RegisteredStatusNotifierItems() const {
+        return m_object->store()->registeredItems();
+    }
+    bool IsStatusNotifierHostRegistered() const {
+        return m_object->store()->hostRegistered();
+    }
+    int ProtocolVersion() const { return 0; }
+public slots:
+    void RegisterStatusNotifierItem(const QString &service) {
+        m_object->registerItem(service, QStringLiteral("org.kde.StatusNotifierItem"));
+    }
+    void RegisterStatusNotifierHost(const QString &service) {
+        m_object->registerHost(service);
+    }
+signals:
+    void StatusNotifierItemRegistered(const QString &service);
+    void StatusNotifierItemUnregistered(const QString &service);
+    void StatusNotifierHostRegistered();
+    void StatusNotifierHostUnregistered();
+private:
+    WatcherObject *m_object;
+};
+
+class FreedesktopWatcherAdaptor final : public QDBusAbstractAdaptor {
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.freedesktop.StatusNotifierWatcher")
+    Q_PROPERTY(QStringList RegisteredStatusNotifierItems READ RegisteredStatusNotifierItems)
+    Q_PROPERTY(bool IsStatusNotifierHostRegistered READ IsStatusNotifierHostRegistered)
+    Q_PROPERTY(int ProtocolVersion READ ProtocolVersion)
+public:
+    explicit FreedesktopWatcherAdaptor(WatcherObject *object)
+        : QDBusAbstractAdaptor(object), m_object(object) {
+        connect(object->store(), &TrayStore::itemRegistered, this,
+                &FreedesktopWatcherAdaptor::StatusNotifierItemRegistered);
+        connect(object->store(), &TrayStore::itemUnregistered, this,
+                &FreedesktopWatcherAdaptor::StatusNotifierItemUnregistered);
+        connect(object->store(), &TrayStore::hostBecameRegistered, this,
+                &FreedesktopWatcherAdaptor::StatusNotifierHostRegistered);
+    }
+    QStringList RegisteredStatusNotifierItems() const {
+        return m_object->store()->registeredItems();
+    }
+    bool IsStatusNotifierHostRegistered() const {
+        return m_object->store()->hostRegistered();
+    }
+    int ProtocolVersion() const { return 0; }
+public slots:
+    void RegisterStatusNotifierItem(const QString &service) {
+        m_object->registerItem(service, QStringLiteral("org.freedesktop.StatusNotifierItem"));
+    }
+    void RegisterStatusNotifierHost(const QString &service) {
+        m_object->registerHost(service);
+    }
+signals:
+    void StatusNotifierItemRegistered(const QString &service);
+    void StatusNotifierItemUnregistered(const QString &service);
+    void StatusNotifierHostRegistered();
+private:
+    WatcherObject *m_object;
+};
+
+class TrayViewAdaptor final : public QDBusAbstractAdaptor {
+    Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "org.forge.DesktopTray1")
+public:
+    explicit TrayViewAdaptor(WatcherObject *object)
+        : QDBusAbstractAdaptor(object), m_object(object) {
+        connect(object->store(), &TrayStore::changed, this, &TrayViewAdaptor::Changed);
+    }
+public slots:
+    QString Snapshot() {
+        return m_object->authorizeView() ? m_object->store()->snapshot() : QString();
+    }
+    bool Activate(const QString &id, int x, int y, bool context) {
+        if (!m_object->authorizeView()) return false;
+        return m_object->store()->activate(id, x, y, context);
+    }
+    bool RequestMenu(const QString &id, int parentId) {
+        if (!m_object->authorizeView()) return false;
+        return m_object->store()->requestMenu(id, parentId);
+    }
+    bool SelectMenu(const QString &id, int menuId) {
+        if (!m_object->authorizeView()) return false;
+        return m_object->store()->selectMenu(id, menuId);
+    }
+signals:
+    void Changed();
+private:
+    WatcherObject *m_object;
+};
+
 int main(int argc, char **argv) {
     if (geteuid() == 0) return 1;
     int flags = fcntl(STDIN_FILENO, F_GETFD);
@@ -129,10 +270,15 @@ int main(int argc, char **argv) {
     QCoreApplication app(argc, argv);
     app.setApplicationName(QStringLiteral("Forge Notifications"));
     NotificationStore store;
+    TrayStore tray;
     ShellAuthority authority;
     NotificationObject object(&store, &authority);
+    WatcherObject watcher(&tray, &authority);
     new FreedesktopAdaptor(&object);
     new ViewAdaptor(&object);
+    new KdeWatcherAdaptor(&watcher);
+    new FreedesktopWatcherAdaptor(&watcher);
+    new TrayViewAdaptor(&watcher);
     QSocketNotifier reader(STDIN_FILENO, QSocketNotifier::Read);
     QObject::connect(&reader, &QSocketNotifier::activated, &app, [&] {
         char bytes[256];
@@ -144,7 +290,11 @@ int main(int argc, char **argv) {
     if (!bus.isConnected() ||
         !bus.registerObject(QStringLiteral("/org/freedesktop/Notifications"), &object,
                             QDBusConnection::ExportAdaptors) ||
-        !bus.registerService(QStringLiteral("org.freedesktop.Notifications"))) {
+        !bus.registerService(QStringLiteral("org.freedesktop.Notifications")) ||
+        !bus.registerObject(QStringLiteral("/StatusNotifierWatcher"), &watcher,
+                            QDBusConnection::ExportAdaptors) ||
+        !bus.registerService(QStringLiteral("org.kde.StatusNotifierWatcher")) ||
+        !bus.registerService(QStringLiteral("org.freedesktop.StatusNotifierWatcher"))) {
         qCritical() << "Forge notification service could not own session bus name:"
                     << bus.lastError().message();
         return 2;

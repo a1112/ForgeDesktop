@@ -1,5 +1,6 @@
 #include "model.h"
 #include "notifications.h"
+#include "tray.h"
 #include <QGuiApplication>
 #include <QDBusConnection>
 #include <QQmlApplicationEngine>
@@ -23,6 +24,22 @@ public:explicit Icons(Model&model):QQuickImageProvider(Pixmap),m(model){}
   if(result.isNull()){result=QPixmap(n,n);result.fill(Qt::transparent);QPainter p(&result);p.setRenderHint(QPainter::Antialiasing);p.setPen(Qt::NoPen);p.setBrush(QColor::fromHsv(qHash(id)%360,135,205));p.drawRoundedRect(result.rect(),n/5,n/5);p.setPen(Qt::white);p.drawText(result.rect(),Qt::AlignCenter,id.left(1).toUpper());}if(size)*size=result.size();return result;
  }
 };
+class TrayIcons final : public QQuickImageProvider {
+public:
+ TrayIcons() : QQuickImageProvider(Pixmap) {}
+ QPixmap requestPixmap(const QString &name, QSize *size,
+                       const QSize &requested) override {
+  const int n = requested.width()>0 ? qBound(16,requested.width(),64) : 24;
+  QPixmap pixmap = QIcon::fromTheme(name).pixmap(n,n);
+  if(name.endsWith("-symbolic") && !pixmap.isNull()){
+   QPainter painter(&pixmap);
+   painter.setCompositionMode(QPainter::CompositionMode_SourceIn);
+   painter.fillRect(pixmap.rect(),QColor("#dae6f7"));
+  }
+  if(size)*size=pixmap.size();
+  return pixmap;
+ }
+};
 int main(int argc,char**argv){
  if(geteuid()==0)return 1;
  // The sole control capability is inherited stdin; prevent all desktop launches
@@ -32,7 +49,7 @@ int main(int argc,char**argv){
  int kind=0;socklen_t length=sizeof(kind);if(getsockopt(0,SOL_SOCKET,SO_TYPE,&kind,&length)<0 || kind!=SOCK_STREAM)return 1;
  qputenv("QT_QUICK_BACKEND","software");qputenv("QSG_RENDER_LOOP","basic");
  QGuiApplication app(argc,argv);app.setQuitOnLastWindowClosed(false);app.setApplicationName("ForgeDesktop");app.setDesktopFileName("org.forge.Desktop");QIcon::setThemeName("Adwaita");
- Model model;model.scanApplications();Notifications notices;QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("desktop",&model);engine.rootContext()->setContextProperty("notices",&notices);engine.addImageProvider("apps",new Icons(model));
+ Model model;model.scanApplications();Notifications notices;Tray tray;QQmlApplicationEngine engine;engine.rootContext()->setContextProperty("desktop",&model);engine.rootContext()->setContextProperty("notices",&notices);engine.rootContext()->setContextProperty("tray",&tray);engine.addImageProvider("apps",new Icons(model));engine.addImageProvider("tray",new TrayIcons());
  QByteArray input,output;QSocketNotifier reader(0,QSocketNotifier::Read),writer(0,QSocketNotifier::Write);writer.setEnabled(false);
  auto flush=[&](){while(!output.isEmpty()){auto n=::send(0,output.constData(),output.size(),MSG_NOSIGNAL);if(n<0&&(errno==EAGAIN||errno==EWOULDBLOCK))break;if(n<=0){app.exit(1);return;}output.remove(0,n);}writer.setEnabled(!output.isEmpty());};
  QObject::connect(&writer,&QSocketNotifier::activated,&app,[&]{flush();});
