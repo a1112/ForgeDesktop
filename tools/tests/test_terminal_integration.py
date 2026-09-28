@@ -1,5 +1,6 @@
 """Terminal launch argument preservation and reversible personal settings."""
 import configparser
+import base64
 import importlib.util
 import json
 import shutil
@@ -20,6 +21,114 @@ def module(name):
 
 
 class TerminalIntegrationTests(unittest.TestCase):
+    def legacy_shortcut_receipt(self, migration, home, before=None, status="applied"):
+        migration.apply(home)
+        state = migration.load_state(home)
+        after = b"[org.forge.RTerm.desktop]\n_launch=Ctrl+Alt+T,Ctrl+Alt+T,R-Term\n_k_friendly_name=R-Term\n"
+        if before:
+            after += b"[org.kde.konsole.desktop]\n_launch=none,none,Terminal\n"
+        state["files"][".config/kglobalshortcutsrc"] = {
+            "before": None if before is None else base64.b64encode(before).decode(),
+            "after": base64.b64encode(after).decode(), "afterSha256": migration.sha(after)}
+        state["status"] = status
+        migration.save_state(home, state)
+        return state
+
+    def test_restore_legacy_receipt_disables_omitted_desktop_default_and_restores_old_binding(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            before = b"[org.kde.konsole.desktop]\n_launch=Ctrl+Alt+T,Ctrl+Alt+T,Konsole\n"
+            self.legacy_shortcut_receipt(migration, home, before)
+            path = home / ".config/kglobalshortcutsrc"
+            path.write_bytes(b"[kwin]\ncustom=unchanged\n")
+            migration.restore(home)
+            config = path.read_bytes()
+            self.assertEqual(migration.ini_entry(config, "services][org.forge.RTerm.desktop", "_launch")[2], "none")
+            self.assertEqual(migration.ini_entry(config, "services][org.kde.konsole.desktop", "_launch")[2], "Ctrl+Alt+T")
+            self.assertIn(b"custom=unchanged", config)
+
+    def test_restore_legacy_receipt_rejects_later_services_binding_before_any_write(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            self.legacy_shortcut_receipt(migration, home)
+            (home / ".config/kglobalshortcutsrc").write_bytes(b"[services][org.forge.RTerm.desktop]\n_launch=Meta+Return\n")
+            before = {name: migration.read(home / name) for name in migration.CONFIGS}
+            with self.assertRaises(ValueError):
+                migration.restore(home)
+            self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+
+    def test_apply_uses_services_and_restore_recovers_preexisting_effective_bindings(self):
+        migration = module("terminal_defaults")
+        for old in (b"[services][org.forge.RTerm.desktop]\n_launch=Meta+Return\n",
+                    b"[org.forge.RTerm.desktop]\n_launch=Meta+Return,Ctrl+Alt+T,Personal\n"):
+            with self.subTest(old=old), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                (home / ".config").mkdir()
+                path = home / ".config/kglobalshortcutsrc"
+                path.write_bytes(old + b"[services][org.kde.konsole.desktop]\n_launch=Ctrl+Alt+T\n")
+                migration.apply(home)
+                config = path.read_bytes()
+                self.assertEqual(migration.ini_entry(config, "services][org.forge.RTerm.desktop", "_launch")[2], "Ctrl+Alt+T")
+                self.assertEqual(migration.ini_entry(config, "services][org.kde.konsole.desktop", "_launch")[2], "none")
+                self.assertIsNone(migration.ini_entry(config, "org.forge.RTerm.desktop", "_launch")[2])
+                migration.restore(home)
+                self.assertEqual(migration.ini_entry(path.read_bytes(), "services][org.forge.RTerm.desktop", "_launch")[2], "Meta+Return")
+                self.assertEqual(migration.ini_entry(path.read_bytes(), "services][org.kde.konsole.desktop", "_launch")[2], "Ctrl+Alt+T")
+
+    def test_prior_restored_receipt_repairs_only_shortcut_default_once(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            self.legacy_shortcut_receipt(migration, home, status="restored")
+            path = home / ".config/kglobalshortcutsrc"
+            path.write_bytes(b"[kwin]\ncustom=keep\n")
+            kde = home / ".config/kdeglobals"
+            kde.write_bytes(b"[General]\nTerminalApplication=after-restore-choice\n")
+            migration.restore(home)
+            self.assertEqual(migration.ini_entry(path.read_bytes(), "services][org.forge.RTerm.desktop", "_launch")[2], "none")
+            self.assertIn(b"after-restore-choice", kde.read_bytes())
+            restored = path.read_bytes()
+            migration.restore(home)
+            self.assertEqual(restored, path.read_bytes())
+
+    def test_restore_matches_kde_legacy_and_services_precedence(self):
+        migration = module("terminal_defaults")
+        for legacy_active, expected in (("Meta+Return", "Meta+Return"), ("Ctrl+Alt+T", "Meta+Space")):
+            with self.subTest(legacy=legacy_active), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                (home / ".config").mkdir()
+                path = home / ".config/kglobalshortcutsrc"
+                path.write_text("[services][org.forge.RTerm.desktop]\n_launch=Meta+Space\n"
+                                "[org.forge.RTerm.desktop]\n_launch=" + legacy_active + ",Ctrl+Alt+T,R-Term\n")
+                migration.apply(home)
+                migration.restore(home)
+                self.assertEqual(migration.ini_entry(path.read_bytes(), "services][org.forge.RTerm.desktop", "_launch")[2], expected)
+
+    def test_restore_protects_later_old_terminal_binding_and_unchanged_rterm_binding(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            (home / ".config").mkdir()
+            path = home / ".config/kglobalshortcutsrc"
+            path.write_bytes(b"[services][org.kde.konsole.desktop]\n_launch=Ctrl+Alt+T\n")
+            migration.apply(home)
+            path.write_bytes(path.read_bytes().replace(b"_launch=none", b"_launch=Meta+K"))
+            before = {name: migration.read(home / name) for name in migration.CONFIGS}
+            with self.assertRaises(ValueError):
+                migration.restore(home)
+            self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            (home / ".config").mkdir()
+            path = home / ".config/kglobalshortcutsrc"
+            path.write_bytes(b"[services][org.forge.RTerm.desktop]\n_launch=Ctrl+Alt+T\n")
+            migration.apply(home)
+            path.write_bytes(path.read_bytes().replace(b"Ctrl+Alt+T", b"Meta+Return"))
+            migration.restore(home)
+            self.assertIn(b"_launch=Meta+Return", path.read_bytes())
+
     def test_apply_changes_only_the_complete_dock_launcher_token(self):
         migration = module("terminal_defaults")
         with tempfile.TemporaryDirectory() as temporary:
@@ -44,6 +153,9 @@ class TerminalIntegrationTests(unittest.TestCase):
             ("kglobalshortcutsrc", b"[org.forge.RTerm.desktop]\n_launch[$i]=Meta+T,none,Personal\n"),
             ("kglobalshortcutsrc", b"[org.forge.RTerm.desktop]\n_launch=one\n[org.forge.RTerm.desktop]\n_launch=two\n"),
             ("kglobalshortcutsrc", b"[org.kde.konsole.desktop][$i]\n_launch=Ctrl+Alt+T,none,Terminal\n"),
+            ("kglobalshortcutsrc", b"[services][$i]\n[services][org.forge.RTerm.desktop]\n_launch=Meta+T\n"),
+            ("kglobalshortcutsrc", b"[services][org.forge.RTerm.desktop]\n_launch[$i]=Meta+T\n"),
+            ("kglobalshortcutsrc", b"[services][org.forge.RTerm.desktop]\n_launch=Meta+T\n[services][org.forge.RTerm.desktop]\n_launch=Meta+R\n"),
             ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7][$i]\nlaunchers=applications:xfce4-terminal.desktop\n"),
             ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7]\nlaunchers[$i]=applications:xfce4-terminal.desktop\n"),
             ("plasma-org.kde.plasma.desktop-appletsrc", b"[Containments][7]\nlaunchers=applications:xfce4-terminal.desktop\n[Containments][7]\nlaunchers=applications:custom.desktop\n"),
@@ -77,6 +189,9 @@ class TerminalIntegrationTests(unittest.TestCase):
             self.assertIn("applications:org.forge.RTerm.desktop", layout.read_text())
             self.assertFalse((home / ".config/plasma-org.kde.plasma.desktop-appletsrc").exists())
             self.assertEqual(config.get("General", "TerminalApplication"), "forge-terminal")
+            shortcuts = (home / ".config/kglobalshortcutsrc").read_bytes()
+            self.assertEqual(module("terminal_defaults").ini_entry(
+                shortcuts, "services][org.forge.RTerm.desktop", "_launch")[2], "Ctrl+Alt+T")
 
     def test_existing_account_without_plasma_state_is_not_given_a_theme_or_layout(self):
         migration = module("terminal_defaults")
@@ -219,7 +334,7 @@ class TerminalIntegrationTests(unittest.TestCase):
                 if target == "terminal":
                     path, old, new = config / "kdeglobals", b"forge-terminal", b"personal-terminal"
                 elif target == "shortcut":
-                    path, old, new = config / "kglobalshortcutsrc", b"Ctrl+Alt+T,", b"Meta+Return,"
+                    path, old, new = config / "kglobalshortcutsrc", b"_launch=Ctrl+Alt+T", b"_launch=Meta+Return"
                 else:
                     path, old = layout, b"applications:org.forge.RTerm.desktop"
                     new = b"applications:personal.desktop" if target == "dock" else old + b"," + old
@@ -262,7 +377,8 @@ class TerminalIntegrationTests(unittest.TestCase):
             plasma_layout = b"[Containments][2]\nplugin=org.kde.panel\nlocation=4\n"
             layout.write_bytes(plasma_layout)
             migration.restore(home)
-            self.assertEqual(shortcuts.read_bytes(), plasma_shortcuts)
+            self.assertEqual(shortcuts.read_bytes(), plasma_shortcuts +
+                             b"[services][org.forge.RTerm.desktop]\n_launch=none\n")
             self.assertEqual(layout.read_bytes(), plasma_layout)
             self.assertIn(b"BackgroundNormal=35,38,41", kde.read_bytes())
             self.assertIn(b"ColorSchemeHash=plasma-generated", kde.read_bytes())

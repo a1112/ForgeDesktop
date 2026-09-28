@@ -14,6 +14,7 @@ CONFIGS = (".config/kdeglobals", ".config/xfce4/helpers.rc", ".config/kglobalsho
            ".config/plasma-org.kde.plasma.desktop-appletsrc")
 LIMIT = 4 * 1024 * 1024
 STATE_LIMIT = 48 * 1024 * 1024  # Four files, before/after, base64 plus metadata.
+TERMINALS = ("org.forge.RTerm.desktop", "xfce4-terminal.desktop", "org.kde.konsole.desktop")
 
 
 def require(condition, message):
@@ -95,16 +96,14 @@ def updates(before):
     kde = ini_set(before[CONFIGS[0]], "General", "TerminalApplication", "forge-terminal")
     kde = ini_set(kde, "General", "TerminalService", "org.forge.RTerm.desktop")
     helpers = ini_set(before[CONFIGS[1]], "", "TerminalEmulator", "forge-terminal")
-    shortcuts = ini_set(before[CONFIGS[2]], "org.forge.RTerm.desktop", "_launch",
-                        "Ctrl+Alt+T,Ctrl+Alt+T,R-Term")
-    shortcuts = ini_set(shortcuts, "org.forge.RTerm.desktop", "_k_friendly_name", "R-Term")
-    # Release this exact shortcut from previous terminal launchers only.
-    text = shortcuts.decode()
-    for group in ("xfce4-terminal.desktop", "org.kde.konsole.desktop"):
-        ini_entry(shortcuts, group, "_launch")
-        match = re.search(r"(?ms)^\[" + re.escape(group) + r"\]\n(.*?)(?=^\[|\Z)", text)
-        if match and re.search(r"(?m)^_launch=Ctrl\+Alt\+T,", match.group(1)):
-            text = ini_set(text.encode(), group, "_launch", "none,none,Terminal").decode()
+    shortcuts = before[CONFIGS[2]]
+    for component in TERMINALS:
+        entries = shortcut_entries(shortcuts, component)
+        if component == TERMINALS[0] or shortcut_effective(entries) == "Ctrl+Alt+T":
+            binding = "Ctrl+Alt+T" if component == TERMINALS[0] else "none"
+            shortcuts = ini_set(shortcuts, "services][" + component, "_launch", binding)
+            # Legacy non-default triplets overwrite services during KDE's migration.
+            shortcuts = ini_restore_entry(shortcuts, component, "_launch", None)
     layout = before[CONFIGS[3]]
     if layout is not None:
         # Only launcher-list lines, never arbitrary applet settings or the whole layout.
@@ -124,7 +123,7 @@ def updates(before):
                 lines[index] = key + separator + b",".join(
                     new_id if token == old_id else token for token in tokens) + value[len(content):]
         layout = b"".join(lines)
-    return dict(zip(CONFIGS, (kde, helpers, text.encode(), layout)))
+    return dict(zip(CONFIGS, (kde, helpers, shortcuts, layout)))
 
 
 def load_state(home):
@@ -135,6 +134,9 @@ def load_state(home):
     require(type(value) is dict and value.get("schemaVersion") == 1
             and value.get("status") in ("prepared", "applied", "restored")
             and set(value.get("files", {})) == set(CONFIGS), "invalid terminal migration receipt")
+    require("shortcutRestoreVersion" not in value or
+            (type(value["shortcutRestoreVersion"]) is int and value["shortcutRestoreVersion"] == 1),
+            "invalid shortcut restore version")
     for item in value["files"].values():
         require(type(item) is dict and set(item) == {"before", "after", "afterSha256"},
                 "invalid terminal backup entry")
@@ -182,7 +184,9 @@ def ini_entry(raw, group, key):
     """Locate one owned key without normalizing unrelated KConfig text."""
     lines = (raw or b"").decode("utf-8").splitlines(keepends=True)
     if group:
-        require(not any(line.strip().startswith("[" + group + "][$") for line in lines),
+        parts = group.split("][")
+        prefixes = ["[" + "][".join(parts[:i]) + "][$" for i in range(1, len(parts) + 1)]
+        require(not any(line.strip().startswith(tuple(prefixes)) for line in lines),
                 "modified terminal configuration group flags")
         starts = [i + 1 for i, line in enumerate(lines) if line.strip() == "[" + group + "]"]
         require(len(starts) <= 1, "duplicate terminal configuration group")
@@ -214,6 +218,50 @@ def ini_restore_entry(raw, group, key, value):
     return "".join(lines).encode()
 
 
+def shortcut_entries(raw, component):
+    service = ini_entry(raw, "services][" + component, "_launch")[2]
+    legacy = ini_entry(raw, component, "_launch")[2]
+    if legacy is not None:
+        fields = re.split(r"(?<!\\),", legacy)
+        require(len(fields) == 3, "invalid legacy terminal shortcut triplet")
+        legacy = tuple(value.replace(r"\,", ",") or "none" for value in fields[:2])
+    return service, legacy
+
+
+def shortcut_effective(entries, default=None):
+    service, legacy = entries
+    # KDE 6.7 migrates a legacy active value only when it differs from its
+    # legacy default; otherwise an existing services override wins.
+    if legacy is not None and legacy[0] != legacy[1]:
+        return legacy[0]
+    if service is not None:
+        return service or "none"
+    return default if default is not None else (legacy[1] if legacy is not None else None)
+
+
+def restore_shortcuts(old, new, current):
+    result = current
+    for component in TERMINALS:
+        before, after = shortcut_entries(old, component), shortcut_entries(new, component)
+        if before == after:
+            continue
+        original = shortcut_effective(before)
+        default = "Ctrl+Alt+T" if component == TERMINALS[0] else (
+            before[1][1] if before[1] is not None else None)
+        applied = shortcut_effective(after, default)
+        if original is not None and original == shortcut_effective(after):
+            continue  # Storage-format migration alone did not change this preference.
+        desired = original if original is not None else "none"
+        active = shortcut_effective(shortcut_entries(current, component), default)
+        require(active in (applied, desired),
+                "terminal shortcut changed after migration: " + component)
+        # A missing key would re-enable X-KDE-Shortcuts from the desktop file.
+        # Explicit none is essential when this migration introduced R-Term.
+        result = ini_set(result, "services][" + component, "_launch", desired)
+        result = ini_restore_entry(result, component, "_launch", None)
+    return result
+
+
 def restore_launcher_list(old, new, current):
     if current in (old, new):
         return old
@@ -232,6 +280,8 @@ def restore_launcher_list(old, new, current):
 
 
 def semantic_restore(name, old, new, current):
+    if name == CONFIGS[2]:
+        return restore_shortcuts(old, new, current)
     if old == new or current == old:
         return current
     if current == new:
@@ -239,9 +289,6 @@ def semantic_restore(name, old, new, current):
     keys = {
         CONFIGS[0]: [("General", "TerminalApplication"), ("General", "TerminalService")],
         CONFIGS[1]: [("", "TerminalEmulator")],
-        CONFIGS[2]: [("org.forge.RTerm.desktop", "_launch"),
-                     ("org.forge.RTerm.desktop", "_k_friendly_name"),
-                     ("xfce4-terminal.desktop", "_launch"), ("org.kde.konsole.desktop", "_launch")],
     }.get(name)
     if keys is None:
         groups = set(re.findall(r"(?m)^\[([^\r\n]+)\]\s*$", (new or b"").decode()))
@@ -269,7 +316,8 @@ def restore(home):
     ensure_offline(home)
     state = load_state(home)
     require(state is not None, "no terminal migration backup")
-    if state["status"] == "restored":
+    already_restored = state["status"] == "restored"
+    if already_restored and state.get("shortcutRestoreVersion") == 1:
         return
     restored, observed = {}, {}
     for name, item in state["files"].items():
@@ -277,7 +325,7 @@ def restore(home):
         new = None if item["after"] is None else base64.b64decode(item["after"], validate=True)
         current = read(home / name)
         observed[name] = current
-        restored[name] = semantic_restore(name, old, new, current)
+        restored[name] = current if already_restored and name != CONFIGS[2] else semantic_restore(name, old, new, current)
         require(restored[name] is None or len(restored[name]) <= LIMIT,
                 "terminal configuration output exceeds limit")
     # Resolve every conflict before the first write. The durable original
@@ -288,6 +336,7 @@ def restore(home):
         if observed[name] != raw:
             put(home, home / name, raw)
     state["status"] = "restored"
+    state["shortcutRestoreVersion"] = 1
     save_state(home, state)
 
 
