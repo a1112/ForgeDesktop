@@ -163,6 +163,90 @@ def apply(home):
     return state
 
 
+def ini_entry(raw, group, key):
+    """Locate one owned key without normalizing unrelated KConfig text."""
+    lines = (raw or b"").decode("utf-8").splitlines(keepends=True)
+    if group:
+        starts = [i + 1 for i, line in enumerate(lines) if line.strip() == "[" + group + "]"]
+        require(len(starts) <= 1, "duplicate terminal configuration group")
+        if not starts:
+            return lines, None, None
+        start = starts[0]
+    else:
+        start = 0
+    end = next((i for i in range(start, len(lines)) if lines[i].startswith("[")), len(lines))
+    found = []
+    for i in range(start, end):
+        name = lines[i].split("=", 1)[0].strip()
+        require(not name.startswith(key + "["), "modified terminal configuration key flags")
+        if name == key:
+            require("=" in lines[i], "invalid terminal configuration key")
+            found.append(i)
+    require(len(found) <= 1, "duplicate terminal configuration key")
+    index = found[0] if found else None
+    value = None if index is None else lines[index].split("=", 1)[1].rstrip("\r\n")
+    return lines, index, value
+
+
+def ini_restore_entry(raw, group, key, value):
+    if value is not None:
+        return ini_set(raw, group, key, value)
+    lines, index, _ = ini_entry(raw, group, key)
+    if index is not None:
+        del lines[index]
+    return "".join(lines).encode()
+
+
+def restore_launcher_list(old, new, current):
+    if current in (old, new):
+        return old
+    require(old is not None and new is not None and current is not None,
+            "terminal Dock launcher was removed after migration")
+    old_id, new_id = "applications:xfce4-terminal.desktop", "applications:org.forge.RTerm.desktop"
+    before, after, now = old.split(","), new.split(","), current.split(",")
+    require(before.count(old_id) == 1 and before.count(new_id) == 0
+            and after == [new_id if item == old_id else item for item in before],
+            "ambiguous terminal Dock backup; restore manually")
+    if now.count(old_id) == 1 and now.count(new_id) == 0:
+        return current  # This exact launcher has already been restored.
+    require(now.count(new_id) == 1 and now.count(old_id) == 0,
+            "terminal Dock launcher changed after migration")
+    return ",".join(old_id if item == new_id else item for item in now)
+
+
+def semantic_restore(name, old, new, current):
+    if old == new or current == old:
+        return current
+    if current == new:
+        return old  # Preserve the original exact-byte rollback when possible.
+    keys = {
+        CONFIGS[0]: [("General", "TerminalApplication"), ("General", "TerminalService")],
+        CONFIGS[1]: [("", "TerminalEmulator")],
+        CONFIGS[2]: [("org.forge.RTerm.desktop", "_launch"),
+                     ("org.forge.RTerm.desktop", "_k_friendly_name"),
+                     ("xfce4-terminal.desktop", "_launch"), ("org.kde.konsole.desktop", "_launch")],
+    }.get(name)
+    if keys is None:
+        groups = set(re.findall(r"(?m)^\[([^\r\n]+)\]\s*$", (new or b"").decode()))
+        keys = [(group, "launchers") for group in sorted(groups)]
+    result = current
+    for group, key in keys:
+        old_value = ini_entry(old, group, key)[2]
+        new_value = ini_entry(new, group, key)[2]
+        if old_value == new_value:
+            continue  # A pre-existing R-Term preference is not ours to undo.
+        current_value = ini_entry(current, group, key)[2]
+        if name == CONFIGS[3]:
+            restored = restore_launcher_list(old_value, new_value, current_value)
+        else:
+            require(current_value in (old_value, new_value),
+                    "terminal preference changed after migration: " + name + " [" + group + "] " + key)
+            restored = old_value
+        if current_value != restored:
+            result = ini_restore_entry(result, group, key, restored)
+    return result
+
+
 def restore(home):
     home = Path(home).absolute()
     ensure_offline(home)
@@ -170,13 +254,22 @@ def restore(home):
     require(state is not None, "no terminal migration backup")
     if state["status"] == "restored":
         return
+    restored, observed = {}, {}
     for name, item in state["files"].items():
         old = None if item["before"] is None else base64.b64decode(item["before"], validate=True)
+        new = None if item["after"] is None else base64.b64decode(item["after"], validate=True)
         current = read(home / name)
-        require(sha(current) == item["afterSha256"] or current == old,
-                "user settings changed after migration; preserve them and restore manually")
-    for name, item in state["files"].items():
-        put(home, home / name, None if item["before"] is None else base64.b64decode(item["before"], validate=True))
+        observed[name] = current
+        restored[name] = semantic_restore(name, old, new, current)
+        require(restored[name] is None or len(restored[name]) <= LIMIT,
+                "terminal configuration output exceeds limit")
+    # Resolve every conflict before the first write. The durable original
+    # before/after receipt also makes an interrupted restore retryable.
+    require(all(read(home / name) == raw for name, raw in observed.items()),
+            "settings changed during terminal restore")
+    for name, raw in restored.items():
+        if observed[name] != raw:
+            put(home, home / name, raw)
     state["status"] = "restored"
     save_state(home, state)
 

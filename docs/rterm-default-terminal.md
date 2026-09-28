@@ -44,10 +44,23 @@ To restore, stop the desktop and run:
 /usr/libexec/forge-desktop/terminal-defaults restore --home /home/forge
 ```
 
-Restore first checks every affected file. If a user subsequently edited one,
-it refuses to overwrite anything; retain that edit and recover the relevant
-terminal keys from the receipt manually. The old `xfce4-terminal` entry
-remains installed. Restoring an already restored receipt is idempotent.
+Restore first checks every affected file. Unchanged files return to their exact
+original bytes. When Plasma or the user has updated other settings, restore
+compares only the terminal keys actually changed by the migration against the
+receipt's before/after values. It retains added colors, unrelated shortcuts,
+comments and personal settings. A uniquely identifiable migrated Dock launcher
+returns to XFCE terminal while retaining other launcher additions and order.
+Existing R-Term preferences that migration did not change are left alone.
+
+If a changed terminal key, shortcut or corresponding Dock item no longer matches
+the recorded migration, or a duplicate entry makes its identity ambiguous,
+restore refuses the whole operation before writing any settings. Keep those
+later choices and recover the desired terminal entries manually from the
+receipt. The original before/after file backups remain available for disaster
+recovery; do not copy a whole backup over newer personal settings without
+reviewing those changes. Interrupted restores can be retried, and restoring an
+already restored receipt is idempotent. The old `xfce4-terminal` entry remains
+installed throughout.
 
 Changing defaults is a deployment gate, not a consequence of passing unit
 tests. Native KWin Wayland clipboard, Fcitx input, PTY, scaling and persistence

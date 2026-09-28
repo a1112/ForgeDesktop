@@ -138,6 +138,137 @@ class TerminalIntegrationTests(unittest.TestCase):
                 migration.restore(home)
             self.assertIn("another-terminal", path.read_text())
 
+    def test_restore_preserves_post_login_colors_shortcuts_and_dock_customization(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            config = home / ".config"
+            config.mkdir()
+            kde = config / "kdeglobals"
+            kde.write_bytes(b"[General]\nTerminalApplication=xfce4-terminal\n")
+            layout = config / "plasma-org.kde.plasma.desktop-appletsrc"
+            group = b"[Containments][7][Applets][9][Configuration][General]\n"
+            layout.write_bytes(group + b"launchers=applications:firefox.desktop,applications:xfce4-terminal.desktop\n")
+            migration.apply(home)
+            receipt_before = (home / migration.STATE).read_bytes()
+            kde.write_bytes(kde.read_bytes() + b"[Colors:Window]\nBackgroundNormal=35,38,41\n")
+            shortcuts = config / "kglobalshortcutsrc"
+            shortcuts.write_bytes(shortcuts.read_bytes() + b"[personal]\ncustom=Meta+X,none,My action\n")
+            layout.write_bytes(group + b"launchers=applications:custom.desktop,applications:org.forge.RTerm.desktop,applications:firefox.desktop\ncustom=keep\n")
+            migration.restore(home)
+            self.assertIn(b"TerminalApplication=xfce4-terminal", kde.read_bytes())
+            self.assertNotIn(b"TerminalService=", kde.read_bytes())
+            self.assertIn(b"BackgroundNormal=35,38,41", kde.read_bytes())
+            self.assertIn(b"custom=Meta+X,none,My action", shortcuts.read_bytes())
+            self.assertNotIn(b"_launch=Ctrl+Alt+T", shortcuts.read_bytes())
+            self.assertEqual(layout.read_bytes(), group + b"launchers=applications:custom.desktop,applications:xfce4-terminal.desktop,applications:firefox.desktop\ncustom=keep\n")
+            restored = {name: migration.read(home / name) for name in migration.CONFIGS}
+            migration.restore(home)
+            self.assertEqual(restored, {name: migration.read(home / name) for name in migration.CONFIGS})
+            self.assertEqual(json.loads(receipt_before)["files"], migration.load_state(home)["files"])
+
+    def test_restore_conflicts_preflight_all_files_before_any_write(self):
+        migration = module("terminal_defaults")
+        for target in ("terminal", "shortcut", "dock", "ambiguous_dock"):
+            with self.subTest(target=target), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                config = home / ".config"
+                config.mkdir()
+                layout = config / "plasma-org.kde.plasma.desktop-appletsrc"
+                layout.write_bytes(b"[Containments][7][Applets][9][Configuration][General]\nlaunchers=applications:xfce4-terminal.desktop\n")
+                migration.apply(home)
+                if target == "terminal":
+                    path, old, new = config / "kdeglobals", b"forge-terminal", b"personal-terminal"
+                elif target == "shortcut":
+                    path, old, new = config / "kglobalshortcutsrc", b"Ctrl+Alt+T,", b"Meta+Return,"
+                else:
+                    path, old = layout, b"applications:org.forge.RTerm.desktop"
+                    new = b"applications:personal.desktop" if target == "dock" else old + b"," + old
+                path.write_bytes(path.read_bytes().replace(old, new))
+                before = {name: migration.read(home / name) for name in migration.CONFIGS}
+                with self.assertRaises(ValueError):
+                    migration.restore(home)
+                self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+                self.assertEqual(migration.load_state(home)["status"], "applied")
+
+    def test_restore_leaves_preexisting_rterm_preferences_and_unchanged_files_alone(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            config = home / ".config"
+            config.mkdir()
+            kde = config / "kdeglobals"
+            kde.write_bytes(b"[General]\nTerminalApplication=forge-terminal\nTerminalService=org.forge.RTerm.desktop\n")
+            migration.apply(home)
+            kde.write_bytes(b"[General]\nTerminalApplication=personal-terminal\nTerminalService=personal.desktop\n")
+            layout = config / "plasma-org.kde.plasma.desktop-appletsrc"
+            layout.write_bytes(b"[personal-panel]\nlaunchers=applications:org.forge.RTerm.desktop\n")
+            migration.restore(home)
+            self.assertIn(b"personal-terminal", kde.read_bytes())
+            self.assertEqual(layout.read_bytes(), b"[personal-panel]\nlaunchers=applications:org.forge.RTerm.desktop\n")
+
+    def test_restore_accepts_plasma_removing_new_shortcut_group_and_creating_layout(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            migration.apply(home)
+            config = home / ".config"
+            kde = config / "kdeglobals"
+            kde.write_bytes(b"[Colors:Window]\nBackgroundNormal=35,38,41\n" + kde.read_bytes()
+                            + b"ColorSchemeHash=plasma-generated\n")
+            shortcuts = config / "kglobalshortcutsrc"
+            plasma_shortcuts = "[kwin]\n_k_friendly_name=KWin\nWindow Close=Alt+F4,Alt+F4,关闭窗口\n".encode()
+            shortcuts.write_bytes(plasma_shortcuts)
+            layout = config / "plasma-org.kde.plasma.desktop-appletsrc"
+            plasma_layout = b"[Containments][2]\nplugin=org.kde.panel\nlocation=4\n"
+            layout.write_bytes(plasma_layout)
+            migration.restore(home)
+            self.assertEqual(shortcuts.read_bytes(), plasma_shortcuts)
+            self.assertEqual(layout.read_bytes(), plasma_layout)
+            self.assertIn(b"BackgroundNormal=35,38,41", kde.read_bytes())
+            self.assertIn(b"ColorSchemeHash=plasma-generated", kde.read_bytes())
+            self.assertNotIn(b"TerminalApplication=", kde.read_bytes())
+
+    def test_restore_rejects_duplicate_owned_key_or_group_without_partial_writes(self):
+        migration = module("terminal_defaults")
+        for extra in (b"TerminalApplication=personal-terminal\n",
+                      b"[General]\nTerminalApplication=forge-terminal\n"):
+            with self.subTest(extra=extra), tempfile.TemporaryDirectory() as temporary:
+                home = Path(temporary)
+                migration.apply(home)
+                path = home / ".config/kdeglobals"
+                path.write_bytes(path.read_bytes() + extra)
+                before = {name: migration.read(home / name) for name in migration.CONFIGS}
+                with self.assertRaises(ValueError):
+                    migration.restore(home)
+                self.assertEqual(before, {name: migration.read(home / name) for name in migration.CONFIGS})
+
+    def test_interrupted_semantic_restore_can_be_retried_from_original_receipt(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            migration.apply(home)
+            path = home / ".config/kdeglobals"
+            path.write_bytes(path.read_bytes() + b"[Colors:Window]\nBackgroundNormal=1,2,3\n")
+            original_put = migration.put
+            count = 0
+
+            def interrupted(*args):
+                nonlocal count
+                count += 1
+                if count == 2:
+                    raise OSError("interrupted restore")
+                original_put(*args)
+
+            with mock.patch.object(migration, "put", side_effect=interrupted):
+                with self.assertRaises(OSError):
+                    migration.restore(home)
+            self.assertEqual(migration.load_state(home)["status"], "applied")
+            migration.restore(home)
+            self.assertNotIn(b"TerminalApplication=", path.read_bytes())
+            self.assertIn(b"BackgroundNormal=1,2,3", path.read_bytes())
+            self.assertEqual(migration.load_state(home)["status"], "restored")
+
     def test_symlinked_configuration_is_rejected_before_writes(self):
         migration = module("terminal_defaults")
         with tempfile.TemporaryDirectory() as temporary:
