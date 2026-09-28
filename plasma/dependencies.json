@@ -1,8 +1,11 @@
 {
   "schemaVersion": 1,
   "archSnapshot": "2026/08/01",
-  "runtimePackages": ["kwin", "plasma-workspace"],
+  "runtimePackages": ["desktop-file-utils", "kwin", "plasma-workspace", "python"],
   "assetLicenses": {
+    "usr/libexec/forge-desktop/compatforge-desktop-sync": "MIT",
+    "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": "MIT",
+    "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer": "MIT",
     "usr/share/aurorae/themes/ForgeDark/ForgeDarkrc": "MIT",
     "usr/share/aurorae/themes/ForgeDark/close.svg": "MIT",
     "usr/share/aurorae/themes/ForgeDark/decoration.svg": "MIT",

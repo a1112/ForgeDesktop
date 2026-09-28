@@ -1,0 +1,10 @@
+[Unit]
+Description=Synchronize CompatForge application launchers
+After=compatforge.service
+ConditionPathExists=/usr/bin/compatforge-cli
+
+[Service]
+Type=oneshot
+ExecStart=/usr/libexec/forge-desktop/compatforge-desktop-sync
+TimeoutStartSec=90
+NoNewPrivileges=true

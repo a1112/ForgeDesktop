@@ -6,6 +6,7 @@ pin the receipt digest independently and verify its own signed Arch closure.
 """
 
 import argparse
+import ast
 import configparser
 import gettext
 import hashlib
@@ -32,6 +33,17 @@ SESSION_ENTRY = "usr/share/wayland-sessions/forgedesktop-kwin.desktop"
 DEPENDENCIES = "usr/share/forge-desktop/plasma/dependencies.json"
 LICENSE = "usr/share/licenses/forge-desktop/LICENSE"
 REQUIRED = {SESSION_SCRIPT, SESSION_ENTRY, DEPENDENCIES, LICENSE}
+COMPAT_SCRIPT = "usr/libexec/forge-desktop/compatforge-desktop-sync"
+COMPAT_SERVICE = "usr/lib/systemd/user/forge-compatforge-desktop-sync.service"
+COMPAT_TIMER = "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer"
+COMPAT_REQUIRED = {COMPAT_SCRIPT, COMPAT_SERVICE, COMPAT_TIMER}
+COMPAT_SERVICE_BYTES = (b"[Unit]\nDescription=Synchronize CompatForge application launchers\n"
+                       b"After=compatforge.service\nConditionPathExists=/usr/bin/compatforge-cli\n\n"
+                       b"[Service]\nType=oneshot\nExecStart=/usr/libexec/forge-desktop/compatforge-desktop-sync\n"
+                       b"TimeoutStartSec=90\nNoNewPrivileges=true\n")
+COMPAT_TIMER_BYTES = (b"[Unit]\nDescription=Keep CompatForge launchers synchronized with installed applications\n\n"
+                     b"[Timer]\nOnStartupSec=10\nOnUnitInactiveSec=15\nAccuracySec=1\n"
+                     b"Unit=forge-compatforge-desktop-sync.service\n\n[Install]\nWantedBy=timers.target\n")
 LOOK_ROOT = "usr/share/plasma/look-and-feel/org.forge.desktop/"
 LOOK_METADATA = LOOK_ROOT + "metadata.json"
 LOOK_DEFAULTS = LOOK_ROOT + "contents/defaults"
@@ -73,6 +85,7 @@ def eligible_path(name):
             or any(part in ("", ".", "..") for part in name.split("/"))):
         return False
     return (name in REQUIRED
+            or name in COMPAT_REQUIRED
             or name in WINDOW_REQUIRED or name == WINDOW_CATALOG
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
             or name.startswith("usr/share/plasma/desktoptheme/forge/")
@@ -130,6 +143,25 @@ def validate_dependencies(data):
                     for name, license_name in licenses.items()),
             "asset license records are invalid")
     return value
+
+
+def validate_compatforge_assets(payloads, dependencies):
+    present = set(payloads) & COMPAT_REQUIRED
+    if not present:
+        return
+    require(present == COMPAT_REQUIRED, "incomplete CompatForge desktop integration")
+    require(payloads[COMPAT_SERVICE][0] == COMPAT_SERVICE_BYTES
+            and payloads[COMPAT_TIMER][0] == COMPAT_TIMER_BYTES,
+            "CompatForge unit changes fixed command or scheduling contract")
+    require({"python", "desktop-file-utils"} <= set(dependencies["runtimePackages"]),
+            "CompatForge desktop integration dependencies are missing")
+    source = payloads[COMPAT_SCRIPT][0]
+    require(len(source) <= 64 * 1024 and source.startswith(b"#!/usr/bin/env python3\n"),
+            "invalid CompatForge desktop consumer")
+    try:
+        ast.parse(source)
+    except (SyntaxError, UnicodeError) as error:
+        raise ValueError("invalid CompatForge desktop consumer syntax") from error
 
 
 def validate_visual_assets(payloads):
@@ -268,7 +300,7 @@ def collect_files(root, *, receipt=False):
             require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1
                     and metadata.st_size <= MAX_FILE,
                     "bundle input is not a bounded singly linked regular file")
-            mode = 0o755 if relative == SESSION_SCRIPT else 0o644
+            mode = 0o755 if relative in (SESSION_SCRIPT, COMPAT_SCRIPT) else 0o644
             if os.name != "nt":
                 require(stat.S_IMODE(metadata.st_mode) == mode,
                         "bundle input mode mismatch")
@@ -295,6 +327,7 @@ def collect_files(root, *, receipt=False):
             "asset license records differ from bundled assets")
     validate_visual_assets(result)
     validate_window_assets(result)
+    validate_compatforge_assets(result, dependencies)
     return result
 
 

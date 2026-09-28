@@ -77,6 +77,27 @@ class PlasmaBundleTests(unittest.TestCase):
             self.build()
         self.assertFalse(self.output.exists())
 
+    def test_compatforge_sync_bundle_is_closed_and_preserves_executable_mode(self):
+        root = Path(__file__).resolve().parents[2]
+        assets = {
+            "usr/libexec/forge-desktop/compatforge-desktop-sync": (root / "tools/compatforge_desktop.py", 0o755),
+            "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": (root / "services/compatforge/forge-compatforge-desktop-sync.service", 0o644),
+            "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer": (root / "services/compatforge/forge-compatforge-desktop-sync.timer", 0o644),
+        }
+        for name, (source, mode) in assets.items():
+            self.assertTrue(eligible_path(name))
+            path = self.stage / name
+            path.parent.mkdir(parents=True, exist_ok=True)
+            path.write_bytes(source.read_bytes().replace(b"\r\n", b"\n"))
+            path.chmod(mode)
+        inventory = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
+        value = json.loads(inventory.read_bytes())
+        value["runtimePackages"] = ["desktop-file-utils", "kwin", "plasma-workspace", "python"]
+        value["assetLicenses"] = {name: "MIT" for name in assets}
+        inventory.write_text(json.dumps(value), encoding="utf-8")
+        receipt = verify_bundle(self.output, self.build())
+        self.assertEqual(receipt["files"]["usr/libexec/forge-desktop/compatforge-desktop-sync"]["mode"], 0o755)
+
     def test_rejects_substituted_login_command_and_shell_body(self):
         entry = self.stage / "usr/share/wayland-sessions/forgedesktop-kwin.desktop"
         entry.write_bytes(ENTRY.replace(b"forge-kwin-session", b"other-session"))
@@ -262,6 +283,15 @@ class PlasmaBundleTests(unittest.TestCase):
                 path.chmod(0o644)
         shutil.copyfile(repo / "plasma/dependencies.json",
                         self.stage / "usr/share/forge-desktop/plasma/dependencies.json")
+        for source, destination, mode in (
+            ("tools/compatforge_desktop.py", "usr/libexec/forge-desktop/compatforge-desktop-sync", 0o755),
+            ("services/compatforge/forge-compatforge-desktop-sync.service", "usr/lib/systemd/user/forge-compatforge-desktop-sync.service", 0o644),
+            ("services/compatforge/forge-compatforge-desktop-sync.timer", "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer", 0o644),
+        ):
+            destination = self.stage / destination
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            destination.write_bytes((repo / source).read_bytes().replace(b"\r\n", b"\n"))
+            destination.chmod(mode)
         # The reviewed product bundle includes both the look-and-feel and
         # window-control assets, so stage the complete visual package.
         look_root = repo / "plasma/look-and-feel"

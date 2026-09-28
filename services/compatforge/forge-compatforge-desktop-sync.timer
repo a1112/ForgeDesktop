@@ -1,0 +1,11 @@
+[Unit]
+Description=Keep CompatForge launchers synchronized with installed applications
+
+[Timer]
+OnStartupSec=10
+OnUnitInactiveSec=15
+AccuracySec=1
+Unit=forge-compatforge-desktop-sync.service
+
+[Install]
+WantedBy=timers.target
