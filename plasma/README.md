@@ -47,6 +47,8 @@ Plasma configuration. The Smithay and XFCE login entries remain available.
 The Forge Dark Aurorae decoration handles ordinary server-decorated windows.
 The top-panel widget requests actions for the current maximized task through
 Plasma's task model. KWin still owns focus, movement, tiling and permissions.
-Applications with client-drawn headers retain their own controls. The optional
-Forge theme sets borderless maximized windows for Fusion Mode; do not apply
+The widget excludes the verified `firefox.desktop` client-drawn header so its
+own controls remain the only set. Other client-drawn AppIds require an explicit
+compatibility check before adding them to that exclusion. The optional Forge
+theme sets borderless maximized windows for Fusion Mode; do not apply
 that setting to another session or an existing user's profile automatically.

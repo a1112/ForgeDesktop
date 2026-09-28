@@ -11,7 +11,8 @@ import sys
 import tempfile
 import unittest
 
-from tools.build_plasma_bundle import create_bundle, eligible_path, verify_bundle
+from tools.build_plasma_bundle import (create_bundle, eligible_path,
+                                       validate_window_assets, verify_bundle)
 
 
 SESSION = (b"#!/bin/sh\nset -eu\n"
@@ -285,6 +286,59 @@ class PlasmaBundleTests(unittest.TestCase):
         self.assertIn("function actOnActiveTask", source)
         self.assertIn("if (!eligible(index))", source)
         self.assertNotRegex(source, r"\b(?:Process|DBus|openUrlExternally|eval)\b")
+
+    def test_fusion_widget_draws_controls_in_panel_item(self):
+        # A compactRepresentation is not instantiated in the fixed-width
+        # panel applet on the pinned Plasma runtime. Keep the controls as
+        # visual children of the PlasmoidItem and give their glyphs a color.
+        repo = Path(__file__).resolve().parents[2]
+        source = (repo / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml"
+                  ).read_text()
+        self.assertNotIn("compactRepresentation:", source)
+        self.assertIn("RowLayout {", source)
+        self.assertEqual(source.count('color: "#e6edf5"'), 3)
+
+    def test_fusion_excludes_verified_client_decorated_firefox(self):
+        repo = Path(__file__).resolve().parents[2]
+        source = (repo / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml"
+                  ).read_text()
+        self.assertIn("TaskManager.AbstractTasksModel.AppId", source)
+        self.assertIn('"firefox.desktop"', source)
+        self.assertIn("!clientDecorated(index)", source)
+
+    def test_window_assets_reject_missing_external_and_wrong_metadata(self):
+        repo = Path(__file__).resolve().parents[2]
+        roots = (
+            (repo / "plasma/aurorae/ForgeDark", "usr/share/aurorae/themes/ForgeDark/"),
+            (repo / "plasma/plasmoids/org.forge.windowcontrols",
+             "usr/share/plasma/plasmoids/org.forge.windowcontrols/"),
+        )
+        payloads = {}
+        for source_root, destination_root in roots:
+            for source in source_root.rglob("*"):
+                if source.is_file():
+                    payloads[destination_root + source.relative_to(source_root).as_posix()
+                             ] = (source.read_bytes(), 0o644)
+        validate_window_assets(payloads)
+        close = "usr/share/aurorae/themes/ForgeDark/close.svg"
+        metadata = "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json"
+        variants = []
+        missing = dict(payloads)
+        missing.pop(close)
+        variants.append(missing)
+        external = dict(payloads)
+        external[close] = (payloads[close][0].replace(
+            b'fill="#1c2535"', b'fill="url(http://example.invalid/a)"', 1), 0o644)
+        variants.append(external)
+        wrong_id = dict(payloads)
+        wrong_id[metadata] = (payloads[metadata][0].replace(
+            b'"org.forge.windowcontrols"', b'"other"'), 0o644)
+        variants.append(wrong_id)
+        for variant in variants:
+            with self.subTest(variant=len(variant), digest=hashlib.sha256(
+                    b"".join(value[0] for value in variant.values())).hexdigest()[:8]):
+                with self.assertRaises(ValueError):
+                    validate_window_assets(variant)
 
     def test_rejects_private_window_api_in_theme_layout(self):
         relative = ("usr/share/plasma/look-and-feel/org.forge.desktop/contents/"

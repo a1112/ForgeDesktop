@@ -18,6 +18,8 @@ PlasmoidItem {
 
     // TasksModel emits state changes; the serial makes data() bindings refresh.
     property int modelSerial: 0
+    // These clients draw their own title controls. Keep one set of buttons.
+    readonly property var clientDecoratedAppIds: ["firefox.desktop"]
     readonly property bool fused: {
         modelSerial;
         return eligible(tasks.activeTask);
@@ -27,6 +29,12 @@ PlasmoidItem {
         return fused ? String(tasks.data(tasks.activeTask, Qt.DisplayRole) || "") : "";
     }
 
+    function clientDecorated(index) {
+        const appId = String(tasks.data(index,
+            TaskManager.AbstractTasksModel.AppId) || "").toLowerCase();
+        return clientDecoratedAppIds.includes(appId);
+    }
+
     function eligible(index) {
         return tasks.data(index, TaskManager.AbstractTasksModel.IsWindow) === true
             && tasks.data(index, TaskManager.AbstractTasksModel.IsActive) === true
@@ -34,7 +42,8 @@ PlasmoidItem {
             && tasks.data(index, TaskManager.AbstractTasksModel.IsFullScreen) !== true
             && tasks.data(index, TaskManager.AbstractTasksModel.IsMinimized) !== true
             && tasks.data(index, TaskManager.AbstractTasksModel.CanSetNoBorder) === true
-            && tasks.data(index, TaskManager.AbstractTasksModel.HasNoBorder) === true;
+            && tasks.data(index, TaskManager.AbstractTasksModel.HasNoBorder) === true
+            && !clientDecorated(index);
     }
 
     function actOnActiveTask(action) {
@@ -70,10 +79,10 @@ PlasmoidItem {
         function onModelReset() { root.modelSerial++; }
     }
 
-    preferredRepresentation: compactRepresentation
-    compactRepresentation: RowLayout {
-        width: 270
-        height: 32
+    // A fixed-width panel applet needs visual children on the PlasmoidItem.
+    // The pinned Plasma runtime does not instantiate compactRepresentation here.
+    RowLayout {
+        anchors.fill: parent
         spacing: 0
 
         Controls.Label {
@@ -89,12 +98,18 @@ PlasmoidItem {
         Controls.Button {
             id: minimizeButton
             Layout.preferredWidth: 40
-            Layout.preferredHeight: 32
+            Layout.preferredHeight: root.height
             text: "−"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsMinimizable) === true
             Accessible.name: qsTr("Minimize active window")
             onClicked: root.actOnActiveTask("minimize")
+            contentItem: Text {
+                text: minimizeButton.text
+                color: "#e6edf5"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             background: Rectangle {
                 radius: 4
                 color: minimizeButton.hovered ? "#33435a" : "transparent"
@@ -104,12 +119,18 @@ PlasmoidItem {
         Controls.Button {
             id: restoreButton
             Layout.preferredWidth: 40
-            Layout.preferredHeight: 32
+            Layout.preferredHeight: root.height
             text: "▣"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsMaximizable) === true
             Accessible.name: qsTr("Restore active window")
             onClicked: root.actOnActiveTask("restore")
+            contentItem: Text {
+                text: restoreButton.text
+                color: "#e6edf5"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             background: Rectangle {
                 radius: 4
                 color: restoreButton.hovered ? "#33435a" : "transparent"
@@ -119,12 +140,18 @@ PlasmoidItem {
         Controls.Button {
             id: closeButton
             Layout.preferredWidth: 40
-            Layout.preferredHeight: 32
+            Layout.preferredHeight: root.height
             text: "×"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsClosable) === true
             Accessible.name: qsTr("Close active window")
             onClicked: root.actOnActiveTask("close")
+            contentItem: Text {
+                text: closeButton.text
+                color: "#e6edf5"
+                horizontalAlignment: Text.AlignHCenter
+                verticalAlignment: Text.AlignVCenter
+            }
             background: Rectangle {
                 radius: 4
                 color: closeButton.hovered ? "#e5484d" : "transparent"
