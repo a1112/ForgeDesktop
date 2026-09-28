@@ -23,6 +23,11 @@ remains a separate memory-recovery concern.
 See `evidence/kwin-candidate/software-backend-acceptance.md` and
 `evidence/kwin-candidate/audio-v5.md`. Frame/launcher latency, remaining M3
 services, long-term stability and default-switch gates remain open.
+The v4 viewer was recovered after two concurrent 4 GiB test guests exhausted
+the 7.7 GiB builder. The Forge theme now requests a 0.5 KDE animation-duration
+factor; a live window launch, drag and close check passed, while measured
+frame and noVNC latency remain pending. See
+`evidence/kwin-candidate/window-response-v4.md`.
 
 | Milestone | Status | Required evidence |
 |---|---|---|

@@ -1,5 +1,6 @@
 [kdeglobals][KDE]
 widgetStyle=Breeze
+AnimationDurationFactor=0.5
 
 [kdeglobals][General]
 ColorScheme=BreezeDark

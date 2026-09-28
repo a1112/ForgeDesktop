@@ -4,6 +4,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shutil
 import subprocess
 import sys
@@ -211,6 +212,15 @@ class PlasmaBundleTests(unittest.TestCase):
         pin = self.build()
         self.assertEqual(set(verify_bundle(self.output, pin)["files"]),
                          set(self.files) | set(visual_files.values()))
+        defaults = (self.output / visual_files[
+            "plasma/look-and-feel/contents/defaults"]).read_text()
+        kde_group = re.search(r"(?ms)^\[kdeglobals\]\[KDE\]\n(.*?)(?=^\[|\Z)", defaults)
+        self.assertIsNotNone(kde_group)
+        factor = re.search(r"(?m)^AnimationDurationFactor=([0-9.]+)$",
+                           kde_group.group(1))
+        self.assertIsNotNone(factor)
+        self.assertGreater(float(factor.group(1)), 0)
+        self.assertLessEqual(float(factor.group(1)), 0.5)
         layout = (self.output / visual_files[
             "plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js"])
         layout_bytes = layout.read_bytes()
