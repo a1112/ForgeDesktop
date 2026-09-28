@@ -40,30 +40,41 @@ ED25519 host fingerprint was verified in its terminal before using the key.
 
 `plasma-pa`, `pulseaudio-qt` and `pipewire-pulse` were installed at the locked
 versions. Plasma Shell, PipeWire, PipeWire PulseAudio and WirePlumber were
-active. The [native QMP frame](kwin-v5-audio-61.png) shows the actual Audio
-Volume panel with **Line Out** and **Line In**. Moving the output slider from
-40% to 61% changed `wpctl get-volume @DEFAULT_AUDIO_SINK@` to `0.61`; the
-test output volume was then returned to 40%.
+active. The [native QMP frame at 61%](kwin-v5-audio-61.png) shows the actual
+Audio Volume panel with **Line Out** and **Line In**. Moving the output slider
+from 40% to 61% changed `wpctl get-volume @DEFAULT_AUDIO_SINK@` to `0.61`;
+the test output volume was then returned to 40%.
 
 The first remote look-and-feel invocation failed because the SSH process did
 not have a display environment. Supplying the active Wayland socket and Qt
 platform allowed the command to apply `org.forge.desktop`; Plasma Shell then
-restarted successfully. No application or compositor restart was required.
+restarted successfully. `--resetLayout` applied the full Forge top panel and
+centered Dock to this disposable profile. The [native Forge frame](kwin-v5-forge-audio.png)
+shows the audio panel anchored to the top bar. The layout survived a normal
+guest reboot; no application or compositor implementation changed.
 
-The [60-second raw sample](kwin-v5-idle.json) used root only to read the PSS of
-UID 1000's exact `kwin_wayland` and `plasmashell` processes. It followed the
-theme application and shell restart, with all application windows and the
-audio panel closed. The process identities were stable and all PSS reads
-completed:
+Three samples distinguish the session state. The [stock-layout sample](kwin-v5-idle.json)
+averaged 352.43 MiB PSS and 0.083% CPU. Immediately after resetting the
+layout within that same session, a [hot-layout sample](kwin-v5-forge-idle.json)
+averaged 461.26 MiB PSS, **failing** the 400 MiB goal. KWin alone rose from
+about 167 MiB to 268 MiB PSS. A normal guest reboot restored the Forge
+layout; a restored terminal was closed before the final measurement.
+
+The [fresh-login 60-second raw sample](kwin-v5-fresh-forge-idle.json) used
+root only to read the PSS of UID 1000's exact `kwin_wayland` and `plasmashell`
+processes. It had no open application windows or audio panel. Process
+identities were stable and all PSS reads completed:
 
 | Metric | Fifth image | Published target |
 |---|---:|---:|
-| Mean combined PSS | 352.43 MiB | ≤400 MiB |
-| Maximum combined PSS | 353.26 MiB | diagnostic |
+| Mean combined PSS | 323.10 MiB | ≤400 MiB |
+| Maximum combined PSS | 349.57 MiB | diagnostic |
 | Average CPU, one core | 0.083% | ≤5% |
 
-The fourth image's comparable result was 332.40 MiB and 0.067%. The different
-session histories prevent attributing the entire PSS change to the audio
-packages. Both images meet these two VM targets. Frame P95, launcher P95,
+The fourth image's fresh-login result was 332.40 MiB and 0.067%. Both fresh
+Forge-layout images meet these two VM targets. The hot-layout failure shows
+that changing layouts in a running session needs a separate memory-recovery
+test; the fresh reboot is not evidence that the hot-session increase has been
+fixed. Frame P95, launcher P95,
 screen-sharing, authenticated lock, Windows-side audio listening, a matched
 R-OS baseline, eight-hour use and 20 login cycles remain unverified.

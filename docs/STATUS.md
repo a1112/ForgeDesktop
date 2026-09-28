@@ -16,8 +16,10 @@ also remained over target. The fourth pinned image started a fresh software
 Qt Quick session: exact KWin plus Plasma Shell counters averaged 332.40 MiB
 PSS and 0.067% of one CPU core for 60 seconds, meeting those two VM targets.
 The fifth pinned image added the signed Plasma volume applet and Qt audio
-dependency. Its live slider changed PipeWire's output volume, and its
-60-second idle result remained within target at 352.43 MiB PSS and 0.083% CPU.
+dependency. Its live slider changed PipeWire's output volume. The fresh-login
+Forge-layout 60-second result met the targets at 323.10 MiB PSS and 0.083% CPU;
+a hot layout reset in the same VM had earlier measured 461.26 MiB PSS and
+remains a separate memory-recovery concern.
 See `evidence/kwin-candidate/software-backend-acceptance.md` and
 `evidence/kwin-candidate/audio-v5.md`. Frame/launcher latency, remaining M3
 services, long-term stability and default-switch gates remain open.

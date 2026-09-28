@@ -1,0 +1,355 @@
+{
+  "schemaVersion": 1,
+  "duration_seconds": 60.00030576400002,
+  "uid": 1000,
+  "selection": {
+    "desktop": {
+      "names": [
+        "kwin_wayland",
+        "plasmashell"
+      ],
+      "descendants": false
+    }
+  },
+  "clock_ticks_per_second": 100,
+  "summary": {
+    "desktop": {
+      "stable_process_set": true,
+      "complete_pss": true,
+      "cpu_percent_one_core": 0.06666632693062019,
+      "pss_mib_mean": 461.263671875,
+      "pss_mib_max": 461.263671875
+    }
+  },
+  "samples": [
+    {
+      "seconds": 1.390000079481979e-07,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 338,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 5.00547746899997,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 338,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 10.011620814000025,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 338,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 15.017971160000002,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 339,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 20.023716688000036,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 339,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 25.03005250299998,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 340,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 30.036356051999974,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 340,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 35.04227274799996,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 341,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 40.04865736700003,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 341,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 45.05557035000004,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 341,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 50.06211533600003,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 341,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 55.06907067999998,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 342,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    },
+    {
+      "seconds": 60.00030576400002,
+      "groups": {
+        "desktop": {
+          "632": {
+            "pid": 632,
+            "name": "kwin_wayland",
+            "ppid": 628,
+            "ticks": 442,
+            "start": 830,
+            "uid": 1000,
+            "pss_kib": 274005
+          },
+          "1253": {
+            "pid": 1253,
+            "name": "plasmashell",
+            "ppid": 478,
+            "ticks": 342,
+            "start": 14930,
+            "uid": 1000,
+            "pss_kib": 198329
+          }
+        }
+      }
+    }
+  ],
+  "limitations": [
+    "CPU comparison is valid only for stable process sets.",
+    "No frame time, input latency or noVNC latency is inferred."
+  ]
+}
