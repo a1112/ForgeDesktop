@@ -206,6 +206,7 @@ class PlasmaBundleTests(unittest.TestCase):
             destination = self.stage / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(repo / source, destination)
+            destination.chmod(0o644)
         dependencies = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
         visual_inventory = json.loads((repo / "plasma/dependencies.json").read_bytes())
         declared = visual_inventory["assetLicenses"]
@@ -258,6 +259,7 @@ class PlasmaBundleTests(unittest.TestCase):
                 path = self.stage / destination
                 path.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(repo / source, path)
+                path.chmod(0o644)
         shutil.copyfile(repo / "plasma/dependencies.json",
                         self.stage / "usr/share/forge-desktop/plasma/dependencies.json")
         # The reviewed product bundle includes both the look-and-feel and
@@ -269,6 +271,7 @@ class PlasmaBundleTests(unittest.TestCase):
                                / source.relative_to(look_root))
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 shutil.copyfile(source, destination)
+                destination.chmod(0o644)
         declared = json.loads((repo / "plasma/dependencies.json").read_bytes())[
             "assetLicenses"]
         self.assertTrue(set(assets.values()) <= set(declared))
