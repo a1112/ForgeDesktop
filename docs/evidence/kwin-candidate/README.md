@@ -4,6 +4,8 @@ Date: 2026-09-28 UTC. This records the first boot and window checks, not the
 M3-M5 daily-use or default-session acceptance. The later Forge visual package,
 verified image rebuild, and interactive checks are recorded in
 [visual acceptance](visual-acceptance.md).
+The follow-up pinned software-rendering image and its fresh-login measurements
+are recorded in [software backend acceptance](software-backend-acceptance.md).
 
 ## Artifact and isolation
 

@@ -12,8 +12,11 @@ Daily-service, stability, and performance gates remain pending. See
 `evidence/kwin-candidate/visual-acceptance.md`.
 An initial no-app 60-second measurement exceeded the 400 MiB PSS target;
 Qt Quick software rendering improved the disposable overlay measurement but
-also remained over target. The optimized session wrapper needs a fresh-image
-verification before any performance acceptance.
+also remained over target. The fourth pinned image started a fresh software
+Qt Quick session: exact KWin plus Plasma Shell counters averaged 332.40 MiB
+PSS and 0.067% of one CPU core for 60 seconds, meeting those two VM targets.
+See `evidence/kwin-candidate/software-backend-acceptance.md`. Frame/launcher
+latency, M3 services, long-term stability and default-switch gates remain open.
 
 | Milestone | Status | Required evidence |
 |---|---|---|
