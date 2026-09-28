@@ -85,6 +85,18 @@ class TerminalIntegrationTests(unittest.TestCase):
         self.assertEqual(actual, ["/usr/bin/rterm", "window", "--renderer", "cpu",
                                   "--display-backend", "wayland", "--class", "org.forge.RTerm", *args])
 
+    def test_launcher_inherits_desktop_working_directory_without_shell_expansion(self):
+        launcher = module("forge_terminal")
+        arguments = ["-e", "/usr/bin/program", "含 空格", "$(literal)"]
+        with mock.patch.object(launcher.os, "getcwd", return_value="/home/forge/项目 space"):
+            with mock.patch.object(launcher.sys, "argv", ["forge-terminal", *arguments]):
+                with mock.patch.dict(launcher.os.environ, {"WAYLAND_DISPLAY": "wayland-0"}):
+                    with mock.patch.object(launcher.os, "execv") as execute:
+                        launcher.main()
+        execute.assert_called_once_with("/usr/bin/rterm", [
+            "/usr/bin/rterm", "window", "--renderer", "cpu", "--display-backend", "wayland",
+            "--class", "org.forge.RTerm", "--cwd", "/home/forge/项目 space", *arguments])
+
     def test_x11_and_no_display(self):
         launcher = module("forge_terminal")
         self.assertIn("x11", launcher.command([], {"DISPLAY": ":0"}))

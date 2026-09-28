@@ -10,6 +10,9 @@ The launcher selects CPU rendering and explicitly selects Wayland when
 `WAYLAND_DISPLAY` is set, otherwise X11 when `DISPLAY` is set. It executes an
 argument array without shell interpolation. R-Term uses `org.forge.RTerm` as
 its Wayland app ID, matching `org.forge.RTerm.desktop`.
+The launcher forwards its inherited working directory as `--cwd`, preserving
+file-manager and `Terminal=true` application directories. An explicit `--cwd`
+argument overrides that inherited value.
 
 Accounts created after bundle installation receive terminal settings and
 `[KDE] LookAndFeelPackage=org.forge.desktop` through `/etc/skel/.config/kdeglobals`.

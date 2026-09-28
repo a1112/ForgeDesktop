@@ -17,7 +17,10 @@ def command(arguments, environment):
 
 def main():
     try:
-        arguments = command(sys.argv[1:], os.environ)
+        # File managers and Terminal=true launchers communicate their directory
+        # through the process cwd. R-Term otherwise starts its configured home.
+        # An explicit later --cwd still takes precedence in R-Term's parser.
+        arguments = command(["--cwd", os.getcwd(), *sys.argv[1:]], os.environ)
         os.execv(arguments[0], arguments)
     except (ValueError, OSError) as error:
         print(f"R-Term: {error}", file=sys.stderr)
