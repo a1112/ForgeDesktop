@@ -178,14 +178,49 @@ class PlasmaBundleTests(unittest.TestCase):
              "usr/libexec/forge-desktop/forge-kwin-session"),
             ("plasma/session/forgedesktop-kwin.desktop",
              "usr/share/wayland-sessions/forgedesktop-kwin.desktop"),
-            ("plasma/dependencies.json",
-             "usr/share/forge-desktop/plasma/dependencies.json"),
         ):
             shutil.copyfile(repo / source, self.stage / relative)
         shutil.copyfile(repo / "LICENSE-MIT",
                         self.stage / "usr/share/licenses/forge-desktop/LICENSE")
         pin = self.build()
         self.assertEqual(verify_bundle(self.output, pin)["kind"], "plasma-session")
+
+    def test_repository_visual_theme_is_bundled_with_license_records(self):
+        repo = Path(__file__).resolve().parents[2]
+        visual_files = {
+            "plasma/look-and-feel/metadata.json":
+                "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json",
+            "plasma/look-and-feel/contents/defaults":
+                "usr/share/plasma/look-and-feel/org.forge.desktop/contents/defaults",
+            "plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js":
+                "usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js",
+            "plasma/look-and-feel/contents/wallpapers/forge.svg":
+                "usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg",
+        }
+        for source, relative in visual_files.items():
+            destination = self.stage / relative
+            destination.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(repo / source, destination)
+        dependencies = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
+        shutil.copyfile(repo / "plasma/dependencies.json", dependencies)
+        declared = json.loads(dependencies.read_bytes())["assetLicenses"]
+        self.assertEqual(set(declared), set(visual_files.values()))
+        pin = self.build()
+        self.assertEqual(set(verify_bundle(self.output, pin)["files"]),
+                         set(self.files) | set(visual_files.values()))
+
+    def test_rejects_private_window_api_in_theme_layout(self):
+        relative = ("usr/share/plasma/look-and-feel/org.forge.desktop/contents/"
+                    "layouts/org.kde.plasma.desktop-layout.js")
+        layout = self.stage / relative
+        layout.parent.mkdir(parents=True, exist_ok=True)
+        layout.write_text("import WindowHeap from 'private';\n")
+        dependencies = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
+        record = json.loads(dependencies.read_bytes())
+        record["assetLicenses"] = {relative: "MIT"}
+        dependencies.write_text(json.dumps(record))
+        with self.assertRaises(ValueError):
+            self.build()
 
     def test_documented_direct_cli_starts(self):
         repo = Path(__file__).resolve().parents[2]

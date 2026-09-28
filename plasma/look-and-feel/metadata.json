@@ -1,0 +1,10 @@
+{
+  "KPackageStructure": "Plasma/LookAndFeel",
+  "KPlugin": {
+    "Id": "org.forge.desktop",
+    "Name": "ForgeDesktop",
+    "Description": "ForgeOS dark desktop with a top bar and compact dock",
+    "Version": "0.2.0",
+    "License": "MIT"
+  }
+}

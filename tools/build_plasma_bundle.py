@@ -15,6 +15,7 @@ import re
 import shutil
 import stat
 import tempfile
+import xml.etree.ElementTree as ET
 
 if __package__:
     from tools.build_bundle import no_links, require, source_commit
@@ -28,6 +29,12 @@ SESSION_ENTRY = "usr/share/wayland-sessions/forgedesktop-kwin.desktop"
 DEPENDENCIES = "usr/share/forge-desktop/plasma/dependencies.json"
 LICENSE = "usr/share/licenses/forge-desktop/LICENSE"
 REQUIRED = {SESSION_SCRIPT, SESSION_ENTRY, DEPENDENCIES, LICENSE}
+LOOK_ROOT = "usr/share/plasma/look-and-feel/org.forge.desktop/"
+LOOK_METADATA = LOOK_ROOT + "metadata.json"
+LOOK_DEFAULTS = LOOK_ROOT + "contents/defaults"
+LOOK_LAYOUT = LOOK_ROOT + "contents/layouts/org.kde.plasma.desktop-layout.js"
+LOOK_WALLPAPER = LOOK_ROOT + "contents/wallpapers/forge.svg"
+LOOK_REQUIRED = {LOOK_METADATA, LOOK_DEFAULTS, LOOK_LAYOUT, LOOK_WALLPAPER}
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"exec /usr/lib/plasma-dbus-run-session-if-needed "
@@ -104,6 +111,45 @@ def validate_dependencies(data):
     return value
 
 
+def validate_visual_assets(payloads):
+    visual = {name for name in payloads if name.startswith(LOOK_ROOT)}
+    if not visual:
+        return
+    require(visual == LOOK_REQUIRED, "Forge visual theme has missing or extra files")
+    metadata = json.loads(payloads[LOOK_METADATA][0], object_pairs_hook=unique_pairs)
+    require(type(metadata) is dict and set(metadata) == {"KPackageStructure", "KPlugin"}
+            and metadata["KPackageStructure"] == "Plasma/LookAndFeel"
+            and type(metadata["KPlugin"]) is dict
+            and metadata["KPlugin"].get("Id") == "org.forge.desktop"
+            and metadata["KPlugin"].get("License") == "MIT",
+            "Forge visual theme metadata differs")
+    defaults = payloads[LOOK_DEFAULTS][0].decode("utf-8", errors="strict")
+    require("ColorScheme=BreezeDark\n" in defaults
+            and "name=breeze-dark\n" in defaults
+            and len(defaults) <= 4096,
+            "Forge visual theme defaults differ")
+    layout = payloads[LOOK_LAYOUT][0].decode("utf-8", errors="strict")
+    require(len(layout) <= 16 * 1024
+            and "org.kde.plasma.icontasks" in layout
+            and "org.kde.plasma.systemtray" in layout
+            and "file:///" + LOOK_WALLPAPER in layout
+            and not re.search(r"WindowHeap|runCommand|openUrlExternally|\beval\s*\(|\bimport\b", layout),
+            "Forge visual theme uses unsupported or private scripting")
+    wallpaper = payloads[LOOK_WALLPAPER][0]
+    require(len(wallpaper) <= 1024 * 1024, "Forge wallpaper exceeds limit")
+    try:
+        tree = ET.fromstring(wallpaper)
+    except ET.ParseError as error:
+        raise ValueError("invalid Forge wallpaper SVG") from error
+    allowed_tags = {"svg", "defs", "linearGradient", "stop", "rect", "g", "text"}
+    require(all(element.tag in {"{http://www.w3.org/2000/svg}" + tag
+                                for tag in allowed_tags}
+                and not any(key.startswith("on") or "href" in key.lower()
+                            for key in element.attrib)
+                for element in tree.iter()),
+            "Forge wallpaper contains unsupported SVG elements")
+
+
 def collect_files(root, *, receipt=False):
     root = Path(root).absolute()
     no_links(root)
@@ -148,6 +194,7 @@ def collect_files(root, *, receipt=False):
     assets = set(result) - REQUIRED
     require(set(dependencies["assetLicenses"]) == assets,
             "asset license records differ from bundled assets")
+    validate_visual_assets(result)
     return result
 
 

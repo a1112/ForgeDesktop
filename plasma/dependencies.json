@@ -1,1 +1,1 @@
-{"schemaVersion":1,"archSnapshot":"2026/08/01","runtimePackages":["kwin","plasma-workspace"],"assetLicenses":{}}
+{"schemaVersion":1,"archSnapshot":"2026/08/01","runtimePackages":["kwin","plasma-workspace"],"assetLicenses":{"usr/share/plasma/look-and-feel/org.forge.desktop/contents/defaults":"MIT","usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js":"MIT","usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg":"MIT","usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json":"MIT"}}
