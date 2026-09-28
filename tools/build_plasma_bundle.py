@@ -32,6 +32,14 @@ SESSION_ENTRY = "usr/share/wayland-sessions/forgedesktop-kwin.desktop"
 DEPENDENCIES = "usr/share/forge-desktop/plasma/dependencies.json"
 LICENSE = "usr/share/licenses/forge-desktop/LICENSE"
 REQUIRED = {SESSION_SCRIPT, SESSION_ENTRY, DEPENDENCIES, LICENSE}
+TERMINAL_EXECUTABLES = {"usr/bin/forge-terminal", "usr/libexec/forge-desktop/terminal-defaults"}
+TERMINAL_FILES = TERMINAL_EXECUTABLES | {
+    "usr/share/applications/org.forge.RTerm.desktop",
+    "usr/share/xfce4/helpers/forge-terminal.desktop",
+    "etc/skel/.config/kdeglobals",
+    "etc/skel/.config/kglobalshortcutsrc",
+    "etc/skel/.config/xfce4/helpers.rc",
+}
 LOOK_ROOT = "usr/share/plasma/look-and-feel/org.forge.desktop/"
 LOOK_METADATA = LOOK_ROOT + "metadata.json"
 LOOK_DEFAULTS = LOOK_ROOT + "contents/defaults"
@@ -72,7 +80,7 @@ def eligible_path(name):
             or not re.fullmatch(r"[A-Za-z0-9_./+-]+", name)
             or any(part in ("", ".", "..") for part in name.split("/"))):
         return False
-    return (name in REQUIRED
+    return (name in REQUIRED or name in TERMINAL_FILES
             or name in WINDOW_REQUIRED or name == WINDOW_CATALOG
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
             or name.startswith("usr/share/plasma/desktoptheme/forge/")
@@ -268,7 +276,7 @@ def collect_files(root, *, receipt=False):
             require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1
                     and metadata.st_size <= MAX_FILE,
                     "bundle input is not a bounded singly linked regular file")
-            mode = 0o755 if relative == SESSION_SCRIPT else 0o644
+            mode = 0o755 if relative in {SESSION_SCRIPT} | TERMINAL_EXECUTABLES else 0o644
             if os.name != "nt":
                 require(stat.S_IMODE(metadata.st_mode) == mode,
                         "bundle input mode mismatch")
@@ -289,6 +297,8 @@ def collect_files(root, *, receipt=False):
                 require(bool(data.strip()), "project license notice is empty")
             result[relative] = (data, mode)
     require(REQUIRED <= set(result), "required Plasma session file missing")
+    require(not (set(result) & TERMINAL_FILES) or TERMINAL_FILES <= set(result),
+            "incomplete terminal integration")
     dependencies = validate_dependencies(result[DEPENDENCIES][0])
     assets = set(result) - REQUIRED
     require(set(dependencies["assetLicenses"]) == assets,
@@ -323,6 +333,8 @@ def create_bundle(staging, output, version, source):
     if os.path.lexists(output):
         raise FileExistsError(output)
     payloads = collect_files(staging)
+    require(tuple(map(int, version.split("-")[0].split("."))) < (0, 5, 0)
+            or TERMINAL_FILES <= set(payloads), "R-Term integration required for Plasma bundle 0.5+")
     raw = receipt_bytes(payloads, version, source)
     temporary = Path(tempfile.mkdtemp(prefix=".forge-plasma-", dir=output.parent))
     require(temporary.resolve().parent == output.parent.resolve(),
@@ -379,6 +391,8 @@ def verify_bundle(bundle, expected_sha256):
             and type(value["files"]) is dict,
             "invalid Plasma bundle receipt identity")
     payloads = collect_files(bundle, receipt=True)
+    require(tuple(map(int, value["version"].split("-")[0].split("."))) < (0, 5, 0)
+            or TERMINAL_FILES <= set(payloads), "R-Term integration required for Plasma bundle 0.5+")
     require(set(payloads) == set(value["files"]),
             "Plasma bundle file set differs from receipt")
     require(raw == receipt_bytes(payloads, value["version"], value["sourceCommit"]),

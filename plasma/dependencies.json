@@ -1,8 +1,16 @@
 {
   "schemaVersion": 1,
   "archSnapshot": "2026/08/01",
-  "runtimePackages": ["kwin", "plasma-workspace"],
+  "runtimePackages": [
+    "kwin",
+    "plasma-workspace",
+    "python"
+  ],
   "assetLicenses": {
+    "usr/bin/forge-terminal": "MIT",
+    "usr/libexec/forge-desktop/terminal-defaults": "MIT",
+    "usr/share/applications/org.forge.RTerm.desktop": "MIT",
+    "usr/share/xfce4/helpers/forge-terminal.desktop": "MIT",
     "usr/share/aurorae/themes/ForgeDark/ForgeDarkrc": "MIT",
     "usr/share/aurorae/themes/ForgeDark/close.svg": "MIT",
     "usr/share/aurorae/themes/ForgeDark/decoration.svg": "MIT",
@@ -16,6 +24,9 @@
     "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
-    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT"
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT",
+    "etc/skel/.config/kdeglobals": "MIT",
+    "etc/skel/.config/kglobalshortcutsrc": "MIT",
+    "etc/skel/.config/xfce4/helpers.rc": "MIT"
   }
 }

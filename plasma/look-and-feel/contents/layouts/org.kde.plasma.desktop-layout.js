@@ -30,7 +30,7 @@ var tasks = dock.addWidget("org.kde.plasma.icontasks");
 tasks.currentConfigGroup = ["General"];
 tasks.writeConfig("launchers", [
     "applications:thunar.desktop",
-    "applications:xfce4-terminal.desktop",
+    "applications:org.forge.RTerm.desktop",
     "applications:org.xfce.mousepad.desktop",
     "applications:firefox.desktop",
     "applications:systemsettings.desktop"

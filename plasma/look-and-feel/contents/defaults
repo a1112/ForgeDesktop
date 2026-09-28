@@ -4,6 +4,8 @@ AnimationDurationFactor=0.5
 
 [kdeglobals][General]
 ColorScheme=BreezeDark
+TerminalApplication=forge-terminal
+TerminalService=org.forge.RTerm.desktop
 
 [kdeglobals][Icons]
 Theme=breeze-dark

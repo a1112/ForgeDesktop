@@ -1,0 +1,13 @@
+[Desktop Entry]
+Type=Application
+Name=R-Term
+Name[zh_CN]=R-Term 终端
+Comment=Native ForgeOS terminal
+Comment[zh_CN]=ForgeOS 原生终端
+Exec=/usr/bin/forge-terminal
+TryExec=/usr/bin/rterm
+Icon=utilities-terminal
+Terminal=false
+Categories=System;TerminalEmulator;
+StartupWMClass=org.forge.RTerm
+X-KDE-Shortcuts=Ctrl+Alt+T

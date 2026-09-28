@@ -230,7 +230,7 @@ class PlasmaBundleTests(unittest.TestCase):
             "plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js"])
         layout_bytes = layout.read_bytes()
         self.assertIn(b'dock.lengthMode = "custom";', layout_bytes)
-        for desktop_id in (b'thunar.desktop', b'xfce4-terminal.desktop',
+        for desktop_id in (b'thunar.desktop', b'org.forge.RTerm.desktop',
                            b'org.xfce.mousepad.desktop', b'firefox.desktop',
                            b'systemsettings.desktop'):
             self.assertIn(b'applications:' + desktop_id, layout_bytes)
@@ -275,6 +275,19 @@ class PlasmaBundleTests(unittest.TestCase):
         declared = json.loads((repo / "plasma/dependencies.json").read_bytes())[
             "assetLicenses"]
         self.assertTrue(set(assets.values()) <= set(declared))
+        for source, destination in (
+            ("forge_terminal.py", "usr/bin/forge-terminal"),
+            ("terminal_defaults.py", "usr/libexec/forge-desktop/terminal-defaults"),
+            ("org.forge.RTerm.desktop", "usr/share/applications/org.forge.RTerm.desktop"),
+            ("forge-terminal.desktop", "usr/share/xfce4/helpers/forge-terminal.desktop"),
+            ("skel-kdeglobals", "etc/skel/.config/kdeglobals"),
+            ("skel-kglobalshortcutsrc", "etc/skel/.config/kglobalshortcutsrc"),
+            ("skel-helpers.rc", "etc/skel/.config/xfce4/helpers.rc"),
+        ):
+            target = self.stage / destination
+            target.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copyfile(repo / "plasma/terminal" / source, target)
+            target.chmod(0o755 if source.endswith(".py") else 0o644)
         pin = self.build()
         self.assertTrue(set(assets.values()) <= set(verify_bundle(self.output, pin)["files"]))
 
