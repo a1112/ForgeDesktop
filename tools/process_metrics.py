@@ -22,6 +22,16 @@ def parse_pss(value):
     return None
 
 
+def resolve_target_uid(requested, caller_uid, effective_uid):
+    if requested is None:
+        return caller_uid
+    if type(requested) is not int or requested < 0:
+        raise ValueError('target UID must be nonnegative')
+    if requested != caller_uid and effective_uid != 0:
+        raise ValueError('sampling another user requires root for complete PSS')
+    return requested
+
+
 def cpu_percent(before, after, ticks_per_second, seconds):
     if seconds <= 0 or ticks_per_second <= 0:
         raise ValueError('sampling interval and clock frequency must be positive')
@@ -126,6 +136,7 @@ def main():
     parser.add_argument('--exact-group', action='append', default=[], help='label=executable,executable; exclude descendants')
     parser.add_argument('--seconds', type=float, default=60)
     parser.add_argument('--interval', type=float, default=1)
+    parser.add_argument('--uid', type=int, help='target UID; root required for another user')
     args = parser.parse_args()
     if not 1 <= args.seconds <= 28800 or not .1 <= args.interval <= 60:
         parser.error('seconds must be 1..28800 and interval .1..60')
@@ -138,7 +149,11 @@ def main():
             parser.error('groups need unique labels and executable names')
         groups[label] = set(names.split(','))
     exact = {item.partition('=')[0] for item in args.exact_group}
-    print(json.dumps(sample(groups, args.seconds, args.interval, os.getuid(), exact), indent=2))
+    try:
+        target_uid = resolve_target_uid(args.uid, os.getuid(), os.geteuid())
+    except ValueError as error:
+        parser.error(str(error))
+    print(json.dumps(sample(groups, args.seconds, args.interval, target_uid, exact), indent=2))
 
 
 if __name__ == '__main__':

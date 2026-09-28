@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "profile": "kwin-plasma-candidate",
+  "sourceSha256": "2cc90d85ad4d26e2c4181b241d9fe7acc9c82650755c979bf7b60fe75d5d6f1e",
+  "imageSha256": "ced7c8e319a914d9830dc4d3c63871c73340655d6ae4bac615e8dd2d32ae4c97",
+  "bundleSha256": "ef1aab7a5c5a1e3e803b0e16d369a55556a7a587113660a2f8f411499ea80fc7",
+  "packageCount": 160,
+  "defaultSession": "xfce",
+  "systemAB": false
+}

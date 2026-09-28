@@ -49,6 +49,14 @@ class ProcessMetricsTests(unittest.TestCase):
         self.assertEqual(metrics.select_group(table, {'xfce4-panel'}, 1000,
                                              descendants=False), {10})
 
+    def test_cross_user_pss_requires_root(self):
+        self.assertEqual(metrics.resolve_target_uid(None, 1000, 1000), 1000)
+        self.assertEqual(metrics.resolve_target_uid(1000, 0, 0), 1000)
+        with self.assertRaises(ValueError):
+            metrics.resolve_target_uid(1001, 1000, 1000)
+        with self.assertRaises(ValueError):
+            metrics.resolve_target_uid(-1, 0, 0)
+
 
 if __name__ == '__main__':
     unittest.main()
