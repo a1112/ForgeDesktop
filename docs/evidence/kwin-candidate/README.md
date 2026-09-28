@@ -1,7 +1,9 @@
 # KWin/Plasma isolated candidate: initial acceptance
 
 Date: 2026-09-28 UTC. This records the first boot and window checks, not the
-M3-M5 daily-use or default-session acceptance.
+M3-M5 daily-use or default-session acceptance. The later Forge visual package,
+verified image rebuild, and interactive checks are recorded in
+[visual acceptance](visual-acceptance.md).
 
 ## Artifact and isolation
 
@@ -44,8 +46,8 @@ M3-M5 daily-use or default-session acceptance.
 
 ## Limits and follow-up
 
-- The bundle currently adds the session entry and verified launcher, without
-  the Forge dark visual package. The screenshot shows stock Plasma styling.
+- This *first* image contained the session entry and verified launcher, without
+  the later Forge dark visual package. Its screenshot shows stock Plasma styling.
 - The test overlay used automatic login because the disposable `forge` account
   has no interactive password. The greeter's manual session-selection and
   KWin-exit return path remain to be exercised in a separate overlay.
