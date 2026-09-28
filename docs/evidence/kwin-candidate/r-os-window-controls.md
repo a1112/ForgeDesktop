@@ -39,11 +39,25 @@ child of `PlasmoidItem` fixed the display; explicit light glyph colors made the
 buttons legible against the dark panel. These observations are covered by the
 repository test for the panel item shape and by manual button tests above.
 
+The new pinned ForgeOS image also booted in an independent v6 QEMU instance.
+Its immutable base image SHA-256 is
+`975f77e75cab97b31b26c83cbe88ef5493a595d4409ae048827df708f72b9030`;
+its receipt pins the ForgeDesktop bundle SHA-256
+`d329f70739147b718b658c056e373ddc72c44489e8cdfaadcb95c3b28964f945`.
+All 17 installed bundle files matched their receipt hashes in an offline mount.
+The test overlay alone selected ForgeDesktop autologin and applied
+`org.forge.desktop` with `plasma-apply-lookandfeel --resetLayout`. The base
+image still records `defaultSession=xfce`. In this v6 boot, the terminal and
+Thunar displayed ForgeDark frames; maximizing the terminal moved its title and
+controls into the top panel, the panel restore button returned it to a frame,
+and its frame minimize button hid it until the Dock restored it.
+[v6 boot with Thunar](r-os-v6-boot.png) shows the applied look and ordinary
+window controls.
+
 The screenshots are native QMP `screendump` PNGs of the guest display, not
 browser crops. They show actual 1280×800 output. This acceptance covers the
 tested Thunar, XFCE Terminal, Qt System Settings, Firefox, and XWayland
 `xmessage` paths. Other client-decorated AppIds need individual verification
-before adding them to the exclusion list. Multi-output behavior, timed
-performance gates, and a new immutable image boot remain separate validation
-gates; no default-session switch is claimed here. XFCE recovery remains the
-current login default.
+before adding them to the exclusion list. Multi-output behavior and timed
+performance gates remain separate validation gates; no default-session switch
+is claimed here. XFCE recovery remains the current login default.
