@@ -1,5 +1,7 @@
 [Unit]
 Description=Keep CompatForge launchers synchronized with installed applications
+PartOf=graphical-session.target
+After=graphical-session.target
 
 [Timer]
 OnStartupSec=10
@@ -8,4 +10,4 @@ AccuracySec=1
 Unit=forge-compatforge-desktop-sync.service
 
 [Install]
-WantedBy=timers.target
+WantedBy=graphical-session.target

@@ -1,6 +1,8 @@
 [Unit]
 Description=Synchronize CompatForge application launchers
 After=compatforge.service
+Requisite=compatforge.service
+PartOf=graphical-session.target
 ConditionPathExists=/usr/bin/compatforge-cli
 
 [Service]

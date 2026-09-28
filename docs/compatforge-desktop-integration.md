@@ -15,7 +15,12 @@ queries preserve the current launcher set.
 | `services/compatforge/forge-compatforge-desktop-sync.service` | `/usr/lib/systemd/user/forge-compatforge-desktop-sync.service` | 0644 |
 | `services/compatforge/forge-compatforge-desktop-sync.timer` | `/usr/lib/systemd/user/forge-compatforge-desktop-sync.timer` | 0644 |
 
-Enable the timer with the user systemd manager in the ForgeOS image integration.
+ForgeOS's verified candidate-image integration installs global ordinary-user
+wants for `compatforge.service` and this timer under `graphical-session.target`.
+Both the timer and oneshot service stop with the graphical session. The oneshot
+requires the existing CompatForge daemon; it does not start an independent
+runtime owner. CompatForge's `ExecStartPre` validates system pins and initializes
+the user's context through its own bootstrap interface before daemon startup.
 The units are included in the closed Plasma bundle allowlist and MIT inventory.
 Runtime packages added here are `python` (stdlib only) and `desktop-file-utils`.
 ForgeOS pins exact package builds and verifies its own installation allowlist;

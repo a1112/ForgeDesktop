@@ -38,12 +38,13 @@ COMPAT_SERVICE = "usr/lib/systemd/user/forge-compatforge-desktop-sync.service"
 COMPAT_TIMER = "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer"
 COMPAT_REQUIRED = {COMPAT_SCRIPT, COMPAT_SERVICE, COMPAT_TIMER}
 COMPAT_SERVICE_BYTES = (b"[Unit]\nDescription=Synchronize CompatForge application launchers\n"
-                       b"After=compatforge.service\nConditionPathExists=/usr/bin/compatforge-cli\n\n"
+                       b"After=compatforge.service\nRequisite=compatforge.service\nPartOf=graphical-session.target\nConditionPathExists=/usr/bin/compatforge-cli\n\n"
                        b"[Service]\nType=oneshot\nExecStart=/usr/libexec/forge-desktop/compatforge-desktop-sync\n"
                        b"TimeoutStartSec=90\nNoNewPrivileges=true\n")
-COMPAT_TIMER_BYTES = (b"[Unit]\nDescription=Keep CompatForge launchers synchronized with installed applications\n\n"
+COMPAT_TIMER_BYTES = (b"[Unit]\nDescription=Keep CompatForge launchers synchronized with installed applications\n"
+                     b"PartOf=graphical-session.target\nAfter=graphical-session.target\n\n"
                      b"[Timer]\nOnStartupSec=10\nOnUnitInactiveSec=15\nAccuracySec=1\n"
-                     b"Unit=forge-compatforge-desktop-sync.service\n\n[Install]\nWantedBy=timers.target\n")
+                     b"Unit=forge-compatforge-desktop-sync.service\n\n[Install]\nWantedBy=graphical-session.target\n")
 LOOK_ROOT = "usr/share/plasma/look-and-feel/org.forge.desktop/"
 LOOK_METADATA = LOOK_ROOT + "metadata.json"
 LOOK_DEFAULTS = LOOK_ROOT + "contents/defaults"
