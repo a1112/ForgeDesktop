@@ -29,6 +29,13 @@ factor; a live window launch, drag and close check passed, while measured
 frame and noVNC latency remain pending. See
 `evidence/kwin-candidate/window-response-v4.md`.
 
+The v7 candidate adds Chinese-default localization with English fallback.
+Both language selections were verified across normal restarts, including real
+Fusion tooltips and terminal locale output. Chinese Thunar and Firefox UI were
+also checked. The earlier v6 locked-session exit encountered a kernel wait and
+was preserved with VM state, disk snapshot and NVRAM; this remains a separate
+stability issue. See `evidence/kwin-candidate/i18n-v7.md`.
+
 | Milestone | Status | Required evidence |
 |---|---|---|
 | M0 baseline/build environment | In progress | >=30 GiB workspace, fixed R-OS/XFCE metrics |
