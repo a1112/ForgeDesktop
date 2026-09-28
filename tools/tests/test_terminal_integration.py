@@ -1,5 +1,8 @@
 """Terminal launch argument preservation and reversible personal settings."""
+import configparser
 import importlib.util
+import json
+import shutil
 from pathlib import Path
 import tempfile
 import unittest
@@ -17,6 +20,35 @@ def module(name):
 
 
 class TerminalIntegrationTests(unittest.TestCase):
+    def test_new_account_skeleton_selects_the_packaged_forge_layout(self):
+        from tools.stage_plasma_bundle import stage
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            staged = root / "stage"
+            stage(ROOT, staged)
+            home = root / "new-user"
+            shutil.copytree(staged / "etc/skel", home)
+            config = configparser.ConfigParser(interpolation=None)
+            config.read(home / ".config/kdeglobals", encoding="utf-8")
+            selected = config.get("KDE", "LookAndFeelPackage")
+            self.assertEqual(selected, "org.forge.desktop")
+            package = staged / "usr/share/plasma/look-and-feel" / selected
+            self.assertEqual(json.loads((package / "metadata.json").read_text())["KPlugin"]["Id"], selected)
+            layout = package / "contents/layouts/org.kde.plasma.desktop-layout.js"
+            self.assertIn("applications:org.forge.RTerm.desktop", layout.read_text())
+            self.assertFalse((home / ".config/plasma-org.kde.plasma.desktop-appletsrc").exists())
+            self.assertEqual(config.get("General", "TerminalApplication"), "forge-terminal")
+
+    def test_existing_account_without_plasma_state_is_not_given_a_theme_or_layout(self):
+        migration = module("terminal_defaults")
+        with tempfile.TemporaryDirectory() as temporary:
+            home = Path(temporary)
+            migration.apply(home)
+            config = configparser.ConfigParser(interpolation=None)
+            config.read(home / ".config/kdeglobals", encoding="utf-8")
+            self.assertFalse(config.has_option("KDE", "LookAndFeelPackage"))
+            self.assertFalse((home / ".config/plasma-org.kde.plasma.desktop-appletsrc").exists())
+
     def test_large_valid_configuration_has_restorable_backup(self):
         migration = module("terminal_defaults")
         with tempfile.TemporaryDirectory() as temporary:
@@ -65,15 +97,17 @@ class TerminalIntegrationTests(unittest.TestCase):
             home = Path(temporary)
             config = home / ".config"
             config.mkdir()
-            original = b"# personal\n[General]\nTerminalApplication=xfce4-terminal\nColorScheme=MyColors\n"
+            original = b"# personal\n[KDE]\nLookAndFeelPackage=org.example.personal\n[General]\nTerminalApplication=xfce4-terminal\nColorScheme=MyColors\n"
             (config / "kdeglobals").write_bytes(original)
-            layout = b"[Containments][7][Applets][9][Configuration][General]\nlaunchers=applications:firefox.desktop,applications:xfce4-terminal.desktop\ncustom=keep\n"
+            layout = b"[Containments][7]\nplugin=org.kde.panel\nlocation=3\n[Containments][7][Applets][9][Configuration][General]\nlaunchers=applications:firefox.desktop,applications:xfce4-terminal.desktop\ncustom=keep\n"
             (config / "plasma-org.kde.plasma.desktop-appletsrc").write_bytes(layout)
             migration.apply(home)
             first = (config / "kdeglobals").read_bytes()
             self.assertIn(b"TerminalApplication=forge-terminal", first)
             self.assertIn(b"ColorScheme=MyColors", first)
-            self.assertIn(b"applications:org.forge.RTerm.desktop", (config / "plasma-org.kde.plasma.desktop-appletsrc").read_bytes())
+            self.assertIn(b"[KDE]\nLookAndFeelPackage=org.example.personal\n", first)
+            expected_layout = layout.replace(b"applications:xfce4-terminal.desktop", b"applications:org.forge.RTerm.desktop")
+            self.assertEqual(expected_layout, (config / "plasma-org.kde.plasma.desktop-appletsrc").read_bytes())
             migration.apply(home)
             self.assertEqual(first, (config / "kdeglobals").read_bytes())
             migration.restore(home)

@@ -38,11 +38,15 @@ and exact bytes in `bundle.json`. `dependencies.json` names the two essential
 upstream runtime packages and declares licenses for any bundled visual assets.
 The full package closure and its licenses belong in ForgeOS's separate signed
 lock. ForgeOS must pin the receipt digest separately and verify that closure.
-The global theme uses public Plasma 6 theme and layout paths. It is installed
-as an option: selecting it in the isolated user session applies the Forge
-wallpaper, dark Breeze palette, top status panel and compact bottom task panel.
-The bundle never changes the default login session or an existing user's
-Plasma configuration. The Smithay and XFCE login entries remain available.
+The global theme uses public Plasma 6 theme and layout paths. Accounts created
+from the installed `/etc/skel` select `org.forge.desktop` for their first Plasma
+login, which loads the Forge wallpaper, dark Breeze palette, top status panel
+and compact bottom Dock with R-Term. Existing accounts, including the base
+image's `forge` account, do not receive skeleton updates and keep their saved
+theme and layout. There is no login-time layout reset. The bundle never changes
+the default login session. The Smithay and XFCE login entries remain available.
+See [terminal integration](../docs/rterm-default-terminal.md) for the separate
+new-account and existing-profile validation procedures.
 
 The Forge Dark Aurorae decoration handles ordinary server-decorated windows.
 The top-panel widget requests actions for the current maximized task through

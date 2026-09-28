@@ -1,3 +1,6 @@
+[KDE]
+LookAndFeelPackage=org.forge.desktop
+
 [General]
 TerminalApplication=forge-terminal
 TerminalService=org.forge.RTerm.desktop
