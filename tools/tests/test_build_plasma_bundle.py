@@ -15,6 +15,7 @@ from tools.build_plasma_bundle import create_bundle, eligible_path, verify_bundl
 
 SESSION = (b"#!/bin/sh\nset -eu\n"
            b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
+           b"export QT_QUICK_BACKEND=software\n"
            b"exec /usr/lib/plasma-dbus-run-session-if-needed "
            b"/usr/bin/startplasma-wayland\n")
 ENTRY = (b"[Desktop Entry]\nName=ForgeDesktop (KWin)\n"
@@ -173,6 +174,8 @@ class PlasmaBundleTests(unittest.TestCase):
 
     def test_repository_session_files_build_as_reviewed(self):
         repo = Path(__file__).resolve().parents[2]
+        self.assertIn(b"export QT_QUICK_BACKEND=software\n",
+                      (repo / "plasma/session/forge-kwin-session").read_bytes())
         for source, relative in (
             ("plasma/session/forge-kwin-session",
              "usr/libexec/forge-desktop/forge-kwin-session"),

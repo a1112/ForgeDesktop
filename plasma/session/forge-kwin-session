@@ -1,4 +1,5 @@
 #!/bin/sh
 set -eu
 [ "$(/usr/bin/id -u)" -ne 0 ] || exit 1
+export QT_QUICK_BACKEND=software
 exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland

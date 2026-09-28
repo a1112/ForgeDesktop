@@ -37,6 +37,7 @@ LOOK_WALLPAPER = LOOK_ROOT + "contents/wallpapers/forge.svg"
 LOOK_REQUIRED = {LOOK_METADATA, LOOK_DEFAULTS, LOOK_LAYOUT, LOOK_WALLPAPER}
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
+                b"export QT_QUICK_BACKEND=software\n"
                 b"exec /usr/lib/plasma-dbus-run-session-if-needed "
                 b"/usr/bin/startplasma-wayland\n")
 MAX_RECEIPT = 256 * 1024

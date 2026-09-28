@@ -5,7 +5,10 @@ Plasma Wayland launcher. `session/forgedesktop-kwin.desktop` makes the candidate
 selectable at login and advertises KDE first so its session services and portal
 backend are selected. The wrapper launches the Arch `plasma-workspace` helper;
 the exact path must be checked against the pinned 2026/08/01 package before
-image construction.
+image construction. In this software-rendered VM candidate the wrapper selects
+Qt Quick's software scene graph backend for the ForgeDesktop session. This
+environment is session-local; selecting XFCE does not inherit it. The software
+backend omits some Qt Quick shader effects and requires application checks.
 
 Stage the source files at these paths, and copy `LICENSE-MIT` to the license
 path, before running `tools/build_plasma_bundle.py`:
