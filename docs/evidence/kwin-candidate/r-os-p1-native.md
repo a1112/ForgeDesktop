@@ -79,6 +79,12 @@ next fresh snapshot. This is P0 plus the QML fix, not a rebuilt release image
 and not the later P1 Rust service. The immutable P0 candidate still contains
 the broken opt-in custom locker.
 
+The fresh patched snapshot displayed the blue `R-OS` label over the full
+upstream Chinese lock screen. A wrong password left the session locked; the
+correct disposable password restored the native dark desktop. This is one
+observed authentication cycle on the patched image. It does not qualify the
+unpatched P0 image, multi-output behavior or crash recovery.
+
 ## Evidence and remaining gates
 
 The workspace evidence lives under `artifacts/ros-p1/native/`:
@@ -86,6 +92,23 @@ The workspace evidence lives under `artifacts/ros-p1/native/`:
 `upstream-unlocked.png`, `native-theme-first.png`, and the preparation/run
 scripts. The first run stopped its own QEMU through QMP after its ten-minute
 bound, exit 0. This was supervisor cleanup, not guest poweroff acceptance.
+
+The failed-candidate journal is `serial-qml-failure.log`. Patched screenshots
+are `ros-lock-branded.png`, `ros-lock-wrong-password.png` (still locked after
+the rejected attempt), and `ros-unlocked.png`. The exact QML hash is also
+printed by the patched guest before starting the service and locking.
+
+`serial-patched.log` records KWin 6.7.3 / Qt 6.11.1, the expected QML hash,
+PAM `unix_chkpwd` audit results `res=failed` followed by `res=success`, and
+`GetActive` results changing from `true` to `false`. There is no QML import
+load error in this patched run. `native-acceptance-proof.json` records these
+checks and SHA-256 hashes of the log and screenshots; reproduce its assertions
+with `summarize_native.py` next to the artifacts.
+
+The patched run stopped its own QEMU through QMP after 508.56 seconds, exit 0.
+The associated websockify process, loopback SSH tunnel and temporary browser
+tab are also closed. No unrelated guest was stopped. As above, this proves
+test-resource cleanup, not clean guest poweroff.
 
 Candidate-specific R-OS locker evidence is recorded separately from the stock
 locker result. Multi-output, suspend/resume, crash recovery, input/capture

@@ -1,6 +1,13 @@
 # Delivery status
 
 Approved scope: complete daily-use native desktop, not merely a nested demo.
+The 2026-09-29 R-OS integration check now has a real ordinary-user KWin session,
+an active Rust user service, and an initial branded-lock/PAM cycle in a private
+patched candidate. Runtime testing found and fixed an invalid absolute QML
+import; the original P0 image still contains that opt-in theme defect. This is
+not complete locker or desktop acceptance. See
+`evidence/kwin-candidate/r-os-p1-native.md`.
+
 The user approved KWin/Plasma as the main window-management route on
 2026-09-28. The existing Smithay results below remain experimental evidence.
 The isolated KWin candidate booted on 2026-09-28 and passed initial login,
