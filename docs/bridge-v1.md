@@ -5,7 +5,14 @@
 `forge-window-bridge --session-epoch NONZERO_U64` uses private inherited stdin/
 stdout, UTF-8 newline-delimited JSON, max 65,536 bytes including newline. The
 supervising authenticated broker creates a fresh unique session epoch whenever
-KWin/adapter restarts. This is not an HTTP server. Never forward browser JSON to
+KWin/adapter restarts. For the web-connected broker, allocate epochs no larger
+than 9,007,199,254,740,991 (JavaScript Number.MAX_SAFE_INTEGER), not random u64
+values. All HTTP/WS-facing epochs, generations and sequences must pass integer
+and safe-range checks before conversion in either direction; reject out-of-range
+values, never round them. The local core retains u64 for non-web consumers.
+On safe-range exhaustion, fail closed and establish a newly authenticated
+session rather than wrapping counters or resetting an active lease.
+This is not an HTTP server. Never forward browser JSON to
 this control pipe: observe, grant, revoke, lock and compositor_target are trusted
 adapter/broker-only inputs. On EOF or fatal framing error revoke grants. The
 supervisor must release held input and stop all streams on process death.
