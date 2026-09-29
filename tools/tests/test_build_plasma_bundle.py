@@ -226,6 +226,8 @@ class PlasmaBundleTests(unittest.TestCase):
             "plasma/look-and-feel/contents/wallpapers/forge.svg":
                 "usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg",
         }
+        from tools.stage_ros_theme import ROS_FILES
+        visual_files.update(ROS_FILES)
         for source, relative in visual_files.items():
             destination = self.stage / relative
             destination.parent.mkdir(parents=True, exist_ok=True)
@@ -305,6 +307,8 @@ class PlasmaBundleTests(unittest.TestCase):
             "plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo":
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo",
         }
+        from tools.stage_ros_theme import ROS_FILES
+        assets.update(ROS_FILES)
         for source, destination in assets.items():
             with self.subTest(source=source):
                 self.assertTrue((repo / source).is_file())

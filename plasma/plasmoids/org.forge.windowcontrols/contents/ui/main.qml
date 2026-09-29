@@ -163,7 +163,7 @@ PlasmoidItem {
             }
             background: Rectangle {
                 radius: 4
-                color: closeButton.hovered ? "#e5484d" : "transparent"
+                color: closeButton.hovered ? "#ef4444" : "transparent"
             }
         }
     }

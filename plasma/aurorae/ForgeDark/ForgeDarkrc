@@ -1,8 +1,8 @@
 [General]
 TitleAlignment=Left
 TitleVerticalAlignment=Center
-ActiveTextColor=240,244,251,255
-InactiveTextColor=151,163,181,255
+ActiveTextColor=229,231,235,255
+InactiveTextColor=156,163,175,255
 UseTextShadow=false
 Animation=90
 LeftButtons=

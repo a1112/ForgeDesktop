@@ -3,6 +3,10 @@
   "archSnapshot": "2026/08/01",
   "runtimePackages": ["desktop-file-utils", "fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt", "kwin", "plasma-workspace", "python"],
   "assetLicenses": {
+    "usr/share/color-schemes/ForgeROS.colors": "MIT",
+    "usr/share/forge-desktop/plasma/r-os-tokens-v1.json": "MIT",
+    "usr/share/plasma/shells/org.forge.ros/metadata.json": "MIT",
+    "usr/share/plasma/shells/org.forge.ros/contents/lockscreen/LockScreen.qml": "MIT",
     "usr/libexec/forge-desktop/compatforge-desktop-sync": "MIT",
     "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": "MIT",
     "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer": "MIT",

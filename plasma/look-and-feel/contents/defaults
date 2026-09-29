@@ -3,7 +3,7 @@ widgetStyle=Breeze
 AnimationDurationFactor=0.5
 
 [kdeglobals][General]
-ColorScheme=BreezeDark
+ColorScheme=ForgeROS
 
 [kdeglobals][Icons]
 Theme=breeze-dark

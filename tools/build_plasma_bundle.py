@@ -61,6 +61,11 @@ WINDOW_WIDGET_QML = WINDOW_WIDGET_ROOT + "contents/ui/main.qml"
 WINDOW_CATALOG = (WINDOW_WIDGET_ROOT + "contents/locale/zh_CN/LC_MESSAGES/"
                   "plasma_applet_org.forge.windowcontrols.mo")
 WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML}
+ROS_SCHEME = "usr/share/color-schemes/ForgeROS.colors"
+ROS_TOKENS = "usr/share/forge-desktop/plasma/r-os-tokens-v1.json"
+ROS_SHELL = "usr/share/plasma/shells/org.forge.ros/"
+ROS_LOCK = ROS_SHELL + "contents/lockscreen/LockScreen.qml"
+ROS_REQUIRED = {ROS_SCHEME, ROS_TOKENS, ROS_SHELL + "metadata.json", ROS_LOCK}
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
@@ -88,7 +93,7 @@ def eligible_path(name):
         return False
     return (name in REQUIRED
             or name in COMPAT_REQUIRED
-            or name in WINDOW_REQUIRED or name == WINDOW_CATALOG
+            or name in WINDOW_REQUIRED or name == WINDOW_CATALOG or name in ROS_REQUIRED
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
             or name.startswith("usr/share/plasma/desktoptheme/forge/")
             or name.startswith("usr/share/kwin/scripts/org.forge.desktop/"))
@@ -181,10 +186,12 @@ def validate_visual_assets(payloads):
             and metadata["KPlugin"].get("License") == "MIT",
             "Forge visual theme metadata differs")
     defaults = payloads[LOOK_DEFAULTS][0].decode("utf-8", errors="strict")
-    require("ColorScheme=BreezeDark\n" in defaults
+    require(("ColorScheme=BreezeDark\n" in defaults or "ColorScheme=ForgeROS\n" in defaults)
             and "name=breeze-dark\n" in defaults
             and len(defaults) <= 4096,
             "Forge visual theme defaults differ")
+    if "ColorScheme=ForgeROS\n" in defaults:
+        require(ROS_REQUIRED <= set(payloads), "R-OS defaults require complete theme assets")
     require("[kwinrc][Wayland]\n"
             "InputMethod[$e]=/usr/share/applications/org.fcitx.Fcitx5.desktop\n"
             in defaults, "Forge virtual keyboard default differs")
@@ -208,6 +215,34 @@ def validate_visual_assets(payloads):
                             for key in element.attrib)
                 for element in tree.iter()),
             "Forge wallpaper contains unsupported SVG elements")
+
+
+def validate_ros_theme(payloads):
+    present = set(payloads) & ROS_REQUIRED
+    if not present:
+        return
+    require(present == ROS_REQUIRED, "incomplete R-OS theme")
+    metadata = json.loads(payloads[ROS_SHELL + "metadata.json"][0], object_pairs_hook=unique_pairs)
+    require(metadata.get("KPackageStructure") == "Plasma/Shell"
+            and metadata.get("KPlugin", {}).get("Id") == "org.forge.ros"
+            and metadata.get("X-Plasma-APIVersion") == "2"
+            and metadata.get("X-Plasma-FallbackPackage") == "org.kde.plasma.desktop"
+            and metadata.get("X-Forge-RuntimeQualified") is False,
+            "invalid R-OS shell metadata or unreviewed runtime claim")
+    qml = payloads[ROS_LOCK][0].decode("utf-8")
+    require(len(qml) <= 8192 and "Upstream.LockScreen {" in qml
+            and 'import "/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream' in qml
+            and not re.search(r"authenticator|Qt\.quit|XMLHttpRequest|https?://|MouseArea|Keys\.|onSucceeded", qml),
+            "R-OS lock theme must delegate authentication to upstream")
+    tokens = json.loads(payloads[ROS_TOKENS][0], object_pairs_hook=unique_pairs)
+    require(tokens.get("version") == 1 and tokens.get("lock", {}).get("webAuthenticationUnlocksOS") is False,
+            "invalid R-OS design tokens")
+    scheme = payloads[ROS_SCHEME][0].decode("utf-8")
+    parser = configparser.ConfigParser(interpolation=None, strict=True)
+    parser.read_string(scheme)
+    require(parser.get("General", "ColorScheme") == "ForgeROS"
+            and parser.get("Colors:Selection", "BackgroundNormal") == "37,99,235",
+            "invalid R-OS color scheme")
 
 
 def validate_window_assets(payloads):
@@ -333,6 +368,7 @@ def collect_files(root, *, receipt=False):
     require(set(dependencies["assetLicenses"]) == assets,
             "asset license records differ from bundled assets")
     validate_visual_assets(result)
+    validate_ros_theme(result)
     validate_window_assets(result)
     validate_compatforge_assets(result, dependencies)
     return result

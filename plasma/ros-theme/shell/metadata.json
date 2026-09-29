@@ -1,0 +1,8 @@
+{
+  "KPackageStructure": "Plasma/Shell",
+  "KPlugin": {"Id": "org.forge.ros", "Name": "R-OS", "Version": "0.1.0", "License": "MIT"},
+  "X-Plasma-APIVersion": "2",
+  "X-Plasma-FallbackPackage": "org.kde.plasma.desktop",
+  "X-Forge-UpstreamSourceVersion": "6.7.3",
+  "X-Forge-RuntimeQualified": false
+}
