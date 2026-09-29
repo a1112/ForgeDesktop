@@ -32,9 +32,12 @@ runtime_verified=false. Admission returns admitted=true, delivered=false.
   in window logical coordinates; `{type:key,code:u32,pressed:bool}` with Linux
   evdev codes 0..767; or `{type:button,button:u32,pressed:bool}` for 272..279.
 
-Commands (all tagged by `type`): capabilities; snapshot; observe(key,parent,kind,
+Commands (all tagged by `type`): capabilities; snapshot(offset=0,limit=64); observe(key,parent,kind,
 geometry); geometry(key,geometry); close(key); lock(locked); grant(controller,
 root); revoke; admit(request,compositor_target). The Rust enums are canonical.
+Snapshot limit is 1..64; next_offset is null at the end. Every response is bounded
+by the same 65,536-byte frame limit. The private command stream is serialized;
+the broker must not insert observations between pages if it needs a stable list.
 Parent must already exist. Descendants inherit a granted root; unknown/orphan
 transients must be quarantined by the adapter, not attached by title or PID.
 Closing a root removes descendants. KWin identity restart creates a new bridge.

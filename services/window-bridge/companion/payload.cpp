@@ -20,7 +20,9 @@ bool validObservation(const QByteArray &bytes) {
     static const QRegularExpression id("^[a-zA-Z0-9{}_\\-]{1,128}$");
     if (!id.match(object.value("id").toString()).hasMatch()) return false;
     if (type != "window") return true;
-    if (object.contains("parent") && !object.value("parent").isNull()
+    if (!object.contains("parent") || !object.value("caption").isString()
+        || !object.value("app_id").isString() || !object.value("geometry").isObject()) return false;
+    if (!object.value("parent").isNull()
         && !id.match(object.value("parent").toString()).hasMatch()) return false;
     const auto kind = object.value("kind").toString();
     if (kind != "normal" && kind != "dialog" && kind != "popup") return false;

@@ -14,8 +14,13 @@ struct Envelope {
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case", deny_unknown_fields)]
 enum Command {
-    Capabilities,
-    Snapshot,
+    Capabilities {},
+    Snapshot {
+        #[serde(default)]
+        offset: usize,
+        #[serde(default = "page_size")]
+        limit: usize,
+    },
     Observe {
         key: WindowKey,
         parent: Option<WindowKey>,
@@ -36,19 +41,32 @@ enum Command {
         controller: String,
         root: WindowKey,
     },
-    Revoke,
+    Revoke {},
     Admit {
         request: InputRequest,
         compositor_target: WindowKey,
     },
 }
+fn page_size() -> usize {
+    64
+}
 fn handle(bridge: &mut Bridge, command: Command) -> Result<Value, Error> {
     match command {
-        Command::Capabilities => Ok(json!({"policy":true,"capture":false,"atomic_input":false,
+        Command::Capabilities {} => Ok(json!({"policy":true,"capture":false,"atomic_input":false,
             "runtime_verified":false,"reason":"compositor_atomic_adapter_not_installed"})),
-        Command::Snapshot => Ok(
-            json!({"windows":bridge.windows().collect::<Vec<_>>(),"lease_epoch":bridge.lease_epoch()}),
-        ),
+        Command::Snapshot { offset, limit } => {
+            if limit == 0 || limit > 64 || offset > 4096 {
+                return Err(Error::Limit);
+            }
+            let windows = bridge
+                .windows()
+                .skip(offset)
+                .take(limit)
+                .collect::<Vec<_>>();
+            let next = offset + windows.len();
+            Ok(json!({"windows":windows,"lease_epoch":bridge.lease_epoch(),
+                "next_offset":if next < bridge.windows().count() {Some(next)} else {None}}))
+        }
         Command::Observe {
             key,
             parent,
@@ -72,7 +90,7 @@ fn handle(bridge: &mut Bridge, command: Command) -> Result<Value, Error> {
         Command::Grant { controller, root } => {
             Ok(json!({"lease_epoch":bridge.grant(&controller, &root)?}))
         }
-        Command::Revoke => {
+        Command::Revoke {} => {
             bridge.revoke();
             Ok(json!({"stop_streams":true,"release_input":true}))
         }
@@ -86,7 +104,14 @@ fn handle(bridge: &mut Bridge, command: Command) -> Result<Value, Error> {
     }
 }
 fn emit(out: &mut impl Write, value: Value) -> io::Result<()> {
-    serde_json::to_writer(&mut *out, &value)?;
+    let bytes = serde_json::to_vec(&value)?;
+    if bytes.len() >= MAX_MESSAGE {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            "response exceeds frame limit",
+        ));
+    }
+    out.write_all(&bytes)?;
     out.write_all(b"\n")?;
     out.flush()
 }
@@ -131,5 +156,44 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             }
         };
         emit(&mut output, response)?;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn maximum_registry_snapshot_is_paged_under_frame_limit() {
+        let mut bridge = Bridge::new(1).unwrap();
+        for i in 0..4096 {
+            bridge
+                .observe(
+                    WindowKey {
+                        session_epoch: 1,
+                        id: format!("{i:0128}"),
+                        generation: 1,
+                    },
+                    None,
+                    WindowKind::Normal,
+                    Geometry {
+                        x: 0,
+                        y: 0,
+                        width: 100,
+                        height: 100,
+                    },
+                )
+                .unwrap();
+        }
+        let result = handle(
+            &mut bridge,
+            serde_json::from_value(json!({"type":"snapshot","offset":0,"limit":64})).unwrap(),
+        )
+        .unwrap();
+        assert_eq!(result["windows"].as_array().unwrap().len(), 64);
+        assert_eq!(result["next_offset"], 64);
+        assert!(serde_json::to_vec(&result).unwrap().len() < MAX_MESSAGE - 256);
+        let command =
+            serde_json::from_value(json!({"type":"snapshot","offset":0,"limit":65})).unwrap();
+        assert_eq!(handle(&mut bridge, command), Err(Error::Limit));
     }
 }
