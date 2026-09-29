@@ -18,6 +18,7 @@ from tools.build_plasma_bundle import (create_bundle, eligible_path,
 SESSION = (b"#!/bin/sh\nset -eu\n"
            b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
            b"export QT_QUICK_BACKEND=software\n"
+           b"export XMODIFIERS=@im=fcitx\n"
            b"exec /usr/lib/plasma-dbus-run-session-if-needed "
            b"/usr/bin/startplasma-wayland\n")
 ENTRY = (b"[Desktop Entry]\nName=ForgeDesktop (KWin)\n"
@@ -39,7 +40,7 @@ class PlasmaBundleTests(unittest.TestCase):
             "usr/share/wayland-sessions/forgedesktop-kwin.desktop": (ENTRY, 0o644),
             "usr/share/forge-desktop/plasma/dependencies.json": (
                 b'{"schemaVersion":1,"archSnapshot":"2026/08/01",'
-                b'"runtimePackages":["kwin","plasma-workspace"],'
+                b'"runtimePackages":["fcitx5","fcitx5-chinese-addons","fcitx5-gtk","fcitx5-qt","kwin","plasma-workspace"],'
                 b'"assetLicenses":{}}\n', 0o644),
             "usr/share/licenses/forge-desktop/LICENSE": (b"MIT fixture\n", 0o644),
         }
@@ -92,7 +93,7 @@ class PlasmaBundleTests(unittest.TestCase):
             path.chmod(mode)
         inventory = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
         value = json.loads(inventory.read_bytes())
-        value["runtimePackages"] = ["desktop-file-utils", "kwin", "plasma-workspace", "python"]
+        value["runtimePackages"] = ["desktop-file-utils", "fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt", "kwin", "plasma-workspace", "python"]
         value["assetLicenses"] = {name: "MIT" for name in assets}
         inventory.write_text(json.dumps(value), encoding="utf-8")
         receipt = verify_bundle(self.output, self.build())
@@ -199,6 +200,8 @@ class PlasmaBundleTests(unittest.TestCase):
         repo = Path(__file__).resolve().parents[2]
         self.assertIn(b"export QT_QUICK_BACKEND=software\n",
                       (repo / "plasma/session/forge-kwin-session").read_bytes())
+        self.assertIn(b"export XMODIFIERS=@im=fcitx\n",
+                      (repo / "plasma/session/forge-kwin-session").read_bytes())
         for source, relative in (
             ("plasma/session/forge-kwin-session",
              "usr/libexec/forge-desktop/forge-kwin-session"),
@@ -240,6 +243,11 @@ class PlasmaBundleTests(unittest.TestCase):
                          set(self.files) | set(visual_files.values()))
         defaults = (self.output / visual_files[
             "plasma/look-and-feel/contents/defaults"]).read_text()
+        self.assertIn("[kwinrc][Wayland]\n"
+                      "InputMethod[$e]=/usr/share/applications/org.fcitx.Fcitx5.desktop\n",
+                      defaults)
+        self.assertTrue({"fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt"}
+                        <= set(visual_inventory["runtimePackages"]))
         kde_group = re.search(r"(?ms)^\[kdeglobals\]\[KDE\]\n(.*?)(?=^\[|\Z)", defaults)
         self.assertIsNotNone(kde_group)
         factor = re.search(r"(?m)^AnimationDurationFactor=([0-9.]+)$",
@@ -255,6 +263,30 @@ class PlasmaBundleTests(unittest.TestCase):
                            b'org.xfce.mousepad.desktop', b'firefox.desktop',
                            b'systemsettings.desktop'):
             self.assertIn(b'applications:' + desktop_id, layout_bytes)
+
+    def test_visual_theme_rejects_other_virtual_keyboard_and_missing_ime(self):
+        repo = Path(__file__).resolve().parents[2]
+        root = self.stage / "usr/share/plasma/look-and-feel/org.forge.desktop"
+        for source in (repo / "plasma/look-and-feel").rglob("*"):
+            if source.is_file():
+                target = root / source.relative_to(repo / "plasma/look-and-feel")
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(source, target)
+                target.chmod(0o644)
+        dep = self.stage / "usr/share/forge-desktop/plasma/dependencies.json"
+        dep.write_bytes((repo / "plasma/dependencies.json").read_bytes())
+        defaults = root / "contents/defaults"
+        original = defaults.read_text()
+        defaults.write_text(original.replace("org.fcitx.Fcitx5.desktop",
+                                             "other.desktop"))
+        with self.assertRaises(ValueError):
+            self.build()
+        defaults.write_text(original)
+        inventory = json.loads(dep.read_text())
+        inventory["runtimePackages"].remove("fcitx5-chinese-addons")
+        dep.write_text(json.dumps(inventory))
+        with self.assertRaises(ValueError):
+            self.build()
 
     def test_window_control_assets_are_closed_and_licensed(self):
         repo = Path(__file__).resolve().parents[2]

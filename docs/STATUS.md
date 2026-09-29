@@ -43,7 +43,7 @@ stability issue. See `evidence/kwin-candidate/i18n-v7.md`.
 | M2 Smithay native shell | Passed scoped experimental milestone | Native Qt shell, real GIO launch, task/workspace policy, nested and DRM shell-crash survival; spec/quality review passed |
 | KWin/Plasma candidate | Initial boot/window and Forge visual acceptance passed; full acceptance pending | Pinned isolated image, ordinary-user Wayland session, GTK/Qt windows, maximize/tile/Alt-Tab, shell-crash survival, centered Dock and real launchers; greeter return and further window paths pending |
 | M3 Smithay daily integration | In progress (experimental) | IME, clipboard, notifications/tray, lock, outputs, portals/audio; notification and StatusNotifier tray slices verified in isolated VM |
-| KWin M3 daily integration | In progress; volume control verified | IME, clipboard, notifications/tray, authenticated lock, outputs, portals/screen sharing and Windows-side audio listening remain |
+| KWin M3 daily integration | In progress; volume, Qt/GTK Chinese input, guest GTK↔Qt text clipboard and Thunar→Mousepad file drag/drop verified | Fresh-image IME defaults, XWayland input, Windows↔guest clipboard, notifications/tray, authenticated lock, outputs, portals/screen sharing and Windows-side audio listening remain |
 | M4 apps/stability | Pending | KWin app matrix, persistence, 8-hour soak, 20 session cycles |
 | M5 delivery | Pending | KWin performance gates, artifacts/image, default switch/recovery |
 

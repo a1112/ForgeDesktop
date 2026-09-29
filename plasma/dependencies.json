@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "archSnapshot": "2026/08/01",
-  "runtimePackages": ["desktop-file-utils", "kwin", "plasma-workspace", "python"],
+  "runtimePackages": ["desktop-file-utils", "fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt", "kwin", "plasma-workspace", "python"],
   "assetLicenses": {
     "usr/libexec/forge-desktop/compatforge-desktop-sync": "MIT",
     "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": "MIT",

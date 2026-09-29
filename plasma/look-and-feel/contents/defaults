@@ -17,3 +17,6 @@ theme=__aurorae__svg__ForgeDark
 
 [kwinrc][Windows]
 BorderlessMaximizedWindows=true
+
+[kwinrc][Wayland]
+InputMethod[$e]=/usr/share/applications/org.fcitx.Fcitx5.desktop

@@ -64,6 +64,7 @@ WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
+                b"export XMODIFIERS=@im=fcitx\n"
                 b"exec /usr/lib/plasma-dbus-run-session-if-needed "
                 b"/usr/bin/startplasma-wayland\n")
 MAX_RECEIPT = 256 * 1024
@@ -135,7 +136,9 @@ def validate_dependencies(data):
     require(type(packages) is list and 1 <= len(packages) <= 64
             and all(type(name) is str and re.fullmatch(r"[a-z0-9][a-z0-9+_.-]{0,79}", name)
                     for name in packages)
-            and packages == sorted(set(packages)),
+            and packages == sorted(set(packages))
+            and {"fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt"}
+            <= set(packages),
             "runtime package names must be bounded, sorted and unique")
     require(type(licenses) is dict and len(licenses) <= MAX_FILES
             and all(eligible_path(name) and name not in REQUIRED
@@ -182,6 +185,9 @@ def validate_visual_assets(payloads):
             and "name=breeze-dark\n" in defaults
             and len(defaults) <= 4096,
             "Forge visual theme defaults differ")
+    require("[kwinrc][Wayland]\n"
+            "InputMethod[$e]=/usr/share/applications/org.fcitx.Fcitx5.desktop\n"
+            in defaults, "Forge virtual keyboard default differs")
     layout = payloads[LOOK_LAYOUT][0].decode("utf-8", errors="strict")
     require(len(layout) <= 16 * 1024
             and "org.kde.plasma.icontasks" in layout
