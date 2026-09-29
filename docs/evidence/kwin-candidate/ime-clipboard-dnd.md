@@ -43,3 +43,30 @@ their presence in the installed image before publishing a derivative.
 Existing user `kwinrc` files are not rewritten by this source change. XFCE
 remains the recovery session, and the VM's system image and data overlay were
 not replaced during this check.
+
+## Isolated v8 image and first boot
+
+The committed ForgeDesktop source `095e97902edc75d6b7513c8fdf9bff81be7137f6`
+produced a verified bundle with receipt SHA-256
+`11d9375ac82b77c596a15ebc082ddaecbbf2790b0001f5655e04aaff72c2f98e`.
+ForgeOS commit `32c79d8` built a new read-only derivative from the preserved
+daily source. The [v8 image receipt](kwin-ime-v8-image-receipt.json) records
+image SHA-256 `7507e561fd81da3bc6a4eeddd2fa839c35a55eaa8c1e01afa9aa963063379a79`,
+161 pinned packages, Chinese locale, and XFCE as the raw image default.
+
+An offline read-only mount confirmed the installed session wrapper, the
+look-and-feel `kwinrc` virtual keyboard entry, all five `fcitx5*` package
+records, and the XFCE recovery default. A separate qcow2 overlay at
+`/srv/forge-apps-fast/lab/kwin-ime-v8-test` selected the ForgeDesktop session
+for automatic test login and preselected Fcitx in this **test profile**. The
+unchanged raw image was not made the user's default. At first login, KWin Wayland
+displayed the [Fcitx Pinyin welcome prompt](ime-v8-first-login.png), which
+confirms the service started in a fresh boot. This boot did not repeat the
+typing, clipboard, or drag/drop tests above. Those were performed in the
+existing 6094 guest.
+
+QMP requested ACPI powerdown; the Plasma shutdown screen appeared, and its
+Shutdown control completed a normal QEMU exit with code 0. `qemu-img check`
+reported no errors in the isolated overlay. No active user VM or overlay was
+stopped or modified. The clean-profile look-and-feel application and
+guest-to-Windows clipboard transfer remain to be tested.
