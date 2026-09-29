@@ -8,6 +8,9 @@ making changes.
 
 - KWin Wayland + Plasma is the approved main route; use documented upstream
   extension points. Keep the Rust/Smithay + Qt shell as an experimental session.
+- The user-approved per-window R-OS bridge exception is bounded by
+  docs/adr/0004-r-os-per-window-bridge.md; internal KWin capture/input adapters
+  require an exact-version runtime gate and must never silently use desktop crops.
 - Preserve the M0-M5 acceptance gates; do not call a prototype a complete desktop.
 - Measure software-rendered VM behavior before any performance claim. Do not
   silently revise the existing performance targets.

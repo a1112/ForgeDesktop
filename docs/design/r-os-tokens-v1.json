@@ -1,0 +1,10 @@
+{
+  "version": 1,
+  "reference": "R-OS-Web/components/os/{Window,Dock,TopBar}.tsx",
+  "policy": "preserve existing R-OS chrome; native application contents remain application-owned",
+  "window": {"titleHeight": 32, "controlWidth": 48, "bodyBackground": "#66000000", "titleOverlay": "#0dffffff", "border": "#1affffff"},
+  "colors": {"text": "#e6ffffff", "muted": "#9ca3af", "accent": "#60a5fa", "closeHover": "#ef4444"},
+  "dock": {"iconSize": 40, "iconCornerRadius": 6, "surface": "#99000000"},
+  "rendering": {"softwareProfileLiveBlur": false, "liveBlurRequiresSeparatePerformanceGate": true},
+  "lock": {"authenticationOwner": "KScreenLocker/PAM", "customThemeInstalled": false, "webAuthenticationUnlocksOS": false}
+}

@@ -1,0 +1,1 @@
+{"KPlugin":{"Id":"org.forge.windowobserver","Name":"Forge R-OS window observer","Description":"Authenticated observation only; no capture or input injection","Version":"0.1.0","License":"MIT"},"X-Plasma-API":"javascript","X-Plasma-MainScript":"code/main.js","KPackageStructure":"KWin/Script"}
