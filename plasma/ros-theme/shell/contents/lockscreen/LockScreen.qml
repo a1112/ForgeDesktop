@@ -3,7 +3,7 @@
 // Inherit the complete upstream root, including PAM flow, keyboard layout,
 // accessibility, messages, multi-screen behavior and viewVisible contract.
 import QtQuick
-import "/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream
+import "file:/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream
 
 Upstream.LockScreen {
     Text {

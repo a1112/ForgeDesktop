@@ -31,6 +31,18 @@ class RosThemeTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 validate_ros_theme(payloads)
 
+    def test_upstream_directory_import_is_a_file_url_not_a_bare_absolute_path(self):
+        with tempfile.TemporaryDirectory() as directory:
+            payloads = stage_theme(Path(directory) / "stage")
+            key = next(name for name in payloads if name.endswith("LockScreen.qml"))
+            qml, mode = payloads[key]
+            valid_import = b'import "file:/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream'
+            self.assertIn(valid_import, qml)
+            bad = dict(payloads)
+            bad[key] = (qml.replace(b'"file:/usr/share/', b'"/usr/share/'), mode)
+            with self.assertRaises(ValueError):
+                validate_ros_theme(bad)
+
     def test_stage_does_not_replace_existing_path(self):
         with tempfile.TemporaryDirectory() as directory:
             path = Path(directory) / "stage"

@@ -231,7 +231,7 @@ def validate_ros_theme(payloads):
             "invalid R-OS shell metadata or unreviewed runtime claim")
     qml = payloads[ROS_LOCK][0].decode("utf-8")
     require(len(qml) <= 8192 and "Upstream.LockScreen {" in qml
-            and 'import "/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream' in qml
+            and 'import "file:/usr/share/plasma/shells/org.kde.plasma.desktop/contents/lockscreen" as Upstream' in qml
             and not re.search(r"authenticator|Qt\.quit|XMLHttpRequest|https?://|MouseArea|Keys\.|onSucceeded", qml),
             "R-OS lock theme must delegate authentication to upstream")
     tokens = json.loads(payloads[ROS_TOKENS][0], object_pairs_hook=unique_pairs)
