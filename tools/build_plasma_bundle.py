@@ -28,6 +28,9 @@ else:
 
 
 ARCH_SNAPSHOT = "2026/08/01"
+ARCH_PROFILE = "arch-2026-08-01"
+UBUNTU_PROFILE = "ubuntu-26.04"
+UBUNTU_HELPER = "usr/libexec/forge-desktop/ubuntu-desktop"
 SESSION_SCRIPT = "usr/libexec/forge-desktop/forge-kwin-session"
 SESSION_ENTRY = "usr/share/wayland-sessions/forgedesktop-kwin.desktop"
 DEPENDENCIES = "usr/share/forge-desktop/plasma/dependencies.json"
@@ -67,6 +70,9 @@ SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b"export XMODIFIERS=@im=fcitx\n"
                 b"exec /usr/lib/plasma-dbus-run-session-if-needed "
                 b"/usr/bin/startplasma-wayland\n")
+UBUNTU_SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
+                       b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
+                       b"exec /usr/bin/python3 /usr/libexec/forge-desktop/ubuntu-desktop session\n")
 MAX_RECEIPT = 256 * 1024
 MAX_FILE = 16 * 1024 * 1024
 MAX_TOTAL = 64 * 1024 * 1024
@@ -86,7 +92,7 @@ def eligible_path(name):
             or not re.fullmatch(r"[A-Za-z0-9_./+-]+", name)
             or any(part in ("", ".", "..") for part in name.split("/"))):
         return False
-    return (name in REQUIRED
+    return (name in REQUIRED or name == UBUNTU_HELPER
             or name in COMPAT_REQUIRED
             or name in WINDOW_REQUIRED or name == WINDOW_CATALOG
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
@@ -120,24 +126,32 @@ def validate_session_entry(data):
         raise ValueError("invalid session entry") from error
 
 
-def validate_dependencies(data):
+def validate_dependencies(data, profile=ARCH_PROFILE):
+    require(profile in (ARCH_PROFILE, UBUNTU_PROFILE), "unknown runtime profile")
     require(len(data) <= 16 * 1024, "dependency inventory exceeds limit")
     try:
         value = json.loads(data, object_pairs_hook=unique_pairs)
     except (UnicodeError, json.JSONDecodeError) as error:
         raise ValueError("invalid dependency inventory") from error
-    require(type(value) is dict and set(value) == {
-        "schemaVersion", "archSnapshot", "runtimePackages", "assetLicenses"}
-            and type(value["schemaVersion"]) is int and value["schemaVersion"] == 1
-            and value["archSnapshot"] == ARCH_SNAPSHOT,
-            "dependency inventory has wrong schema or Arch snapshot")
+    identity = ({"schemaVersion": 1, "archSnapshot": ARCH_SNAPSHOT}
+                if profile == ARCH_PROFILE else
+                {"schemaVersion": 2, "runtimeProfile": UBUNTU_PROFILE})
+    require(type(value) is dict and set(value) == set(identity) | {
+        "runtimePackages", "assetLicenses"}
+            and type(value["schemaVersion"]) is int
+            and all(value[key] == expected for key, expected in identity.items()),
+            "dependency inventory has wrong schema or runtime profile")
     packages = value["runtimePackages"]
     licenses = value["assetLicenses"]
     require(type(packages) is list and 1 <= len(packages) <= 64
             and all(type(name) is str and re.fullmatch(r"[a-z0-9][a-z0-9+_.-]{0,79}", name)
                     for name in packages)
             and packages == sorted(set(packages))
-            and {"fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt"}
+            and ({"fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt"}
+                 if profile == ARCH_PROFILE else
+                 {"fcitx5", "fcitx5-chinese-addons", "fcitx5-frontend-gtk3",
+                  "fcitx5-frontend-qt6", "kwin-wayland", "plasma-workspace",
+                  "python3", "libkf6service-bin"})
             <= set(packages),
             "runtime package names must be bounded, sorted and unique")
     require(type(licenses) is dict and len(licenses) <= MAX_FILES
@@ -149,7 +163,7 @@ def validate_dependencies(data):
     return value
 
 
-def validate_compatforge_assets(payloads, dependencies):
+def validate_compatforge_assets(payloads, dependencies, profile=ARCH_PROFILE):
     present = set(payloads) & COMPAT_REQUIRED
     if not present:
         return
@@ -157,7 +171,8 @@ def validate_compatforge_assets(payloads, dependencies):
     require(payloads[COMPAT_SERVICE][0] == COMPAT_SERVICE_BYTES
             and payloads[COMPAT_TIMER][0] == COMPAT_TIMER_BYTES,
             "CompatForge unit changes fixed command or scheduling contract")
-    require({"python", "desktop-file-utils"} <= set(dependencies["runtimePackages"]),
+    require({"python" if profile == ARCH_PROFILE else "python3", "desktop-file-utils"}
+            <= set(dependencies["runtimePackages"]),
             "CompatForge desktop integration dependencies are missing")
     source = payloads[COMPAT_SCRIPT][0]
     require(len(source) <= 64 * 1024 and source.startswith(b"#!/usr/bin/env python3\n"),
@@ -288,7 +303,8 @@ def validate_window_assets(payloads):
             "Forge window-control widget uses unreviewed controls")
 
 
-def collect_files(root, *, receipt=False):
+def collect_files(root, *, receipt=False, profile=ARCH_PROFILE):
+    require(profile in (ARCH_PROFILE, UBUNTU_PROFILE), "unknown runtime profile")
     root = Path(root).absolute()
     no_links(root)
     require(root.is_dir(), "bundle tree missing")
@@ -307,7 +323,7 @@ def collect_files(root, *, receipt=False):
             require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1
                     and metadata.st_size <= MAX_FILE,
                     "bundle input is not a bounded singly linked regular file")
-            mode = 0o755 if relative in (SESSION_SCRIPT, COMPAT_SCRIPT) else 0o644
+            mode = 0o755 if relative in (SESSION_SCRIPT, COMPAT_SCRIPT, UBUNTU_HELPER) else 0o644
             if os.name != "nt":
                 require(stat.S_IMODE(metadata.st_mode) == mode,
                         "bundle input mode mismatch")
@@ -318,38 +334,54 @@ def collect_files(root, *, receipt=False):
             require(total <= MAX_TOTAL and len(result) < MAX_FILES,
                     "bundle exceeds file-count or byte limit")
             if relative == SESSION_SCRIPT:
-                require(data == SCRIPT_BYTES, "unreviewed session script body")
+                require(data == (SCRIPT_BYTES if profile == ARCH_PROFILE else UBUNTU_SCRIPT_BYTES),
+                        "unreviewed session script body")
             elif relative == SESSION_ENTRY:
                 require(len(data) <= 16 * 1024, "session entry exceeds limit")
                 validate_session_entry(data)
             elif relative == DEPENDENCIES:
-                validate_dependencies(data)
+                validate_dependencies(data, profile)
             elif relative == LICENSE:
                 require(bool(data.strip()), "project license notice is empty")
             result[relative] = (data, mode)
     require(REQUIRED <= set(result), "required Plasma session file missing")
-    dependencies = validate_dependencies(result[DEPENDENCIES][0])
+    dependencies = validate_dependencies(result[DEPENDENCIES][0], profile)
+    if profile == UBUNTU_PROFILE:
+        require(UBUNTU_HELPER in result, "Ubuntu desktop helper missing")
+        source = result[UBUNTU_HELPER][0]
+        require(len(source) <= 64 * 1024 and source.startswith(b"#!/usr/bin/env python3\n"),
+                "invalid Ubuntu desktop helper")
+        try:
+            ast.parse(source)
+        except (SyntaxError, UnicodeError) as error:
+            raise ValueError("invalid Ubuntu desktop helper syntax") from error
+    else:
+        require(UBUNTU_HELPER not in result, "Ubuntu helper in Arch bundle")
     assets = set(result) - REQUIRED
     require(set(dependencies["assetLicenses"]) == assets,
             "asset license records differ from bundled assets")
     validate_visual_assets(result)
     validate_window_assets(result)
-    validate_compatforge_assets(result, dependencies)
+    validate_compatforge_assets(result, dependencies, profile)
     return result
 
 
-def receipt_bytes(payloads, version, source):
+def receipt_bytes(payloads, version, source, profile=ARCH_PROFILE):
     entries = {name: {"sha256": hashlib.sha256(data).hexdigest(),
                       "size": len(data), "mode": mode}
                for name, (data, mode) in sorted(payloads.items())}
+    require(profile in (ARCH_PROFILE, UBUNTU_PROFILE), "unknown runtime profile")
     value = {"schemaVersion": 1, "kind": "plasma-session",
              "target": "x86_64-linux-gnu", "version": version,
              "sourceCommit": source, "archSnapshot": ARCH_SNAPSHOT,
              "files": entries}
+    if profile == UBUNTU_PROFILE:
+        value.pop("archSnapshot")
+        value.update(schemaVersion=2, runtimeProfile=UBUNTU_PROFILE)
     return (json.dumps(value, sort_keys=True, separators=(",", ":")) + "\n").encode()
 
 
-def create_bundle(staging, output, version, source):
+def create_bundle(staging, output, version, source, *, profile=ARCH_PROFILE):
     require(type(version) is str and len(version) <= 64 and
             re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?", version),
             "invalid bundle version")
@@ -362,8 +394,8 @@ def create_bundle(staging, output, version, source):
     require(output.parent.is_dir(), "bundle output parent missing")
     if os.path.lexists(output):
         raise FileExistsError(output)
-    payloads = collect_files(staging)
-    raw = receipt_bytes(payloads, version, source)
+    payloads = collect_files(staging, profile=profile)
+    raw = receipt_bytes(payloads, version, source, profile)
     temporary = Path(tempfile.mkdtemp(prefix=".forge-plasma-", dir=output.parent))
     require(temporary.resolve().parent == output.parent.resolve(),
             "temporary output escaped parent")
@@ -405,23 +437,28 @@ def verify_bundle(bundle, expected_sha256):
         value = json.loads(raw, object_pairs_hook=unique_pairs)
     except (UnicodeError, json.JSONDecodeError) as error:
         raise ValueError("invalid Plasma bundle receipt") from error
-    require(type(value) is dict and set(value) == {
+    require(type(value) is dict, "invalid Plasma bundle receipt")
+    profile = UBUNTU_PROFILE if value.get("schemaVersion") == 2 else ARCH_PROFILE
+    identity = ({"schemaVersion": 1, "archSnapshot": ARCH_SNAPSHOT}
+                if profile == ARCH_PROFILE else
+                {"schemaVersion": 2, "runtimeProfile": UBUNTU_PROFILE})
+    require(set(value) == set(identity) | {
         "schemaVersion", "kind", "target", "version", "sourceCommit",
-        "archSnapshot", "files"}, "invalid Plasma bundle receipt fields")
-    require(type(value["schemaVersion"]) is int and value["schemaVersion"] == 1
+        "files"}, "invalid Plasma bundle receipt fields")
+    require(type(value["schemaVersion"]) is int
+            and all(value[key] == expected for key, expected in identity.items())
             and value["kind"] == "plasma-session"
             and value["target"] == "x86_64-linux-gnu"
-            and value["archSnapshot"] == ARCH_SNAPSHOT
             and type(value["version"]) is str
             and re.fullmatch(r"[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?", value["version"])
             and type(value["sourceCommit"]) is str
             and re.fullmatch(r"[0-9a-f]{40}", value["sourceCommit"])
             and type(value["files"]) is dict,
             "invalid Plasma bundle receipt identity")
-    payloads = collect_files(bundle, receipt=True)
+    payloads = collect_files(bundle, receipt=True, profile=profile)
     require(set(payloads) == set(value["files"]),
             "Plasma bundle file set differs from receipt")
-    require(raw == receipt_bytes(payloads, value["version"], value["sourceCommit"]),
+    require(raw == receipt_bytes(payloads, value["version"], value["sourceCommit"], profile),
             "Plasma bundle file metadata or canonical receipt differs")
     return value
 
@@ -431,10 +468,11 @@ def main():
     parser.add_argument("--staging", required=True, type=Path)
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--version", required=True)
+    parser.add_argument("--profile", choices=(ARCH_PROFILE, UBUNTU_PROFILE), default=ARCH_PROFILE)
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
     print(create_bundle(args.staging, args.output, args.version,
-                        source_commit(args.repo)))
+                        source_commit(args.repo), profile=args.profile))
 
 
 if __name__ == "__main__":

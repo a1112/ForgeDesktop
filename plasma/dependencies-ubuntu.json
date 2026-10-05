@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 2,
+  "runtimePackages": [
+    "desktop-file-utils",
+    "fcitx5",
+    "fcitx5-chinese-addons",
+    "fcitx5-frontend-gtk3",
+    "fcitx5-frontend-qt6",
+    "kwin-wayland",
+    "libkf6service-bin",
+    "plasma-workspace",
+    "python3"
+  ],
+  "assetLicenses": {
+    "usr/libexec/forge-desktop/compatforge-desktop-sync": "MIT",
+    "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": "MIT",
+    "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/ForgeDarkrc": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/close.svg": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/decoration.svg": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/maximize.svg": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/metadata.desktop": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/minimize.svg": "MIT",
+    "usr/share/aurorae/themes/ForgeDark/restore.svg": "MIT",
+    "usr/share/plasma/look-and-feel/org.forge.desktop/contents/defaults": "MIT",
+    "usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js": "MIT",
+    "usr/share/plasma/look-and-feel/org.forge.desktop/contents/wallpapers/forge.svg": "MIT",
+    "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json": "MIT",
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT",
+    "usr/libexec/forge-desktop/ubuntu-desktop": "MIT"
+  },
+  "runtimeProfile": "ubuntu-26.04"
+}
