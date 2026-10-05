@@ -23,9 +23,12 @@ The helper is MIT project code and introduces no Python dependencies.
 
 The ordinary-user session prepares XDG paths before launching upstream
 Plasma. It retains existing valid data-directory order and XDG_DATA_HOME,
-then includes Flatpak user and system exports and `/var/lib/snapd/desktop`.
+then appends missing `/usr/local/share` and `/usr/share`, Flatpak user and
+system exports and `/var/lib/snapd/desktop`, without duplicating paths.
 Paths remain present before the first package is installed. Relative,
-control-containing, colon-ambiguous and unbounded paths fail visibly. The
+control-containing, colon-ambiguous and unbounded paths fail visibly. Both
+the incoming and final expanded search path are bounded to 64 entries and
+16 KiB. The
 wrapper chooses only the known executable Plasma DBus session helpers
 under `/usr/libexec` or `/usr/lib`; it never derives a command from application
 metadata. Neither session launch nor refresh accepts root.

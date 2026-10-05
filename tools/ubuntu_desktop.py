@@ -32,11 +32,15 @@ def session_environment(source, home):
     if len(raw_dirs) > 16384 or len(raw_dirs.split(':')) > 64:
         raise ValueError('XDG data search path exceeds limit')
     dirs = [data_path(value) for value in raw_dirs.split(':')]
-    # Keep exports in the search path even before their first package exists.
-    dirs += [data_home + '/flatpak/exports/share',
+    # Preserve custom priority while always discovering normal .deb launchers
+    # and exports, including before the first Flatpak or Snap package exists.
+    dirs += ['/usr/local/share', '/usr/share', data_home + '/flatpak/exports/share',
              '/var/lib/flatpak/exports/share', '/var/lib/snapd/desktop']
-    dirs = list(dict.fromkeys(dirs))
-    result.update(XDG_DATA_HOME=data_home, XDG_DATA_DIRS=':'.join(dirs),
+    dirs = list(dict.fromkeys(data_path(value) for value in dirs))
+    encoded_dirs = ':'.join(dirs)
+    if len(dirs) > 64 or len(encoded_dirs) > 16384:
+        raise ValueError('expanded XDG data search path exceeds limit')
+    result.update(XDG_DATA_HOME=data_home, XDG_DATA_DIRS=encoded_dirs,
                   QT_QUICK_BACKEND='software', XMODIFIERS='@im=fcitx')
     return result
 
