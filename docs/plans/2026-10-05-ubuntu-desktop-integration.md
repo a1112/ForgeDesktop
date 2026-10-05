@@ -30,8 +30,13 @@ control-containing, colon-ambiguous and unbounded paths fail visibly. Both
 the incoming and final expanded search path are bounded to 64 entries and
 16 KiB of UTF-8; individual and generated paths are bounded to 4096 UTF-8
 bytes. Invalid surrogate encodings fail with a validation error. The
-wrapper chooses only the known executable Plasma DBus session helpers
-under `/usr/libexec` or `/usr/lib`; it never derives a command from application
+wrapper chooses only known executable Plasma DBus session helpers, preferring
+Ubuntu amd64's packaged
+`/usr/lib/x86_64-linux-gnu/libexec/plasma-dbus-run-session-if-needed`
+and retaining `/usr/libexec/plasma-dbus-run-session-if-needed` and
+`/usr/lib/plasma-dbus-run-session-if-needed` as fixed compatibility paths.
+The multiarch path was confirmed with `dpkg-query -L plasma-workspace` in the
+Ubuntu 26.04 candidate. It never derives a command from application
 metadata. Neither session launch nor refresh accepts root.
 
 KDE discovers and launches original desktop entries. KSycoca and kded monitor

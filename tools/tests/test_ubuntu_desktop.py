@@ -78,6 +78,9 @@ class UbuntuDesktopTests(unittest.TestCase):
                     desktop.session_environment(values, PurePosixPath('/home/forge'))
 
     def test_upstream_commands_are_fixed_and_select_known_distro_helper(self):
+        ubuntu_helper = '/usr/lib/x86_64-linux-gnu/libexec/plasma-dbus-run-session-if-needed'
+        self.assertEqual(desktop.session_command(lambda p: p == ubuntu_helper),
+                         [ubuntu_helper, '/usr/bin/startplasma-wayland'])
         self.assertEqual(desktop.session_command(lambda p: p == '/usr/libexec/plasma-dbus-run-session-if-needed'),
                          ['/usr/libexec/plasma-dbus-run-session-if-needed', '/usr/bin/startplasma-wayland'])
         self.assertEqual(desktop.session_command(lambda p: p == '/usr/lib/plasma-dbus-run-session-if-needed'),

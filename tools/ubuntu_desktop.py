@@ -10,7 +10,8 @@ from pathlib import Path, PurePosixPath
 import subprocess
 import sys
 
-HELPERS = ('/usr/libexec/plasma-dbus-run-session-if-needed',
+HELPERS = ('/usr/lib/x86_64-linux-gnu/libexec/plasma-dbus-run-session-if-needed',
+           '/usr/libexec/plasma-dbus-run-session-if-needed',
            '/usr/lib/plasma-dbus-run-session-if-needed')
 REFRESH_COMMAND = ['/usr/bin/kbuildsycoca6', '--noincremental']
 
