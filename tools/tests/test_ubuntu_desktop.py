@@ -46,6 +46,28 @@ class UbuntuDesktopTests(unittest.TestCase):
             desktop.session_environment({'XDG_DATA_HOME': '/' + 'a' * 4095},
                                          PurePosixPath('/home/forge'))
 
+    def test_utf8_byte_limits_reject_shorter_multibyte_paths(self):
+        for source in ({'XDG_DATA_HOME': '/' + '汉' * 1500},
+                       {'XDG_DATA_DIRS': ':'.join('/' + str(index) + '汉' * 1000
+                                                 for index in range(6))}):
+            with self.subTest(source_keys=tuple(source)):
+                with self.assertRaises(ValueError):
+                    desktop.session_environment(source, PurePosixPath('/home/forge'))
+
+    def test_surrogate_paths_fail_visibly_and_valid_unicode_paths_are_preserved(self):
+        with self.assertRaises(ValueError):
+            desktop.session_environment({'XDG_DATA_HOME': '/home/\ud800'},
+                                         PurePosixPath('/home/forge'))
+        env = desktop.session_environment({'XDG_DATA_HOME': '/home/用户/data'},
+                                           PurePosixPath('/home/forge'))
+        self.assertEqual(env['XDG_DATA_HOME'], '/home/用户/data')
+
+    def test_generated_export_utf8_bytes_are_bounded_after_expansion(self):
+        # Input fits 4096 bytes; generated /flatpak/exports/share does not.
+        with self.assertRaises(ValueError):
+            desktop.session_environment({'XDG_DATA_HOME': '/' + '汉' * 1361},
+                                         PurePosixPath('/home/forge'))
+
     def test_reject_relative_control_ambiguous_and_unbounded_environment(self):
         for values in ({'XDG_DATA_DIRS': 'relative'}, {'XDG_DATA_DIRS': '/usr/share::/tmp'},
                        {'XDG_DATA_HOME': '/home/forge:data'}, {'XDG_DATA_HOME': '/home/../other'},

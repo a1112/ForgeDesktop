@@ -28,7 +28,8 @@ system exports and `/var/lib/snapd/desktop`, without duplicating paths.
 Paths remain present before the first package is installed. Relative,
 control-containing, colon-ambiguous and unbounded paths fail visibly. Both
 the incoming and final expanded search path are bounded to 64 entries and
-16 KiB. The
+16 KiB of UTF-8; individual and generated paths are bounded to 4096 UTF-8
+bytes. Invalid surrogate encodings fail with a validation error. The
 wrapper chooses only the known executable Plasma DBus session helpers
 under `/usr/libexec` or `/usr/lib`; it never derives a command from application
 metadata. Neither session launch nor refresh accepts root.

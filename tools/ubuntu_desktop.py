@@ -15,8 +15,16 @@ HELPERS = ('/usr/libexec/plasma-dbus-run-session-if-needed',
 REFRESH_COMMAND = ['/usr/bin/kbuildsycoca6', '--noincremental']
 
 
+def utf8_size(value):
+    try:
+        return len(value.encode('utf-8', errors='strict'))
+    except UnicodeError as error:
+        raise ValueError('XDG data path is not valid UTF-8') from error
+
+
 def data_path(value):
     if (not isinstance(value, str) or not 1 <= len(value) <= 4096
+            or utf8_size(value) > 4096
             or not value.startswith('/') or ':' in value
             or any(ord(char) < 32 or ord(char) == 127 for char in value)
             or any(part in ('.', '..') for part in value.split('/'))):
@@ -29,7 +37,7 @@ def session_environment(source, home):
     home = data_path(str(home))
     data_home = data_path(source.get('XDG_DATA_HOME') or home + '/.local/share')
     raw_dirs = source.get('XDG_DATA_DIRS') or '/usr/local/share:/usr/share'
-    if len(raw_dirs) > 16384 or len(raw_dirs.split(':')) > 64:
+    if len(raw_dirs) > 16384 or utf8_size(raw_dirs) > 16384 or len(raw_dirs.split(':')) > 64:
         raise ValueError('XDG data search path exceeds limit')
     dirs = [data_path(value) for value in raw_dirs.split(':')]
     # Preserve custom priority while always discovering normal .deb launchers
@@ -38,7 +46,7 @@ def session_environment(source, home):
              '/var/lib/flatpak/exports/share', '/var/lib/snapd/desktop']
     dirs = list(dict.fromkeys(data_path(value) for value in dirs))
     encoded_dirs = ':'.join(dirs)
-    if len(dirs) > 64 or len(encoded_dirs) > 16384:
+    if len(dirs) > 64 or utf8_size(encoded_dirs) > 16384:
         raise ValueError('expanded XDG data search path exceeds limit')
     result.update(XDG_DATA_HOME=data_home, XDG_DATA_DIRS=encoded_dirs,
                   QT_QUICK_BACKEND='software', XMODIFIERS='@im=fcitx')
