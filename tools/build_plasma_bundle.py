@@ -64,6 +64,7 @@ WINDOW_WIDGET_QML = WINDOW_WIDGET_ROOT + "contents/ui/main.qml"
 WINDOW_CATALOG = (WINDOW_WIDGET_ROOT + "contents/locale/zh_CN/LC_MESSAGES/"
                   "plasma_applet_org.forge.windowcontrols.mo")
 WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML}
+UBUNTU_LAYOUT_SOURCE = "plasma/look-and-feel-ubuntu/contents/layouts/org.kde.plasma.desktop-layout.js"
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
@@ -183,7 +184,7 @@ def validate_compatforge_assets(payloads, dependencies, profile=ARCH_PROFILE):
         raise ValueError("invalid CompatForge desktop consumer syntax") from error
 
 
-def validate_visual_assets(payloads):
+def validate_visual_assets(payloads, profile=ARCH_PROFILE):
     visual = {name for name in payloads if name.startswith(LOOK_ROOT)}
     if not visual:
         return
@@ -210,6 +211,12 @@ def validate_visual_assets(payloads):
             and "file:///" + LOOK_WALLPAPER in layout
             and not re.search(r"WindowHeap|runCommand|openUrlExternally|\beval\s*\(|\bimport\b", layout),
             "Forge visual theme uses unsupported or private scripting")
+    if profile == UBUNTU_PROFILE:
+        require(re.findall(r'"([A-Za-z0-9_.-]+\.desktop)"', layout) == [
+                    "org.kde.dolphin.desktop", "org.kde.konsole.desktop",
+                    "forge-store.desktop", "systemsettings.desktop"]
+                and "applicationExists(ubuntuFavorites[j])" in layout,
+                "Ubuntu first-login favorites differ or miss installed-entry filtering")
     wallpaper = payloads[LOOK_WALLPAPER][0]
     require(len(wallpaper) <= 1024 * 1024, "Forge wallpaper exceeds limit")
     try:
@@ -360,7 +367,7 @@ def collect_files(root, *, receipt=False, profile=ARCH_PROFILE):
     assets = set(result) - REQUIRED
     require(set(dependencies["assetLicenses"]) == assets,
             "asset license records differ from bundled assets")
-    validate_visual_assets(result)
+    validate_visual_assets(result, profile)
     validate_window_assets(result)
     validate_compatforge_assets(result, dependencies, profile)
     return result
@@ -463,16 +470,76 @@ def verify_bundle(bundle, expected_sha256):
     return value
 
 
+def repository_asset_sources(repo, *, profile=ARCH_PROFILE):
+    """Closed source mapping; profile choice never edits the Arch source tree."""
+    require(profile in (ARCH_PROFILE, UBUNTU_PROFILE), "unknown runtime profile")
+    repo = Path(repo).absolute()
+    sources = {
+        SESSION_SCRIPT: "plasma/session/forge-kwin-session" + ("-ubuntu" if profile == UBUNTU_PROFILE else ""),
+        SESSION_ENTRY: "plasma/session/forgedesktop-kwin.desktop",
+        DEPENDENCIES: "plasma/dependencies" + ("-ubuntu" if profile == UBUNTU_PROFILE else "") + ".json",
+        LICENSE: "LICENSE-MIT",
+        COMPAT_SCRIPT: "tools/compatforge_desktop.py",
+        COMPAT_SERVICE: "services/compatforge/forge-compatforge-desktop-sync.service",
+        COMPAT_TIMER: "services/compatforge/forge-compatforge-desktop-sync.timer",
+    }
+    sources.update({name: "plasma/look-and-feel/" + name[len(LOOK_ROOT):]
+                    for name in LOOK_REQUIRED})
+    sources.update({name: "plasma/aurorae/ForgeDark/" + name[len(WINDOW_DECOR_ROOT):]
+                    for name in WINDOW_DECOR_REQUIRED})
+    sources.update({name: "plasma/plasmoids/org.forge.windowcontrols/" + name[len(WINDOW_WIDGET_ROOT):]
+                    for name in (WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML, WINDOW_CATALOG)})
+    if profile == UBUNTU_PROFILE:
+        sources[UBUNTU_HELPER] = "tools/ubuntu_desktop.py"
+        sources[LOOK_LAYOUT] = UBUNTU_LAYOUT_SOURCE
+    return {name: repo / relative for name, relative in sources.items()}
+
+
+def stage_repository_assets(repo, staging, *, profile=ARCH_PROFILE):
+    """Stage audited repository assets into a new directory with exact modes."""
+    staging = Path(staging).absolute()
+    no_links(staging.parent)
+    require(staging.parent.is_dir() and not os.path.lexists(staging),
+            "repository staging requires a new directory")
+    sources = repository_asset_sources(repo, profile=profile)
+    payloads = {}
+    for name, source in sources.items():
+        no_links(source)
+        metadata = source.stat()
+        require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1
+                and metadata.st_size <= MAX_FILE, "repository asset must be bounded and regular")
+        data = source.read_bytes()
+        require(len(data) == metadata.st_size, "repository asset changed while reading")
+        payloads[name] = data if name.endswith(".mo") else data.replace(b"\r\n", b"\n")
+    staging.mkdir(mode=0o700)
+    for name, data in payloads.items():
+        target = staging / name
+        target.parent.mkdir(parents=True, exist_ok=True)
+        with target.open("xb") as stream:
+            stream.write(data)
+        target.chmod(0o755 if name in (SESSION_SCRIPT, COMPAT_SCRIPT, UBUNTU_HELPER) else 0o644)
+    collect_files(staging, profile=profile)
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--staging", required=True, type=Path)
+    inputs = parser.add_mutually_exclusive_group(required=True)
+    inputs.add_argument("--staging", type=Path)
+    inputs.add_argument("--repository-assets", action="store_true")
     parser.add_argument("--output", required=True, type=Path)
     parser.add_argument("--version", required=True)
     parser.add_argument("--profile", choices=(ARCH_PROFILE, UBUNTU_PROFILE), default=ARCH_PROFILE)
     parser.add_argument("--repo", type=Path, default=Path(__file__).resolve().parents[1])
     args = parser.parse_args()
-    print(create_bundle(args.staging, args.output, args.version,
-                        source_commit(args.repo), profile=args.profile))
+    source = source_commit(args.repo)
+    if args.repository_assets:
+        with tempfile.TemporaryDirectory(prefix="forge-plasma-repository-") as temporary:
+            staging = Path(temporary) / "stage"
+            stage_repository_assets(args.repo, staging, profile=args.profile)
+            pin = create_bundle(staging, args.output, args.version, source, profile=args.profile)
+    else:
+        pin = create_bundle(args.staging, args.output, args.version, source, profile=args.profile)
+    print(pin)
 
 
 if __name__ == "__main__":

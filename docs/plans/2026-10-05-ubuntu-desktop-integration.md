@@ -21,6 +21,47 @@ Stage `plasma/session/forge-kwin-session-ubuntu` as
 session entry and CompatForge assets keep their existing paths and modes.
 The helper is MIT project code and introduces no Python dependencies.
 
+## Ubuntu first-login favorites
+
+Version 0.2.1 adds a separate Ubuntu first-login layout source at
+`plasma/look-and-feel-ubuntu/contents/layouts/org.kde.plasma.desktop-layout.js`.
+The Arch layout source and its five original favorites remain unchanged.
+Ubuntu uses the real desktop IDs `org.kde.dolphin.desktop`,
+`org.kde.konsole.desktop`, `forge-store.desktop` and `systemsettings.desktop`.
+A read-only UID-1000 query in the Ubuntu candidate confirmed all four entries
+and their icons exist; the four old XFCE/Firefox favorites were absent.
+
+The public Plasma scripting API `applicationExists(storageId)` filters out
+missing targets before writing first-login launchers. This query does not
+launch applications. The new Ubuntu product base must separately pin and
+install the ForgeStore artifact, its desktop entry and hicolor icon, as well
+as the OS-owned Dolphin/Konsole/System Settings package closure. These are
+runtime dependencies of this layout, not bundled application implementations.
+Kate and Firefox are not pinned before installation and acceptance.
+
+The default applies only when the upstream first-login layout is created.
+Installing the new bundle does not rewrite an existing user's launcher list,
+reset Plasma configuration or restart the shell. The VM upgrade and any
+explicit existing-user favorite changes require separate saved-state and
+real UI evidence.
+
+To stage the reviewed repository assets automatically, with the profile
+selecting the correct layout, use a clean exact-commit checkout:
+
+```
+python3 tools/build_plasma_bundle.py --repository-assets --profile ubuntu-26.04 \
+  --output /absolute/new-bundle-directory --version 0.2.1
+```
+
+The original `--staging` interface remains available and mutually exclusive
+with `--repository-assets`; Ubuntu staged inputs must include the Ubuntu
+layout. The repository stager copies the original MIT license and all theme,
+catalogue and session assets with exact modes, without changing source files.
+The 22-payload bundle contains no fonts; pinned font packages remain OS-owned.
+The `applicationExists` behavior is tested with the real JavaScript script
+in a host Node harness representing only external Plasma objects. This is
+not evidence of real Plasma rendering or an existing-user migration.
+
 The ordinary-user session prepares XDG paths before launching upstream
 Plasma. It retains existing valid data-directory order and XDG_DATA_HOME,
 then appends missing `/usr/local/share` and `/usr/share`, Flatpak user and
@@ -86,3 +127,5 @@ performance and stability gates, original Arch/Windows state and recovery.
 - [KDE XDG hierarchy](https://userbase.kde.org/KDE_System_Administration/XDG_Filesystem_Hierarchy)
 - [Desktop entry specification](https://xdg.pages.freedesktop.org/xdg-specs/desktop-entry/latest-single/)
 - [KDE TasksModel public source](https://raw.githubusercontent.com/KDE/plasma-workspace/Plasma/6.6/libtaskmanager/tasksmodel.h)
+- [Plasma scripting API](https://develop.kde.org/docs/plasma/scripting/api/)
+- [Plasma 6.6 ScriptEngine API export](https://raw.githubusercontent.com/KDE/plasma-workspace/Plasma/6.6/shell/scripting/scriptengine.cpp)

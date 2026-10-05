@@ -52,6 +52,8 @@ class UbuntuBundleTests(unittest.TestCase):
         repo = Path(__file__).resolve().parents[2]
         inventory = json.loads((repo / 'plasma/dependencies-ubuntu.json').read_bytes())
         explicit = {
+            'usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js':
+                'plasma/look-and-feel-ubuntu/contents/layouts/org.kde.plasma.desktop-layout.js',
             'usr/libexec/forge-desktop/ubuntu-desktop': 'tools/ubuntu_desktop.py',
             'usr/libexec/forge-desktop/compatforge-desktop-sync': 'tools/compatforge_desktop.py',
             'usr/lib/systemd/user/forge-compatforge-desktop-sync.service':
