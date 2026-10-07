@@ -6,6 +6,11 @@
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
+pub mod observer;
+pub use observer::{
+    ObserverError, ObserverEvent, ObserverReducer, ObserverSnapshot, ObserverWindow,
+};
+
 pub const PROTOCOL_VERSION: u32 = 1;
 pub const MAX_MESSAGE: usize = 65_536;
 const MAX_WINDOWS: usize = 4096;

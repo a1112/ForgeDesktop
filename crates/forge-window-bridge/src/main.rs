@@ -115,10 +115,60 @@ fn emit(out: &mut impl Write, value: Value) -> io::Result<()> {
     out.write_all(b"\n")?;
     out.flush()
 }
+fn emit_observer(
+    out: &mut impl Write,
+    reducer: &ObserverReducer,
+) -> Result<(), Box<dyn std::error::Error>> {
+    let mut offset = 0;
+    loop {
+        let page = reducer.snapshot(offset, 64)?;
+        let next = page.next_offset;
+        emit(out, serde_json::to_value(page)?)?;
+        match next {
+            Some(next) => offset = next,
+            None => return Ok(()),
+        }
+    }
+}
+fn observer_events(epoch: u64) -> Result<(), Box<dyn std::error::Error>> {
+    let mut reducer = ObserverReducer::new(epoch)?;
+    let mut input = io::stdin().lock();
+    let mut output = io::stdout().lock();
+    loop {
+        let mut frame = Vec::new();
+        let read = match (&mut input)
+            .take((MAX_MESSAGE + 1) as u64)
+            .read_until(b'\n', &mut frame)
+        {
+            Ok(read) => read,
+            Err(error) => {
+                reducer.disconnect();
+                emit_observer(&mut output, &reducer)?;
+                return Err(error.into());
+            }
+        };
+        if read == 0 {
+            reducer.disconnect();
+            emit_observer(&mut output, &reducer)?;
+            return Ok(());
+        }
+        let applied = reducer.apply_frame(&frame);
+        emit_observer(&mut output, &reducer)?;
+        if let Err(error) = applied {
+            return Err(error.into());
+        }
+        if !reducer.connected() {
+            return Ok(());
+        }
+    }
+}
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<_> = std::env::args().skip(1).collect();
+    if args.len() == 3 && args[0] == "--observer-events" && args[1] == "--session-epoch" {
+        return observer_events(args[2].parse()?);
+    }
     if args.len() != 2 || args[0] != "--session-epoch" {
-        return Err("usage: forge-window-bridge --session-epoch NONZERO_U64".into());
+        return Err("usage: forge-window-bridge --session-epoch NONZERO_U64; or --observer-events --session-epoch SAFE_NONZERO_INTEGER".into());
     }
     let mut bridge = Bridge::new(args[1].parse()?).map_err(|e| format!("{e:?}"))?;
     let mut input = io::stdin().lock();
