@@ -65,11 +65,20 @@ ROS_SCHEME = "usr/share/color-schemes/ForgeROS.colors"
 ROS_TOKENS = "usr/share/forge-desktop/plasma/r-os-tokens-v1.json"
 ROS_SHELL = "usr/share/plasma/shells/org.forge.ros/"
 ROS_LOCK = ROS_SHELL + "contents/lockscreen/LockScreen.qml"
-ROS_REQUIRED = {ROS_SCHEME, ROS_TOKENS, ROS_SHELL + "metadata.json", ROS_LOCK}
+GTK_ROOT = "usr/share/themes/ForgeROS/"
+GTK_REQUIRED = {GTK_ROOT + "index.theme", *(GTK_ROOT + f"gtk-{version}.0/{name}"
+                for version in (3, 4) for name in ("gtk.css", "gtk-dark.css"))}
+PANEL_ROOT = "usr/share/plasma/desktoptheme/forge/"
+PANEL_REQUIRED = {PANEL_ROOT + name for name in (
+    "metadata.json", "plasmarc", "colors", "widgets/panel-background.svg", "widgets/tasks.svg")}
+ROS_REQUIRED = {ROS_SCHEME, ROS_TOKENS, ROS_SHELL + "metadata.json", ROS_LOCK} | GTK_REQUIRED | PANEL_REQUIRED
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
                 b"export XMODIFIERS=@im=fcitx\n"
+                b"if [ -r /usr/share/themes/ForgeROS/gtk-3.0/gtk-dark.css ]; then\n"
+                b'    export GTK_THEME="${GTK_THEME:-ForgeROS:dark}"\n'
+                b"fi\n"
                 b"exec /usr/lib/plasma-dbus-run-session-if-needed "
                 b"/usr/bin/startplasma-wayland\n")
 MAX_RECEIPT = 256 * 1024
@@ -95,7 +104,6 @@ def eligible_path(name):
             or name in COMPAT_REQUIRED
             or name in WINDOW_REQUIRED or name == WINDOW_CATALOG or name in ROS_REQUIRED
             or name.startswith("usr/share/plasma/look-and-feel/org.forge.desktop/")
-            or name.startswith("usr/share/plasma/desktoptheme/forge/")
             or name.startswith("usr/share/kwin/scripts/org.forge.desktop/"))
 
 
@@ -187,7 +195,7 @@ def validate_visual_assets(payloads):
             "Forge visual theme metadata differs")
     defaults = payloads[LOOK_DEFAULTS][0].decode("utf-8", errors="strict")
     require(("ColorScheme=BreezeDark\n" in defaults or "ColorScheme=ForgeROS\n" in defaults)
-            and "name=breeze-dark\n" in defaults
+            and ("name=breeze-dark\n" in defaults or "name=forge\n" in defaults)
             and len(defaults) <= 4096,
             "Forge visual theme defaults differ")
     if "ColorScheme=ForgeROS\n" in defaults:
@@ -241,8 +249,57 @@ def validate_ros_theme(payloads):
     parser = configparser.ConfigParser(interpolation=None, strict=True)
     parser.read_string(scheme)
     require(parser.get("General", "ColorScheme") == "ForgeROS"
-            and parser.get("Colors:Selection", "BackgroundNormal") == "37,99,235",
+            and parser.get("Colors:Selection", "BackgroundNormal") == "96,165,250"
+            and parser.get("Colors:Window", "BackgroundNormal") == "23,26,33",
             "invalid R-OS color scheme")
+    theme = payloads[GTK_ROOT + "index.theme"][0].decode("utf-8")
+    parser = configparser.ConfigParser(interpolation=None, strict=True)
+    parser.read_string(theme)
+    require(len(theme) <= 4096
+            and parser.get("X-GNOME-Metatheme", "GtkTheme") == "ForgeROS",
+            "invalid R-OS GTK theme identity")
+    for version in (3, 4):
+        base = GTK_ROOT + f"gtk-{version}.0/"
+        require(payloads[base + "gtk.css"][0] == b'@import url("gtk-dark.css");\n',
+                "GTK entry must load only the packaged dark sibling")
+        css = payloads[base + "gtk-dark.css"][0].decode("utf-8")
+        require(len(css.encode("utf-8")) <= 64 * 1024
+                and "\\" not in css
+                and not re.search(r"@import|\burl\s*\(|(?:https?|file|resource):|expression\s*\(|[\x00-\x08]", css, re.I)
+                and all(color in css for color in ("#171a21", "#232730", "#20242c", "#e5e7eb", "#60a5fa")),
+                "GTK theme contains external content or differs from R-OS palette")
+    panel = json.loads(payloads[PANEL_ROOT + "metadata.json"][0], object_pairs_hook=unique_pairs)
+    require(panel.get("KPlugin", {}).get("Id") == "forge"
+            and panel.get("KPlugin", {}).get("License") == "MIT"
+            and panel.get("X-Plasma-API") == "5.0",
+            "invalid R-OS Plasma style identity")
+    require(payloads[PANEL_ROOT + "colors"][0] == payloads[ROS_SCHEME][0],
+            "R-OS panel and Qt color schemes differ")
+    require(payloads[PANEL_ROOT + "plasmarc"][0] == (
+                b"[Settings]\nFallbackTheme=breeze-dark\n\n[BlurBehindEffect]\nenabled=false\n\n"
+                b"[ContrastEffect]\nenabled=false\n"),
+            "R-OS panel must retain Breeze fallback with blur disabled")
+    for name, prefixes in (("panel-background", ("", "north-", "south-")),
+                           ("tasks", ("normal-", "hover-", "focus-", "attention-", "minimized-"))):
+        validate_ros_frame(payloads[PANEL_ROOT + "widgets/" + name + ".svg"][0], prefixes)
+
+
+def validate_ros_frame(raw, prefixes):
+    require(len(raw) <= 64 * 1024 and b"<!DOCTYPE" not in raw and b"<!ENTITY" not in raw,
+            "unsafe R-OS panel SVG")
+    try:
+        svg = ET.fromstring(raw)
+    except ET.ParseError as error:
+        raise ValueError("invalid R-OS panel SVG") from error
+    required_ids = {prefix + part for prefix in prefixes
+                    for part in ("center", "top", "bottom", "left", "right", "topleft", "topright", "bottomleft", "bottomright")}
+    require(svg.tag == "{http://www.w3.org/2000/svg}svg"
+            and required_ids <= {element.attrib.get("id") for element in svg.iter()}
+            and all(element.tag in {"{http://www.w3.org/2000/svg}" + tag for tag in ("svg", "g", "rect", "path")}
+                    and all(not key.lower().startswith("on") and "href" not in key.lower()
+                            and not re.search(r"url\s*\(|https?://|file://", value, re.I)
+                            for key, value in element.attrib.items()) for element in svg.iter()),
+            "R-OS panel SVG contains external content or misses frame elements")
 
 
 def validate_window_assets(payloads):
@@ -257,9 +314,9 @@ def validate_window_assets(payloads):
             and len(metadata) <= 4096,
             "invalid Forge decoration metadata")
     config = payloads[WINDOW_DECOR_ROOT + "ForgeDarkrc"][0].decode("utf-8")
-    require("RightButtons=IAX\n" in config
+    require("LeftButtons=XIA\nRightButtons=\n" in config
             and "TitleHeight=32\n" in config
-            and "ButtonWidth=48\n" in config
+            and "ButtonWidth=24\n" in config
             and len(config) <= 4096,
             "invalid Forge decoration layout")
     expected_frame = {"decoration-" + part for part in (

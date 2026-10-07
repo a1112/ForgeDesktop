@@ -1,12 +1,20 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="6" height="6" viewBox="0 0 6 6">
-  <rect id="decoration-topleft" x="0" y="0" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-top" x="1" y="0" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-topright" x="2" y="0" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-left" x="0" y="1" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-center" x="1" y="1" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-right" x="2" y="1" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-bottomleft" x="0" y="2" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-bottom" x="1" y="2" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-bottomright" x="2" y="2" width="1" height="1" fill="#1c2535"/>
-  <rect id="decoration-inactive-center" x="4" y="1" width="1" height="1" fill="#171d29"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="80" height="36" viewBox="0 0 80 36">
+  <g id="decoration-topleft" transform="translate(0 0)" fill="#20242c"><path d="M0 12A12 12 0 0 1 12 0V12Z"/></g>
+  <g id="decoration-top" transform="translate(0 0)" fill="#20242c"><rect x="12" width="12" height="12"/></g>
+  <g id="decoration-topright" transform="translate(0 0)" fill="#20242c"><path d="M24 0A12 12 0 0 1 36 12H24Z"/></g>
+  <g id="decoration-left" transform="translate(0 0)" fill="#20242c"><rect y="12" width="12" height="12"/></g>
+  <g id="decoration-center" transform="translate(0 0)" fill="#20242c"><rect x="12" y="12" width="12" height="12"/></g>
+  <g id="decoration-right" transform="translate(0 0)" fill="#20242c"><rect x="24" y="12" width="12" height="12"/></g>
+  <g id="decoration-bottomleft" transform="translate(0 0)" fill="#20242c"><path d="M0 24H12V36A12 12 0 0 1 0 24Z"/></g>
+  <g id="decoration-bottom" transform="translate(0 0)" fill="#20242c"><rect x="12" y="24" width="12" height="12"/></g>
+  <g id="decoration-bottomright" transform="translate(0 0)" fill="#20242c"><path d="M24 24H36A12 12 0 0 1 24 36Z"/></g>
+  <g id="decoration-inactive-topleft" transform="translate(40 0)" fill="#20242c"><path d="M0 12A12 12 0 0 1 12 0V12Z"/></g>
+  <g id="decoration-inactive-top" transform="translate(40 0)" fill="#20242c"><rect x="12" width="12" height="12"/></g>
+  <g id="decoration-inactive-topright" transform="translate(40 0)" fill="#20242c"><path d="M24 0A12 12 0 0 1 36 12H24Z"/></g>
+  <g id="decoration-inactive-left" transform="translate(40 0)" fill="#20242c"><rect y="12" width="12" height="12"/></g>
+  <g id="decoration-inactive-center" transform="translate(40 0)" fill="#20242c"><rect x="12" y="12" width="12" height="12"/></g>
+  <g id="decoration-inactive-right" transform="translate(40 0)" fill="#20242c"><rect x="24" y="12" width="12" height="12"/></g>
+  <g id="decoration-inactive-bottomleft" transform="translate(40 0)" fill="#20242c"><path d="M0 24H12V36A12 12 0 0 1 0 24Z"/></g>
+  <g id="decoration-inactive-bottom" transform="translate(40 0)" fill="#20242c"><rect x="12" y="24" width="12" height="12"/></g>
+  <g id="decoration-inactive-bottomright" transform="translate(40 0)" fill="#20242c"><path d="M24 24H36A12 12 0 0 1 24 36Z"/></g>
 </svg>

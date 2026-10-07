@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=Forge R-OS Dark
+Comment=Original graphite native application theme
+Type=X-GNOME-Metatheme
+
+[X-GNOME-Metatheme]
+GtkTheme=ForgeROS
+IconTheme=breeze-dark

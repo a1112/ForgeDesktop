@@ -1,0 +1,10 @@
+{
+  "KPlugin": {
+    "Id": "forge",
+    "Name": "Forge R-OS Dark",
+    "Description": "Graphite panels with native Breeze widget fallback",
+    "Version": "0.2.0",
+    "License": "MIT"
+  },
+  "X-Plasma-API": "5.0"
+}

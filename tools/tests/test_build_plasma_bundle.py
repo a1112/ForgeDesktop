@@ -19,6 +19,9 @@ SESSION = (b"#!/bin/sh\nset -eu\n"
            b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
            b"export QT_QUICK_BACKEND=software\n"
            b"export XMODIFIERS=@im=fcitx\n"
+           b"if [ -r /usr/share/themes/ForgeROS/gtk-3.0/gtk-dark.css ]; then\n"
+           b'    export GTK_THEME="${GTK_THEME:-ForgeROS:dark}"\n'
+           b"fi\n"
            b"exec /usr/lib/plasma-dbus-run-session-if-needed "
            b"/usr/bin/startplasma-wayland\n")
 ENTRY = (b"[Desktop Entry]\nName=ForgeDesktop (KWin)\n"
@@ -367,7 +370,8 @@ class PlasmaBundleTests(unittest.TestCase):
                   ).read_text()
         self.assertNotIn("compactRepresentation:", source)
         self.assertIn("RowLayout {", source)
-        self.assertEqual(source.count('color: "#e6edf5"'), 3)
+        self.assertIn('color: "#171a21"', source)
+        self.assertIn("control.hovered || control.activeFocus", source)
 
     def test_fusion_excludes_verified_client_decorated_firefox(self):
         repo = Path(__file__).resolve().parents[2]
@@ -399,7 +403,7 @@ class PlasmaBundleTests(unittest.TestCase):
         variants.append(missing)
         external = dict(payloads)
         external[close] = (payloads[close][0].replace(
-            b'fill="#1c2535"', b'fill="url(http://example.invalid/a)"', 1), 0o644)
+            b'fill="none"', b'fill="url(http://example.invalid/a)"', 1), 0o644)
         variants.append(external)
         wrong_id = dict(payloads)
         wrong_id[metadata] = (payloads[metadata][0].replace(

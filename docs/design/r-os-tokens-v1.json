@@ -1,10 +1,10 @@
 {
   "version": 1,
   "reference": "R-OS-Web/components/os/{Window,Dock,TopBar}.tsx",
-  "policy": "preserve existing R-OS chrome; native application contents remain application-owned",
-  "window": {"titleHeight": 32, "controlWidth": 48, "bodyBackground": "#66000000", "titleOverlay": "#0dffffff", "border": "#1affffff"},
-  "colors": {"text": "#e6ffffff", "muted": "#9ca3af", "accent": "#60a5fa", "closeHover": "#ef4444"},
-  "dock": {"iconSize": 40, "iconCornerRadius": 6, "surface": "#99000000"},
+  "policy": "R-OS graphite chrome shared by native Qt/GTK applications; preserve toolkit behavior and user overrides",
+  "window": {"titleHeight": 32, "controlWidth": 24, "controlDiameter": 12, "cornerRadius": 12, "bodyBackground": "#171a21", "titleOverlay": "#20242c", "border": "#1affffff", "controls": {"close": "#ff5f57", "minimize": "#febc2e", "maximize": "#28c840"}},
+  "colors": {"background": "#171a21", "elevated": "#232730", "toolbar": "#20242c", "text": "#e5e7eb", "muted": "#9ca3af", "accent": "#60a5fa", "closeHover": "#ff5f57"},
+  "dock": {"iconSize": 40, "iconCornerRadius": 6, "surface": "#232730"},
   "rendering": {"softwareProfileLiveBlur": false, "liveBlurRequiresSeparatePerformanceGate": true},
   "lock": {"authenticationOwner": "KScreenLocker/PAM", "customThemeInstalled": false, "webAuthenticationUnlocksOS": false}
 }

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="36" viewBox="0 0 120 36">
+  <g id="topleft" transform="translate(0 0)" fill="#232730"><path d="M0 12A12 12 0 0 1 12 0V12Z"/></g>
+  <g id="top" transform="translate(0 0)" fill="#232730"><rect x="12" width="12" height="12"/></g>
+  <g id="topright" transform="translate(0 0)" fill="#232730"><path d="M24 0A12 12 0 0 1 36 12H24Z"/></g>
+  <g id="left" transform="translate(0 0)" fill="#232730"><rect y="12" width="12" height="12"/></g>
+  <g id="center" transform="translate(0 0)" fill="#232730"><rect x="12" y="12" width="12" height="12"/></g>
+  <g id="right" transform="translate(0 0)" fill="#232730"><rect x="24" y="12" width="12" height="12"/></g>
+  <g id="bottomleft" transform="translate(0 0)" fill="#232730"><path d="M0 24H12V36A12 12 0 0 1 0 24Z"/></g>
+  <g id="bottom" transform="translate(0 0)" fill="#232730"><rect x="12" y="24" width="12" height="12"/></g>
+  <g id="bottomright" transform="translate(0 0)" fill="#232730"><path d="M24 24H36A12 12 0 0 1 24 36Z"/></g>
+  <g id="north-topleft" transform="translate(40 0)" fill="#20242c"><rect x="0" y="0" width="12" height="12"/></g>
+  <g id="north-top" transform="translate(40 0)" fill="#20242c"><rect x="12" y="0" width="12" height="12"/></g>
+  <g id="north-topright" transform="translate(40 0)" fill="#20242c"><rect x="24" y="0" width="12" height="12"/></g>
+  <g id="north-left" transform="translate(40 0)" fill="#20242c"><rect x="0" y="12" width="12" height="12"/></g>
+  <g id="north-center" transform="translate(40 0)" fill="#20242c"><rect x="12" y="12" width="12" height="12"/></g>
+  <g id="north-right" transform="translate(40 0)" fill="#20242c"><rect x="24" y="12" width="12" height="12"/></g>
+  <g id="north-bottomleft" transform="translate(40 0)" fill="#20242c"><rect x="0" y="24" width="12" height="12"/></g>
+  <g id="north-bottom" transform="translate(40 0)" fill="#20242c"><rect x="12" y="24" width="12" height="12"/></g>
+  <g id="north-bottomright" transform="translate(40 0)" fill="#20242c"><rect x="24" y="24" width="12" height="12"/></g>
+  <g id="south-topleft" transform="translate(80 0)" fill="#232730"><path d="M0 12A12 12 0 0 1 12 0V12Z"/></g>
+  <g id="south-top" transform="translate(80 0)" fill="#232730"><rect x="12" width="12" height="12"/></g>
+  <g id="south-topright" transform="translate(80 0)" fill="#232730"><path d="M24 0A12 12 0 0 1 36 12H24Z"/></g>
+  <g id="south-left" transform="translate(80 0)" fill="#232730"><rect y="12" width="12" height="12"/></g>
+  <g id="south-center" transform="translate(80 0)" fill="#232730"><rect x="12" y="12" width="12" height="12"/></g>
+  <g id="south-right" transform="translate(80 0)" fill="#232730"><rect x="24" y="12" width="12" height="12"/></g>
+  <g id="south-bottomleft" transform="translate(80 0)" fill="#232730"><path d="M0 24H12V36A12 12 0 0 1 0 24Z"/></g>
+  <g id="south-bottom" transform="translate(80 0)" fill="#232730"><rect x="12" y="24" width="12" height="12"/></g>
+  <g id="south-bottomright" transform="translate(80 0)" fill="#232730"><path d="M24 24H36A12 12 0 0 1 24 36Z"/></g>
+  <rect id="hint-top-margin" width="6" height="6" fill="none"/>
+  <rect id="hint-right-margin" width="6" height="6" fill="none"/>
+  <rect id="hint-bottom-margin" width="6" height="6" fill="none"/>
+  <rect id="hint-left-margin" width="6" height="6" fill="none"/>
+  <rect id="north-hint-top-margin" width="6" height="0" fill="none"/>
+  <rect id="north-hint-right-margin" width="6" height="6" fill="none"/>
+  <rect id="north-hint-bottom-margin" width="6" height="0" fill="none"/>
+  <rect id="north-hint-left-margin" width="6" height="6" fill="none"/>
+  <rect id="south-hint-top-margin" width="6" height="6" fill="none"/>
+  <rect id="south-hint-right-margin" width="6" height="6" fill="none"/>
+  <rect id="south-hint-bottom-margin" width="6" height="6" fill="none"/>
+  <rect id="south-hint-left-margin" width="6" height="6" fill="none"/>
+  <rect id="hint-stretch-borders" width="1" height="1" fill="none"/>
+</svg>

@@ -1,0 +1,203 @@
+/* ForgeROS: original MIT theme. GTK retains input, menus and application state. */
+@define-color theme_bg_color #171a21;
+@define-color theme_fg_color #e5e7eb;
+@define-color theme_base_color #171a21;
+@define-color theme_text_color #e5e7eb;
+@define-color theme_selected_bg_color #60a5fa;
+@define-color theme_selected_fg_color #171a21;
+@define-color insensitive_fg_color #9ca3af;
+@define-color borders rgba(255,255,255,0.10);
+
+* {
+  -gtk-icon-style: symbolic;
+  -gtk-icon-source: builtin;
+}
+window, dialog, .background {
+  background-color: @theme_bg_color;
+  color: @theme_fg_color;
+}
+headerbar, toolbar, menubar, notebook > header {
+  background-color: #20242c;
+  color: @theme_fg_color;
+  border-bottom: 1px solid @borders;
+  padding: 4px 8px;
+}
+headerbar {
+  min-height: 32px;
+  border-radius: 12px 12px 0 0;
+}
+label:disabled, image:disabled, button:disabled, entry:disabled {
+  color: @insensitive_fg_color;
+}
+button {
+  min-height: 24px;
+  min-width: 24px;
+  padding: 3px 8px;
+  border: 1px solid @borders;
+  border-radius: 6px;
+  background-color: #232730;
+  background-image: none;
+  color: @theme_fg_color;
+  box-shadow: none;
+}
+button.flat, toolbar button, menubar > menuitem {
+  border-color: transparent;
+  background-color: transparent;
+}
+button:hover, button:checked, button:active {
+  background-color: #303641;
+}
+button:focus, entry:focus, spinbutton:focus, combobox:focus {
+  border-color: #60a5fa;
+  outline: 1px solid #60a5fa;
+  outline-offset: 1px;
+}
+button.suggested-action {
+  background-color: #60a5fa;
+  color: #171a21;
+}
+button.destructive-action {
+  background-color: #ff5f57;
+  color: #171a21;
+}
+entry, spinbutton, combobox button {
+  min-height: 26px;
+  padding: 3px 8px;
+  border: 1px solid @borders;
+  border-radius: 6px;
+  background-color: #171a21;
+  color: @theme_fg_color;
+  caret-color: #60a5fa;
+}
+entry selection, textview text selection, label selection {
+  background-color: #60a5fa;
+  color: #171a21;
+}
+textview, textview text, treeview.view, iconview, .view {
+  background-color: #171a21;
+  color: @theme_fg_color;
+}
+treeview.view:selected, iconview:selected, row:selected {
+  background-color: #60a5fa;
+  color: #171a21;
+}
+treeview.view header button {
+  border-radius: 0;
+  background-color: #20242c;
+}
+.sidebar, .sidebar .view, placessidebar, placessidebar list, stacksidebar {
+  background-color: #232730;
+  color: @theme_fg_color;
+}
+.sidebar row, placessidebar row {
+  min-height: 28px;
+  margin: 2px 6px;
+  padding: 2px 8px;
+  border-radius: 6px;
+}
+.sidebar row:selected, placessidebar row:selected {
+  background-color: #60a5fa;
+  color: #171a21;
+}
+notebook > header tabs tab {
+  min-height: 26px;
+  padding: 3px 12px;
+  border-bottom: 2px solid transparent;
+  color: #9ca3af;
+}
+notebook > header tabs tab:checked {
+  border-bottom-color: #60a5fa;
+  color: @theme_fg_color;
+  background-color: #232730;
+}
+menu, menuitem, popover, popover.background {
+  background-color: #232730;
+  color: @theme_fg_color;
+}
+menu, popover {
+  border: 1px solid @borders;
+  border-radius: 8px;
+  padding: 4px;
+}
+menuitem {
+  min-height: 24px;
+  padding: 3px 10px;
+  border-radius: 4px;
+}
+menuitem:hover, modelbutton:hover, row:hover {
+  background-color: #303641;
+}
+separator {
+  min-width: 1px;
+  min-height: 1px;
+  background-color: @borders;
+}
+scrollbar, scrollbar trough {
+  background-color: transparent;
+}
+scrollbar slider {
+  min-width: 6px;
+  min-height: 6px;
+  margin: 3px;
+  border-radius: 6px;
+  background-color: #6b7280;
+}
+scrollbar slider:hover { background-color: #9ca3af; }
+check, radio {
+  min-width: 14px;
+  min-height: 14px;
+  margin: 3px;
+  border: 1px solid #9ca3af;
+  border-radius: 4px;
+  background-color: #171a21;
+  color: #171a21;
+}
+radio { border-radius: 8px; }
+check:checked, radio:checked, check:indeterminate {
+  border-color: #60a5fa;
+  background-color: #60a5fa;
+}
+switch {
+  min-width: 36px;
+  min-height: 20px;
+  border: 1px solid @borders;
+  border-radius: 12px;
+  background-color: #303641;
+}
+switch:checked { background-color: #60a5fa; }
+switch slider {
+  min-width: 18px;
+  min-height: 18px;
+  border-radius: 10px;
+  background-color: #e5e7eb;
+}
+scale trough, progressbar trough {
+  min-height: 4px;
+  min-width: 4px;
+  border-radius: 4px;
+  background-color: #303641;
+}
+scale highlight, progressbar progress {
+  background-color: #60a5fa;
+  border-radius: 4px;
+}
+scale slider {
+  min-width: 14px;
+  min-height: 14px;
+  border-radius: 8px;
+  background-color: #e5e7eb;
+}
+tooltip {
+  padding: 6px 10px;
+  border: 1px solid @borders;
+  border-radius: 6px;
+  background-color: #232730;
+  color: @theme_fg_color;
+}
+.titlebar button.titlebutton {
+  min-width: 24px;
+  min-height: 24px;
+  padding: 0;
+  border-radius: 6px;
+}
+/* Terminal content colors remain the terminal profile's own settings. */

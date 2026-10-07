@@ -9,18 +9,19 @@ for (var i = 0; i < desktopsArray.length; i++) {
 
 var topPanel = new Panel;
 topPanel.location = "top";
-topPanel.height = 34;
+topPanel.height = 32;
 topPanel.addWidget("org.kde.plasma.kickoff");
+topPanel.addWidget("org.forge.windowcontrols");
 topPanel.addWidget("org.kde.plasma.pager");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.digitalclock");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.systemtray");
-topPanel.addWidget("org.forge.windowcontrols");
 
 var dock = new Panel;
 dock.location = "bottom";
-dock.height = 62;
+dock.height = 56;
+dock.hiding = "dodgewindows";
 dock.alignment = "center";
 dock.lengthMode = "custom";
 dock.length = 560;
@@ -28,11 +29,15 @@ dock.minimumLength = 560;
 dock.maximumLength = 560;
 var tasks = dock.addWidget("org.kde.plasma.icontasks");
 tasks.currentConfigGroup = ["General"];
-tasks.writeConfig("launchers", [
+var launchers = [
     "applications:thunar.desktop",
     "applications:xfce4-terminal.desktop",
     "applications:org.xfce.mousepad.desktop",
     "applications:firefox.desktop",
     "applications:systemsettings.desktop"
-].join(","));
+];
+if (applicationExists("org.gnome.Software.desktop")) {
+    launchers.push("applications:org.gnome.Software.desktop");
+}
+tasks.writeConfig("launchers", launchers.join(","));
 dock.addWidget("org.kde.plasma.showdesktop");

@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="144" height="32" viewBox="0 0 144 32">
-  <g id="active-center"><rect x="0" y="0" width="48" height="32" fill="#1c2535"/><rect x="18" y="10" width="12" height="12" fill="none" stroke="#b5c0d1" stroke-width="1.5"/></g>
-  <g id="hover-center"><rect x="48" y="0" width="48" height="32" fill="#33435a"/><rect x="66" y="10" width="12" height="12" fill="none" stroke="#ffffff" stroke-width="1.5"/></g>
-  <g id="inactive-center"><rect x="96" y="0" width="48" height="32" fill="#171d29"/><rect x="114" y="10" width="12" height="12" fill="none" stroke="#8794a8" stroke-width="1.5"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" viewBox="0 0 120 32">
+  <g id="active-center" transform="translate(0 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/></g>
+  <g id="hover-center" transform="translate(24 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/><path d="M9 19V13H15V19Z" fill="none" stroke="#171a21" stroke-width="1.2"/></g>
+  <g id="inactive-center" transform="translate(48 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#6b7280"/></g>
+  <g id="pressed-center" transform="translate(72 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/><path d="M9 19V13H15V19Z" fill="none" stroke="#171a21" stroke-width="1.2"/></g>
+  <g id="deactivated-center" transform="translate(96 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#6b7280"/></g>
 </svg>

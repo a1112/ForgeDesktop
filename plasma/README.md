@@ -10,6 +10,14 @@ Qt Quick's software scene graph backend for the ForgeDesktop session. This
 environment is session-local; selecting XFCE does not inherit it. The software
 backend omits some Qt Quick shader effects and requires application checks.
 
+The candidate wrapper selects the packaged ForgeROS:dark GTK theme in this
+session only, preserves an explicit GTK_THEME override and checks installation
+before exporting it. `tools/stage_ros_theme.py` supplies the closed Qt color,
+GTK 3/4 and Plasma panel/task style files, together with the optional upstream
+lock-screen delegate. See `docs/design/r-os-native-theme.md` for geometry and
+runtime qualification limits. Install assets without modifying an existing
+profile; the first-login layout is for a disposable/new Forge profile.
+
 Stage the source files at these paths, and copy `LICENSE-MIT` to the license
 path, before running `tools/build_plasma_bundle.py`:
 
@@ -40,7 +48,8 @@ The full package closure and its licenses belong in ForgeOS's separate signed
 lock. ForgeOS must pin the receipt digest separately and verify that closure.
 The global theme uses public Plasma 6 theme and layout paths. It is installed
 as an option: selecting it in the isolated user session applies the Forge
-wallpaper, dark Breeze palette, top status panel and compact bottom task panel.
+wallpaper, graphite Qt/GTK palette, 32px top status panel and bottom Dock that
+hides when a window overlaps it. Other Plasma widgets retain Breeze fallback.
 The bundle never changes the default login session or an existing user's
 Plasma configuration. The Smithay and XFCE login entries remain available.
 

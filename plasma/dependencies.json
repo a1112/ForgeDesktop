@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
   "archSnapshot": "2026/08/01",
-  "runtimePackages": ["desktop-file-utils", "fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt", "kwin", "plasma-workspace", "python"],
+  "runtimePackages": [
+    "desktop-file-utils",
+    "fcitx5",
+    "fcitx5-chinese-addons",
+    "fcitx5-gtk",
+    "fcitx5-qt",
+    "kwin",
+    "plasma-workspace",
+    "python"
+  ],
   "assetLicenses": {
     "usr/share/color-schemes/ForgeROS.colors": "MIT",
     "usr/share/forge-desktop/plasma/r-os-tokens-v1.json": "MIT",
@@ -23,6 +32,16 @@
     "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
-    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT"
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT",
+    "usr/share/themes/ForgeROS/index.theme": "MIT",
+    "usr/share/themes/ForgeROS/gtk-3.0/gtk.css": "MIT",
+    "usr/share/themes/ForgeROS/gtk-3.0/gtk-dark.css": "MIT",
+    "usr/share/themes/ForgeROS/gtk-4.0/gtk.css": "MIT",
+    "usr/share/themes/ForgeROS/gtk-4.0/gtk-dark.css": "MIT",
+    "usr/share/plasma/desktoptheme/forge/metadata.json": "MIT",
+    "usr/share/plasma/desktoptheme/forge/plasmarc": "MIT",
+    "usr/share/plasma/desktoptheme/forge/colors": "MIT",
+    "usr/share/plasma/desktoptheme/forge/widgets/panel-background.svg": "MIT",
+    "usr/share/plasma/desktoptheme/forge/widgets/tasks.svg": "MIT"
   }
 }

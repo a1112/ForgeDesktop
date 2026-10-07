@@ -9,6 +9,13 @@ ROS_FILES = {
     "docs/design/r-os-tokens-v1.json": "usr/share/forge-desktop/plasma/r-os-tokens-v1.json",
     "plasma/ros-theme/shell/metadata.json": "usr/share/plasma/shells/org.forge.ros/metadata.json",
     "plasma/ros-theme/shell/contents/lockscreen/LockScreen.qml": "usr/share/plasma/shells/org.forge.ros/contents/lockscreen/LockScreen.qml",
+    "plasma/ros-theme/gtk/index.theme": "usr/share/themes/ForgeROS/index.theme",
+    **{f"plasma/ros-theme/gtk/gtk-{version}.0/{name}":
+       f"usr/share/themes/ForgeROS/gtk-{version}.0/{name}"
+       for version in (3, 4) for name in ("gtk.css", "gtk-dark.css")},
+    **{f"plasma/ros-theme/desktoptheme/{name}":
+       f"usr/share/plasma/desktoptheme/forge/{name}"
+       for name in ("metadata.json", "plasmarc", "colors", "widgets/panel-background.svg", "widgets/tasks.svg")},
 }
 
 

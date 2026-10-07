@@ -35,3 +35,15 @@ are held with the M0 builder records. No new Rust crate is added. Qt's dynamic
 libraries retain their upstream LGPL/GPL/commercial terms (see installed Qt
 package licensing); GLib/GIO are LGPL-2.1-or-later. Shell code is MIT like this
 repository. ForgeOS must ship the dependency/license inventory with artifacts.
+
+The 2026-10-07 visual update adds original MIT GTK 3/4 CSS, Plasma style
+metadata/color files and panel/task SVG geometry. Its graphite palette and
+traffic-light controls follow the approved shared design contract. It copies
+no Apple, R-OS, KDE or GTK stylesheets, icons, fonts or bitmap assets. Plasma
+falls back to the installed upstream Breeze theme for widgets beyond the
+original panel/task frames. GTK styles use built-in toolkit glyphs and contain
+no external resource references. The candidate session exports GTK_THEME only
+when installed and without replacing a user override; no home state is written.
+Qt, GTK, Plasma and installed application icons retain their upstream licenses.
+No new binary dependency or package closure is added. Theme installation and
+source tests do not certify visual behavior in the exact pinned desktop.

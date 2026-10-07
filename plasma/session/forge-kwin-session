@@ -3,4 +3,7 @@ set -eu
 [ "$(/usr/bin/id -u)" -ne 0 ] || exit 1
 export QT_QUICK_BACKEND=software
 export XMODIFIERS=@im=fcitx
+if [ -r /usr/share/themes/ForgeROS/gtk-3.0/gtk-dark.css ]; then
+    export GTK_THEME="${GTK_THEME:-ForgeROS:dark}"
+fi
 exec /usr/lib/plasma-dbus-run-session-if-needed /usr/bin/startplasma-wayland

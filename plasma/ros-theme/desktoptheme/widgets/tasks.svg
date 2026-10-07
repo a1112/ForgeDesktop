@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="18" viewBox="0 0 100 18">
+  <g id="normal-topleft" transform="translate(0 0)" fill="#232730"><path d="M0 6A6 6 0 0 1 6 0V6Z"/></g>
+  <g id="normal-top" transform="translate(0 0)" fill="#232730"><rect x="6" width="6" height="6"/></g>
+  <g id="normal-topright" transform="translate(0 0)" fill="#232730"><path d="M12 0A6 6 0 0 1 18 6H12Z"/></g>
+  <g id="normal-left" transform="translate(0 0)" fill="#232730"><rect y="6" width="6" height="6"/></g>
+  <g id="normal-center" transform="translate(0 0)" fill="#232730"><rect x="6" y="6" width="6" height="6"/></g>
+  <g id="normal-right" transform="translate(0 0)" fill="#232730"><rect x="12" y="6" width="6" height="6"/></g>
+  <g id="normal-bottomleft" transform="translate(0 0)" fill="#232730"><path d="M0 12H6V18A6 6 0 0 1 0 12Z"/></g>
+  <g id="normal-bottom" transform="translate(0 0)" fill="#232730"><rect x="6" y="12" width="6" height="6"/></g>
+  <g id="normal-bottomright" transform="translate(0 0)" fill="#232730"><path d="M12 12H18A6 6 0 0 1 12 18Z"/></g>
+  <rect id="normal-hint-top-margin" width="2" height="2" fill="none"/>
+  <rect id="normal-hint-right-margin" width="2" height="2" fill="none"/>
+  <rect id="normal-hint-bottom-margin" width="2" height="2" fill="none"/>
+  <rect id="normal-hint-left-margin" width="2" height="2" fill="none"/>
+  <g id="hover-topleft" transform="translate(20 0)" fill="#303641"><path d="M0 6A6 6 0 0 1 6 0V6Z"/></g>
+  <g id="hover-top" transform="translate(20 0)" fill="#303641"><rect x="6" width="6" height="6"/></g>
+  <g id="hover-topright" transform="translate(20 0)" fill="#303641"><path d="M12 0A6 6 0 0 1 18 6H12Z"/></g>
+  <g id="hover-left" transform="translate(20 0)" fill="#303641"><rect y="6" width="6" height="6"/></g>
+  <g id="hover-center" transform="translate(20 0)" fill="#303641"><rect x="6" y="6" width="6" height="6"/></g>
+  <g id="hover-right" transform="translate(20 0)" fill="#303641"><rect x="12" y="6" width="6" height="6"/></g>
+  <g id="hover-bottomleft" transform="translate(20 0)" fill="#303641"><path d="M0 12H6V18A6 6 0 0 1 0 12Z"/></g>
+  <g id="hover-bottom" transform="translate(20 0)" fill="#303641"><rect x="6" y="12" width="6" height="6"/></g>
+  <g id="hover-bottomright" transform="translate(20 0)" fill="#303641"><path d="M12 12H18A6 6 0 0 1 12 18Z"/></g>
+  <rect id="hover-hint-top-margin" width="2" height="2" fill="none"/>
+  <rect id="hover-hint-right-margin" width="2" height="2" fill="none"/>
+  <rect id="hover-hint-bottom-margin" width="2" height="2" fill="none"/>
+  <rect id="hover-hint-left-margin" width="2" height="2" fill="none"/>
+  <g id="focus-topleft" transform="translate(40 0)" fill="#34445b"><path d="M0 6A6 6 0 0 1 6 0V6Z"/></g>
+  <g id="focus-top" transform="translate(40 0)" fill="#34445b"><rect x="6" width="6" height="6"/></g>
+  <g id="focus-topright" transform="translate(40 0)" fill="#34445b"><path d="M12 0A6 6 0 0 1 18 6H12Z"/></g>
+  <g id="focus-left" transform="translate(40 0)" fill="#34445b"><rect y="6" width="6" height="6"/></g>
+  <g id="focus-center" transform="translate(40 0)" fill="#34445b"><rect x="6" y="6" width="6" height="6"/></g>
+  <g id="focus-right" transform="translate(40 0)" fill="#34445b"><rect x="12" y="6" width="6" height="6"/></g>
+  <g id="focus-bottomleft" transform="translate(40 0)" fill="#34445b"><path d="M0 12H6V18A6 6 0 0 1 0 12Z"/></g>
+  <g id="focus-bottom" transform="translate(40 0)" fill="#34445b"><rect x="6" y="12" width="6" height="6"/></g>
+  <g id="focus-bottomright" transform="translate(40 0)" fill="#34445b"><path d="M12 12H18A6 6 0 0 1 12 18Z"/></g>
+  <rect id="focus-hint-top-margin" width="2" height="2" fill="none"/>
+  <rect id="focus-hint-right-margin" width="2" height="2" fill="none"/>
+  <rect id="focus-hint-bottom-margin" width="2" height="2" fill="none"/>
+  <rect id="focus-hint-left-margin" width="2" height="2" fill="none"/>
+  <g id="attention-topleft" transform="translate(60 0)" fill="#34445b"><path d="M0 6A6 6 0 0 1 6 0V6Z"/></g>
+  <g id="attention-top" transform="translate(60 0)" fill="#34445b"><rect x="6" width="6" height="6"/></g>
+  <g id="attention-topright" transform="translate(60 0)" fill="#34445b"><path d="M12 0A6 6 0 0 1 18 6H12Z"/></g>
+  <g id="attention-left" transform="translate(60 0)" fill="#34445b"><rect y="6" width="6" height="6"/></g>
+  <g id="attention-center" transform="translate(60 0)" fill="#34445b"><rect x="6" y="6" width="6" height="6"/></g>
+  <g id="attention-right" transform="translate(60 0)" fill="#34445b"><rect x="12" y="6" width="6" height="6"/></g>
+  <g id="attention-bottomleft" transform="translate(60 0)" fill="#34445b"><path d="M0 12H6V18A6 6 0 0 1 0 12Z"/></g>
+  <g id="attention-bottom" transform="translate(60 0)" fill="#34445b"><rect x="6" y="12" width="6" height="6"/></g>
+  <g id="attention-bottomright" transform="translate(60 0)" fill="#34445b"><path d="M12 12H18A6 6 0 0 1 12 18Z"/></g>
+  <rect id="attention-hint-top-margin" width="2" height="2" fill="none"/>
+  <rect id="attention-hint-right-margin" width="2" height="2" fill="none"/>
+  <rect id="attention-hint-bottom-margin" width="2" height="2" fill="none"/>
+  <rect id="attention-hint-left-margin" width="2" height="2" fill="none"/>
+  <g id="minimized-topleft" transform="translate(80 0)" fill="#232730"><path d="M0 6A6 6 0 0 1 6 0V6Z"/></g>
+  <g id="minimized-top" transform="translate(80 0)" fill="#232730"><rect x="6" width="6" height="6"/></g>
+  <g id="minimized-topright" transform="translate(80 0)" fill="#232730"><path d="M12 0A6 6 0 0 1 18 6H12Z"/></g>
+  <g id="minimized-left" transform="translate(80 0)" fill="#232730"><rect y="6" width="6" height="6"/></g>
+  <g id="minimized-center" transform="translate(80 0)" fill="#232730"><rect x="6" y="6" width="6" height="6"/></g>
+  <g id="minimized-right" transform="translate(80 0)" fill="#232730"><rect x="12" y="6" width="6" height="6"/></g>
+  <g id="minimized-bottomleft" transform="translate(80 0)" fill="#232730"><path d="M0 12H6V18A6 6 0 0 1 0 12Z"/></g>
+  <g id="minimized-bottom" transform="translate(80 0)" fill="#232730"><rect x="6" y="12" width="6" height="6"/></g>
+  <g id="minimized-bottomright" transform="translate(80 0)" fill="#232730"><path d="M12 12H18A6 6 0 0 1 12 18Z"/></g>
+  <rect id="minimized-hint-top-margin" width="2" height="2" fill="none"/>
+  <rect id="minimized-hint-right-margin" width="2" height="2" fill="none"/>
+  <rect id="minimized-hint-bottom-margin" width="2" height="2" fill="none"/>
+  <rect id="minimized-hint-left-margin" width="2" height="2" fill="none"/>
+  <rect id="hint-stretch-borders" width="1" height="1" fill="none"/>
+</svg>
