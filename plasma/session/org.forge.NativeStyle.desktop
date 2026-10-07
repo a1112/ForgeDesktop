@@ -1,0 +1,12 @@
+[Desktop Entry]
+Type=Application
+Name=Apply Forge Native Style
+Name[zh_CN]=应用 Forge 原生风格
+Comment=Apply Forge appearance and initialize missing window preferences
+Comment[zh_CN]=应用 Forge 外观并初始化尚未设置的窗口选项
+Exec=/usr/libexec/forge-desktop/forge-native-style
+TryExec=/usr/libexec/forge-desktop/forge-native-style
+Icon=preferences-desktop-theme
+Categories=Settings;DesktopSettings;
+OnlyShowIn=KDE;
+Terminal=false

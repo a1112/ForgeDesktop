@@ -1,0 +1,36 @@
+#!/usr/bin/env python3
+"""Apply the opt-in Forge theme, preserving existing window preferences."""
+import os
+import subprocess
+import sys
+
+PREFERENCES = (
+    ("org.kde.kdecoration2", "ButtonsOnLeft", "XIA"),
+    ("org.kde.kdecoration2", "ButtonsOnRight", ""),
+    ("Windows", "BorderlessMaximizedWindows", "true"),
+)
+
+
+def activate(runner=subprocess.run, uid=None):
+    if (os.getuid() if uid is None else uid) == 0:
+        raise PermissionError("Apply native style from the ordinary desktop user session")
+    def command(argv):
+        return runner(argv, check=True, text=True, capture_output=True).stdout.rstrip("\n")
+    # The explicit action changes the chosen theme without resetting panel layout.
+    command(["plasma-apply-lookandfeel", "-a", "org.forge.desktop"])
+    for group, key, value in PREFERENCES:
+        read = ["kreadconfig6", "--file", "kwinrc", "--group", group, "--key", key, "--default"]
+        # Two distinct defaults distinguish absent keys from any explicit value,
+        # including an empty string or a preference matching either marker.
+        if command(read + ["__forge_missing_a__"]) == "__forge_missing_a__" and \
+                command(read + ["__forge_missing_b__"]) == "__forge_missing_b__":
+            command(["kwriteconfig6", "--file", "kwinrc", "--group", group, "--key", key, value])
+    command(["qdbus6", "org.kde.KWin", "/KWin", "reconfigure"])
+
+
+if __name__ == "__main__":
+    try:
+        activate()
+    except (OSError, subprocess.CalledProcessError) as error:
+        print("Native style activation failed: " + str(error), file=sys.stderr)
+        sys.exit(1)

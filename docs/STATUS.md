@@ -1,6 +1,13 @@
 # Delivery status
 
 Approved scope: complete daily-use native desktop, not merely a nested demo.
+The 2026-10-07 isolated visual acceptance observed real window controls/Fusion,
+GTK Chinese editing, Thunar rename/copy, terminal execution, settings, public
+browsing, one upstream PAM cycle, and 100/150/200% scaling. It also reproduced
+and fixed explicit style activation, floating topbar, and typed Dock launcher
+configuration defects. Store refresh/install, browser input under load,
+multi-output and the remaining delivery gates are still open. See
+`evidence/kwin-candidate/native-visual-20261007.md`.
 The 2026-09-29 R-OS integration check now has a real ordinary-user KWin session,
 an active Rust user service, and an initial branded-lock/PAM cycle in a private
 patched candidate. Runtime testing found and fixed an invalid absolute QML

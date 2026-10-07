@@ -65,13 +65,19 @@ ROS_SCHEME = "usr/share/color-schemes/ForgeROS.colors"
 ROS_TOKENS = "usr/share/forge-desktop/plasma/r-os-tokens-v1.json"
 ROS_SHELL = "usr/share/plasma/shells/org.forge.ros/"
 ROS_LOCK = ROS_SHELL + "contents/lockscreen/LockScreen.qml"
+NATIVE_STYLE_SCRIPT = "usr/libexec/forge-desktop/forge-native-style"
+NATIVE_STYLE_ENTRY = "usr/share/applications/org.forge.NativeStyle.desktop"
+NATIVE_STYLE_HASHES = {
+    NATIVE_STYLE_SCRIPT: "25e5e05c2e875098ee123697251cb0cbb9b81f4cdb2ba9bdd5f7d59f08564ba6",
+    NATIVE_STYLE_ENTRY: "1f947c0366d2cccc93dadd6cec680f3ccbe8e0690a610595cceb47d1a02d9056",
+}
 GTK_ROOT = "usr/share/themes/ForgeROS/"
 GTK_REQUIRED = {GTK_ROOT + "index.theme", *(GTK_ROOT + f"gtk-{version}.0/{name}"
                 for version in (3, 4) for name in ("gtk.css", "gtk-dark.css"))}
 PANEL_ROOT = "usr/share/plasma/desktoptheme/forge/"
 PANEL_REQUIRED = {PANEL_ROOT + name for name in (
     "metadata.json", "plasmarc", "colors", "widgets/panel-background.svg", "widgets/tasks.svg")}
-ROS_REQUIRED = {ROS_SCHEME, ROS_TOKENS, ROS_SHELL + "metadata.json", ROS_LOCK} | GTK_REQUIRED | PANEL_REQUIRED
+ROS_REQUIRED = {ROS_SCHEME, ROS_TOKENS, ROS_SHELL + "metadata.json", ROS_LOCK} | GTK_REQUIRED | PANEL_REQUIRED | set(NATIVE_STYLE_HASHES)
 SCRIPT_BYTES = (b"#!/bin/sh\nset -eu\n"
                 b'[ "$(/usr/bin/id -u)" -ne 0 ] || exit 1\n'
                 b"export QT_QUICK_BACKEND=software\n"
@@ -230,6 +236,11 @@ def validate_ros_theme(payloads):
     if not present:
         return
     require(present == ROS_REQUIRED, "incomplete R-OS theme")
+    for name, digest in NATIVE_STYLE_HASHES.items():
+        require(hashlib.sha256(payloads[name][0]).hexdigest() == digest,
+                "unreviewed native style activation body")
+        require(payloads[name][1] == (0o755 if name == NATIVE_STYLE_SCRIPT else 0o644),
+                "native style activation mode mismatch")
     metadata = json.loads(payloads[ROS_SHELL + "metadata.json"][0], object_pairs_hook=unique_pairs)
     require(metadata.get("KPackageStructure") == "Plasma/Shell"
             and metadata.get("KPlugin", {}).get("Id") == "org.forge.ros"
@@ -399,7 +410,7 @@ def collect_files(root, *, receipt=False):
             require(stat.S_ISREG(metadata.st_mode) and metadata.st_nlink == 1
                     and metadata.st_size <= MAX_FILE,
                     "bundle input is not a bounded singly linked regular file")
-            mode = 0o755 if relative in (SESSION_SCRIPT, COMPAT_SCRIPT) else 0o644
+            mode = 0o755 if relative in (SESSION_SCRIPT, COMPAT_SCRIPT, NATIVE_STYLE_SCRIPT) else 0o644
             if os.name != "nt":
                 require(stat.S_IMODE(metadata.st_mode) == mode,
                         "bundle input mode mismatch")

@@ -12,6 +12,8 @@
     "python"
   ],
   "assetLicenses": {
+    "usr/libexec/forge-desktop/forge-native-style": "MIT",
+    "usr/share/applications/org.forge.NativeStyle.desktop": "MIT",
     "usr/share/color-schemes/ForgeROS.colors": "MIT",
     "usr/share/forge-desktop/plasma/r-os-tokens-v1.json": "MIT",
     "usr/share/plasma/shells/org.forge.ros/metadata.json": "MIT",

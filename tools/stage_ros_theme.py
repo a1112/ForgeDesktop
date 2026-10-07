@@ -5,6 +5,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 ROS_FILES = {
+    "plasma/session/forge-native-style": "usr/libexec/forge-desktop/forge-native-style",
+    "plasma/session/org.forge.NativeStyle.desktop": "usr/share/applications/org.forge.NativeStyle.desktop",
     "plasma/ros-theme/ForgeROS.colors": "usr/share/color-schemes/ForgeROS.colors",
     "docs/design/r-os-tokens-v1.json": "usr/share/forge-desktop/plasma/r-os-tokens-v1.json",
     "plasma/ros-theme/shell/metadata.json": "usr/share/plasma/shells/org.forge.ros/metadata.json",
@@ -34,8 +36,9 @@ def stage_theme(output):
         destination = output / relative
         destination.parent.mkdir(parents=True, exist_ok=True)
         destination.write_bytes(data)
-        destination.chmod(0o644)
-        payloads[relative] = (data, 0o644)
+        mode = 0o755 if relative == "usr/libexec/forge-desktop/forge-native-style" else 0o644
+        destination.chmod(mode)
+        payloads[relative] = (data, mode)
     return payloads
 
 

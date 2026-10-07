@@ -10,6 +10,7 @@ for (var i = 0; i < desktopsArray.length; i++) {
 var topPanel = new Panel;
 topPanel.location = "top";
 topPanel.height = 32;
+topPanel.floating = false;
 topPanel.addWidget("org.kde.plasma.kickoff");
 topPanel.addWidget("org.forge.windowcontrols");
 topPanel.addWidget("org.kde.plasma.pager");
@@ -39,5 +40,5 @@ var launchers = [
 if (applicationExists("org.gnome.Software.desktop")) {
     launchers.push("applications:org.gnome.Software.desktop");
 }
-tasks.writeConfig("launchers", launchers.join(","));
+tasks.writeConfig("launchers", launchers);
 dock.addWidget("org.kde.plasma.showdesktop");
