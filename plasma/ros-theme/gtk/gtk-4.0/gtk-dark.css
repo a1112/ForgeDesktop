@@ -24,6 +24,7 @@ headerbar, toolbar, menubar, notebook > header {
 }
 headerbar {
   min-height: 32px;
+  padding: 0;
   border-radius: 12px 12px 0 0;
 }
 label:disabled, image:disabled, button:disabled, entry:disabled {
@@ -194,10 +195,23 @@ tooltip {
   background-color: #232730;
   color: @theme_fg_color;
 }
-.titlebar button.titlebutton {
-  min-width: 24px;
-  min-height: 24px;
+.titlebar button.titlebutton, headerbar button.titlebutton, windowcontrols button {
+  min-width: 48px;
+  min-height: 32px;
   padding: 0;
-  border-radius: 6px;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+  background-color: transparent;
+  color: #9ca3af;
+}
+.titlebar button.titlebutton:hover, headerbar button.titlebutton:hover, windowcontrols button:hover {
+  background-color: rgba(255,255,255,0.10);
+  color: #ffffff;
+}
+.titlebar button.titlebutton.close:hover, headerbar button.titlebutton.close:hover, windowcontrols button.close:hover,
+.titlebar button.titlebutton.close:active, headerbar button.titlebutton.close:active, windowcontrols button.close:active {
+  background-color: #ef4444;
+  color: #ffffff;
 }
 /* Terminal content colors remain the terminal profile's own settings. */

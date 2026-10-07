@@ -14,8 +14,8 @@ name=forge
 [kwinrc][org.kde.kdecoration2]
 library=org.kde.kwin.aurorae
 theme=__aurorae__svg__ForgeDark
-ButtonsOnLeft=XIA
-ButtonsOnRight=
+ButtonsOnLeft=
+ButtonsOnRight=IAX
 
 [kwinrc][Windows]
 BorderlessMaximizedWindows=true

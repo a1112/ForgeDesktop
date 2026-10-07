@@ -5,10 +5,46 @@ import subprocess
 import sys
 
 PREFERENCES = (
-    ("org.kde.kdecoration2", "ButtonsOnLeft", "XIA"),
-    ("org.kde.kdecoration2", "ButtonsOnRight", ""),
+    ("org.kde.kdecoration2", "ButtonsOnLeft", ""),
+    ("org.kde.kdecoration2", "ButtonsOnRight", "IAX"),
     ("Windows", "BorderlessMaximizedWindows", "true"),
 )
+
+# Fixed, reviewed public Plasma script. Never insert app titles, user input, or
+# external script bytes. Only the exact previous Forge default panel is owned.
+PANEL_MIGRATION_SCRIPT = r"""
+var oldOrder = ["org.kde.plasma.kickoff", "org.forge.windowcontrols",
+    "org.kde.plasma.pager", "org.kde.plasma.panelspacer",
+    "org.kde.plasma.digitalclock", "org.kde.plasma.panelspacer",
+    "org.kde.plasma.systemtray"];
+var allPanels = panels();
+for (var i = 0; i < allPanels.length; i++) {
+    var panel = allPanels[i];
+    if (panel.type !== "org.kde.panel" || panel.location !== "top"
+            || panel.height !== 32 || panel.floating || panel.hiding !== "none") {
+        continue;
+    }
+    var items = panel.widgets().sort(function(a, b) { return a.index - b.index; });
+    if (items.length !== oldOrder.length
+            || !items.every(function(item, index) { return item.type === oldOrder[index]; })) {
+        continue;
+    }
+    var title = items[1];
+    var previousGroup = title.currentConfigGroup;
+    title.currentConfigGroup = ["General"];
+    if (title.readConfig("displayRole", "combined") !== "combined") {
+        title.currentConfigGroup = previousGroup;
+        continue;
+    }
+    var controls = panel.addWidget("org.forge.windowcontrols");
+    controls.currentConfigGroup = ["General"];
+    controls.writeConfig("displayRole", "controls");
+    controls.reloadConfig();
+    title.writeConfig("displayRole", "title");
+    title.reloadConfig();
+    title.currentConfigGroup = previousGroup;
+}
+"""
 
 
 def activate(runner=subprocess.run, uid=None):
@@ -16,15 +52,31 @@ def activate(runner=subprocess.run, uid=None):
         raise PermissionError("Apply native style from the ordinary desktop user session")
     def command(argv):
         return runner(argv, check=True, text=True, capture_output=True).stdout.rstrip("\n")
+    def read(file, group, key):
+        argv = ["kreadconfig6", "--file", file, "--group", group, "--key", key, "--default"]
+        first = command(argv + ["__forge_missing_a__"])
+        return None if first == "__forge_missing_a__" and command(argv + ["__forge_missing_b__"]) == "__forge_missing_b__" else first
+    def write(file, group, key, value):
+        command(["kwriteconfig6", "--file", file, "--group", group, "--key", key, value])
+    # Only the complete old Forge-controlled tuple is a migration candidate.
+    # Read it before applying look-and-feel defaults; unrelated layouts remain user-owned.
+    old_forge_controls = (
+        read("kwinrc", "org.kde.kdecoration2", "theme") == "__aurorae__svg__ForgeDark"
+        and read("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft") == "XIA"
+        and read("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight") == ""
+    )
     # The explicit action changes the chosen theme without resetting panel layout.
     command(["plasma-apply-lookandfeel", "-a", "org.forge.desktop"])
     for group, key, value in PREFERENCES:
-        read = ["kreadconfig6", "--file", "kwinrc", "--group", group, "--key", key, "--default"]
-        # Two distinct defaults distinguish absent keys from any explicit value,
-        # including an empty string or a preference matching either marker.
-        if command(read + ["__forge_missing_a__"]) == "__forge_missing_a__" and \
-                command(read + ["__forge_missing_b__"]) == "__forge_missing_b__":
-            command(["kwriteconfig6", "--file", "kwinrc", "--group", group, "--key", key, value])
+        if read("kwinrc", group, key) is None or (old_forge_controls and key in ("ButtonsOnLeft", "ButtonsOnRight")):
+            write("kwinrc", group, key, value)
+    for version in (3, 4):
+        file = f"gtk-{version}.0/settings.ini"
+        layout = read(file, "Settings", "gtk-decoration-layout")
+        if layout is None or (old_forge_controls and layout == "close,minimize,maximize:"):
+            write(file, "Settings", "gtk-decoration-layout", ":minimize,maximize,close")
+    command(["qdbus6", "org.kde.plasmashell", "/PlasmaShell",
+             "org.kde.PlasmaShell.evaluateScript", PANEL_MIGRATION_SCRIPT])
     command(["qdbus6", "org.kde.KWin", "/KWin", "reconfigure"])
 
 

@@ -43,8 +43,10 @@ class NativeStyleActivationTests(unittest.TestCase):
         module = self.module()
         runner, state, calls = self.runner()
         module.activate(runner=runner, uid=1000)
-        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft")], "XIA")
-        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight")], "")
+        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft")], "")
+        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight")], "IAX")
+        for version in (3, 4):
+            self.assertEqual(state[(f"gtk-{version}.0/settings.ini", "Settings", "gtk-decoration-layout")], ":minimize,maximize,close")
         self.assertEqual(state[("kwinrc", "Windows", "BorderlessMaximizedWindows")], "true")
         self.assertEqual(calls[-1], ["qdbus6", "org.kde.KWin", "/KWin", "reconfigure"])
         self.assertFalse(any("--resetLayout" in argv for argv in calls))
@@ -56,12 +58,42 @@ class NativeStyleActivationTests(unittest.TestCase):
         module = self.module()
         initial = {("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft"): "",
                    ("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight"): "AIAX",
-                   ("kwinrc", "Windows", "BorderlessMaximizedWindows"): "false"}
+                   ("kwinrc", "Windows", "BorderlessMaximizedWindows"): "false",
+                   ("gtk-3.0/settings.ini", "Settings", "gtk-decoration-layout"): "menu:close",
+                   ("gtk-4.0/settings.ini", "Settings", "gtk-decoration-layout"): "close:"}
         runner, state, calls = self.runner(initial)
         module.activate(runner=runner, uid=1000)
         module.activate(runner=runner, uid=1000)
         self.assertEqual(state, initial)
         self.assertFalse(any(argv[0] == "kwriteconfig6" for argv in calls))
+
+    def test_previous_forge_left_pair_is_restored_on_explicit_apply_only_once(self):
+        module = self.module()
+        initial = {("kwinrc", "org.kde.kdecoration2", "theme"): "__aurorae__svg__ForgeDark",
+                   ("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft"): "XIA",
+                   ("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight"): "",
+                   ("kwinrc", "Windows", "BorderlessMaximizedWindows"): "false",
+                   ("gtk-3.0/settings.ini", "Settings", "gtk-decoration-layout"): "close,minimize,maximize:"}
+        runner, state, calls = self.runner(initial)
+        module.activate(runner=runner, uid=1000)
+        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft")], "")
+        self.assertEqual(state[("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight")], "IAX")
+        self.assertEqual(state[("kwinrc", "Windows", "BorderlessMaximizedWindows")], "false")
+        self.assertEqual(state[("gtk-3.0/settings.ini", "Settings", "gtk-decoration-layout")], ":minimize,maximize,close")
+        writes = sum(argv[0] == "kwriteconfig6" for argv in calls)
+        module.activate(runner=runner, uid=1000)
+        self.assertEqual(sum(argv[0] == "kwriteconfig6" for argv in calls), writes)
+
+    def test_other_theme_or_custom_paired_buttons_are_not_migrated(self):
+        module = self.module()
+        for theme, left, right in (("other-theme", "XIA", ""), ("__aurorae__svg__ForgeDark", "XIA", "M")):
+            initial = {("kwinrc", "org.kde.kdecoration2", "theme"): theme,
+                       ("kwinrc", "org.kde.kdecoration2", "ButtonsOnLeft"): left,
+                       ("kwinrc", "org.kde.kdecoration2", "ButtonsOnRight"): right}
+            runner, state, calls = self.runner(initial)
+            module.activate(runner=runner, uid=1000)
+            for key, value in initial.items():
+                self.assertEqual(state[key], value)
 
     def test_marker_value_is_not_mistaken_for_missing_user_preference(self):
         module = self.module()

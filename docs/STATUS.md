@@ -1,6 +1,14 @@
 # Delivery status
 
 Approved scope: complete daily-use native desktop, not merely a nested demo.
+The user subsequently restored the original R-OS window-control layout:
+right minimize/maximize/close, always-visible gray glyphs, 48x32 ordinary and
+40x32 Fusion buttons. Source and packaging qualification is being updated;
+the older left traffic-dot screenshots below remain historical evidence, not
+acceptance of this restored control layout. Fresh Forge panels now split title
+and controls into two applet roles, with controls after the tray at the far right;
+explicit activation migrates only the exact previous Forge panel. Producer
+tests pass; fresh GUI qualification is pending.
 The 2026-10-07 isolated visual acceptance observed real window controls/Fusion,
 GTK Chinese editing, Thunar rename/copy, terminal execution, settings, public
 browsing, one upstream PAM cycle, and 100/150/200% scaling. It also reproduced

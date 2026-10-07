@@ -10,11 +10,25 @@ PlasmoidItem {
 
     Plasmoid.title: i18n("Window controls")
     Plasmoid.backgroundHints: PlasmaCore.Types.NoBackground
-    Layout.minimumWidth: fused ? 270 : 0
-    Layout.preferredWidth: fused ? 270 : 0
-    Layout.maximumWidth: fused ? 270 : 0
-    implicitWidth: fused ? 270 : 0
+    Layout.minimumWidth: fused && showControls ? controlsWidth : 0
+    Layout.preferredWidth: root.preferredWidth
+    Layout.maximumWidth: root.preferredWidth
+    implicitWidth: root.preferredWidth
     visible: fused
+
+    // Existing custom applets retain combined mode; the Forge default layout
+    // places title and controls in separate instances at the panel's two ends.
+    readonly property string displayRole: ["title", "controls"].includes(Plasmoid.configuration.displayRole)
+        ? Plasmoid.configuration.displayRole : "combined"
+    readonly property bool showTitle: displayRole !== "controls"
+    readonly property bool showControls: displayRole !== "title"
+    readonly property bool canRestore: {
+        modelSerial;
+        return fused && tasks.data(tasks.activeTask,
+            TaskManager.AbstractTasksModel.IsMaximizable) === true;
+    }
+    readonly property int controlsWidth: canRestore ? 120 : 80
+    readonly property int preferredWidth: fused ? (showTitle ? 270 : controlsWidth) : 0
 
     // TasksModel emits state changes; the serial makes data() bindings refresh.
     property int modelSerial: 0
@@ -81,36 +95,28 @@ PlasmoidItem {
 
     // A fixed-width panel applet needs visual children on the PlasmoidItem.
     // The pinned Plasma runtime does not instantiate compactRepresentation here.
-    component TrafficControl: Controls.Button {
+    component WindowControl: Controls.Button {
         id: control
-        required property color dotColor
-        Layout.preferredWidth: 24
+        property bool closeControl: false
+        Layout.minimumWidth: 40
+        Layout.preferredWidth: 40
+        Layout.maximumWidth: 40
         Layout.preferredHeight: 32
         padding: 0
         opacity: enabled ? 1 : 0.4
         Controls.ToolTip.text: Accessible.name
         Controls.ToolTip.visible: hovered
         Controls.ToolTip.delay: 500
-        contentItem: Item {
-            Rectangle {
-                anchors.centerIn: parent
-                width: 12
-                height: 12
-                radius: 6
-                color: control.dotColor
-                scale: control.pressed ? 0.86 : 1
-                Text {
-                    anchors.centerIn: parent
-                    text: control.text
-                    color: "#171a21"
-                    font.pixelSize: 11
-                    visible: control.hovered || control.activeFocus
-                }
-            }
+        contentItem: Text {
+            text: control.text
+            color: control.hovered ? "#ffffff" : "#9ca3af"
+            horizontalAlignment: Text.AlignHCenter
+            verticalAlignment: Text.AlignVCenter
+            font.pixelSize: 14
         }
         background: Rectangle {
-            color: "transparent"
-            radius: 6
+            color: control.hovered ? (control.closeControl ? "#ef4444" : "#1affffff") : "transparent"
+            radius: 0
             border.width: control.activeFocus ? 1 : 0
             border.color: "#60a5fa"
         }
@@ -120,45 +126,45 @@ PlasmoidItem {
         anchors.fill: parent
         spacing: 0
 
-        TrafficControl {
-            id: closeButton
-            text: "×"
-            dotColor: "#ff5f57"
-            enabled: root.fused && tasks.data(tasks.activeTask,
-                TaskManager.AbstractTasksModel.IsClosable) === true
-            Accessible.name: i18n("Close active window")
-            onClicked: root.actOnActiveTask("close")
+        Controls.Label {
+            visible: root.showTitle
+            Layout.fillWidth: true
+            Layout.minimumWidth: 0
+            text: root.activeTitle
+            color: "#e5e7eb"
+            elide: Text.ElideRight
+            verticalAlignment: Text.AlignVCenter
+            Accessible.name: i18n("Active window: %1", text)
         }
 
-        TrafficControl {
+        WindowControl {
             id: minimizeButton
+            visible: root.showControls
             text: "−"
-            dotColor: "#febc2e"
             enabled: root.fused && tasks.data(tasks.activeTask,
                 TaskManager.AbstractTasksModel.IsMinimizable) === true
             Accessible.name: i18n("Minimize active window")
             onClicked: root.actOnActiveTask("minimize")
         }
 
-        TrafficControl {
+        WindowControl {
             id: restoreButton
             text: "▣"
-            dotColor: "#28c840"
-            enabled: root.fused && tasks.data(tasks.activeTask,
-                TaskManager.AbstractTasksModel.IsMaximizable) === true
+            enabled: root.canRestore
+            visible: enabled && root.showControls
             Accessible.name: i18n("Restore active window")
             onClicked: root.actOnActiveTask("restore")
         }
 
-        Controls.Label {
-            Layout.fillWidth: true
-            Layout.minimumWidth: 0
-            Layout.leftMargin: 8
-            text: root.activeTitle
-            color: "#e5e7eb"
-            elide: Text.ElideRight
-            verticalAlignment: Text.AlignVCenter
-            Accessible.name: i18n("Active window: %1", text)
+        WindowControl {
+            id: closeButton
+            visible: root.showControls
+            text: "×"
+            closeControl: true
+            enabled: root.fused && tasks.data(tasks.activeTask,
+                TaskManager.AbstractTasksModel.IsClosable) === true
+            Accessible.name: i18n("Close active window")
+            onClicked: root.actOnActiveTask("close")
         }
     }
 }

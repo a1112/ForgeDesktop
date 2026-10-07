@@ -12,12 +12,17 @@ topPanel.location = "top";
 topPanel.height = 32;
 topPanel.floating = false;
 topPanel.addWidget("org.kde.plasma.kickoff");
-topPanel.addWidget("org.forge.windowcontrols");
+var windowTitle = topPanel.addWidget("org.forge.windowcontrols");
+windowTitle.currentConfigGroup = ["General"];
+windowTitle.writeConfig("displayRole", "title");
 topPanel.addWidget("org.kde.plasma.pager");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.digitalclock");
 topPanel.addWidget("org.kde.plasma.panelspacer");
 topPanel.addWidget("org.kde.plasma.systemtray");
+var windowControls = topPanel.addWidget("org.forge.windowcontrols");
+windowControls.currentConfigGroup = ["General"];
+windowControls.writeConfig("displayRole", "controls");
 
 var dock = new Panel;
 dock.location = "bottom";

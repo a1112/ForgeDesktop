@@ -58,9 +58,11 @@ WINDOW_DECOR_REQUIRED = {WINDOW_DECOR_ROOT + name for name in (
 WINDOW_WIDGET_ROOT = "usr/share/plasma/plasmoids/org.forge.windowcontrols/"
 WINDOW_WIDGET_METADATA = WINDOW_WIDGET_ROOT + "metadata.json"
 WINDOW_WIDGET_QML = WINDOW_WIDGET_ROOT + "contents/ui/main.qml"
+WINDOW_WIDGET_CONFIG = WINDOW_WIDGET_ROOT + "contents/config/main.xml"
+WINDOW_WIDGET_CONFIG_SHA256 = "c2f32963486b2bdea875e250e667d760d85227a4ef1d85427d314f635c71a469"
 WINDOW_CATALOG = (WINDOW_WIDGET_ROOT + "contents/locale/zh_CN/LC_MESSAGES/"
                   "plasma_applet_org.forge.windowcontrols.mo")
-WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML}
+WINDOW_REQUIRED = WINDOW_DECOR_REQUIRED | {WINDOW_WIDGET_METADATA, WINDOW_WIDGET_QML, WINDOW_WIDGET_CONFIG}
 ROS_SCHEME = "usr/share/color-schemes/ForgeROS.colors"
 ROS_TOKENS = "usr/share/forge-desktop/plasma/r-os-tokens-v1.json"
 ROS_SHELL = "usr/share/plasma/shells/org.forge.ros/"
@@ -68,7 +70,7 @@ ROS_LOCK = ROS_SHELL + "contents/lockscreen/LockScreen.qml"
 NATIVE_STYLE_SCRIPT = "usr/libexec/forge-desktop/forge-native-style"
 NATIVE_STYLE_ENTRY = "usr/share/applications/org.forge.NativeStyle.desktop"
 NATIVE_STYLE_HASHES = {
-    NATIVE_STYLE_SCRIPT: "25e5e05c2e875098ee123697251cb0cbb9b81f4cdb2ba9bdd5f7d59f08564ba6",
+    NATIVE_STYLE_SCRIPT: "8d2259ca1d417fe04cac75437540222cbdb031d949640061cf33f622089bee9e",
     NATIVE_STYLE_ENTRY: "1f947c0366d2cccc93dadd6cec680f3ccbe8e0690a610595cceb47d1a02d9056",
 }
 GTK_ROOT = "usr/share/themes/ForgeROS/"
@@ -318,6 +320,9 @@ def validate_window_assets(payloads):
     if not present:
         return
     require(present == WINDOW_REQUIRED, "incomplete Forge window-control assets")
+    require(payloads[WINDOW_WIDGET_CONFIG][1] == 0o644
+            and hashlib.sha256(payloads[WINDOW_WIDGET_CONFIG][0]).hexdigest() == WINDOW_WIDGET_CONFIG_SHA256,
+            "unreviewed Forge window-control role configuration")
     metadata = payloads[WINDOW_DECOR_ROOT + "metadata.desktop"][0].decode("utf-8")
     require(metadata.startswith("[Desktop Entry]\n")
             and re.search(r"(?m)^X-KDE-PluginInfo-Name=ForgeDark$", metadata)
@@ -325,9 +330,9 @@ def validate_window_assets(payloads):
             and len(metadata) <= 4096,
             "invalid Forge decoration metadata")
     config = payloads[WINDOW_DECOR_ROOT + "ForgeDarkrc"][0].decode("utf-8")
-    require("LeftButtons=XIA\nRightButtons=\n" in config
+    require("LeftButtons=\nRightButtons=IAX\n" in config
             and "TitleHeight=32\n" in config
-            and "ButtonWidth=24\n" in config
+            and "ButtonWidth=48\n" in config
             and len(config) <= 4096,
             "invalid Forge decoration layout")
     expected_frame = {"decoration-" + part for part in (
@@ -347,6 +352,15 @@ def validate_window_assets(payloads):
         require((expected_frame if name == "decoration" else
                  {"active-center", "hover-center", "inactive-center"}) <= ids,
                 "Forge decoration SVG misses required states")
+        if name != "decoration":
+            require(not any(color in raw.lower() for color in (b"#ff5f57", b"#febc2e", b"#28c840")),
+                    "Forge window buttons must retain original glyphs, not traffic dots")
+            for state in ("active-center", "inactive-center", "hover-center"):
+                group = next(element for element in svg.iter() if element.attrib.get("id") == state)
+                glyphs = [element for element in group.iter() if element.tag.endswith(("path", "line"))]
+                require(any(element.attrib.get("stroke") not in (None, "none")
+                            and element.attrib.get("opacity", "1") != "0" for element in glyphs),
+                        "Forge window button glyph must be visible in every state")
         allowed = {"svg", "g", "rect", "path", "line"}
         require(all(element.tag in {"{http://www.w3.org/2000/svg}" + tag
                                     for tag in allowed}
@@ -389,6 +403,15 @@ def validate_window_assets(payloads):
             and "requestClose" in qml
             and not re.search(r"\b(?:Process|Qt\.openUrlExternally|DBus|eval)\b", qml),
             "Forge window-control widget uses unreviewed controls")
+    require("TrafficControl" not in qml and "dotColor" not in qml
+            and "Plasmoid.configuration.displayRole" in qml
+            and "visible: root.showTitle" in qml
+            and "visible: root.showControls" in qml
+            and "canRestore ? 120 : 80" in qml
+            and "Layout.preferredWidth: 40" in qml
+            and qml.index("Controls.Label") < qml.index("id: minimizeButton")
+            < qml.index("id: restoreButton") < qml.index("id: closeButton"),
+            "Fusion controls must keep the original title then minimize/restore/close order")
 
 
 def collect_files(root, *, receipt=False):

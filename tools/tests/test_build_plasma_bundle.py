@@ -307,6 +307,8 @@ class PlasmaBundleTests(unittest.TestCase):
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json",
             "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml":
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml",
+            "plasma/plasmoids/org.forge.windowcontrols/contents/config/main.xml":
+                "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/config/main.xml",
             "plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo":
                 "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo",
         }
@@ -370,8 +372,8 @@ class PlasmaBundleTests(unittest.TestCase):
                   ).read_text()
         self.assertNotIn("compactRepresentation:", source)
         self.assertIn("RowLayout {", source)
-        self.assertIn('color: "#171a21"', source)
-        self.assertIn("control.hovered || control.activeFocus", source)
+        self.assertIn('color: control.hovered ? "#ffffff" : "#9ca3af"', source)
+        self.assertNotIn("visible: control.hovered", source)
 
     def test_fusion_excludes_verified_client_decorated_firefox(self):
         repo = Path(__file__).resolve().parents[2]

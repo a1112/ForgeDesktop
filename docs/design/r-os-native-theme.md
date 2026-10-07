@@ -3,8 +3,13 @@
 The approved R-OS visual contract uses graphite surfaces (#171a21 background,
 #232730 elevated content, #20242c toolbars), #e5e7eb text, #9ca3af secondary
 text and #60a5fa accent. Native title rows and the top panel target 32 pixels.
-Grouped close/minimize/maximize controls are on the left: red #ff5f57,
-yellow #febc2e and green #28c840, with 12-pixel dots inside 24-by-32 hit areas.
+The user restored the original R-OS controls: title/tabs on the left and
+minimize, maximize/restore, close on the right. Ordinary hit areas are 48-by-32;
+Fusion areas are 40-by-32. Gray glyphs are always visible, ordinary hover uses
+white glyphs and a weak white background, and only close hover becomes #ef4444.
+The red/yellow/green traffic dots are removed. The ordinary native reference is
+the pre-`0e2b4fe` Aurorae layout; the whole-panel Fusion reference is R-OS
+`80a7a2d`, with title on the left and controls after clock/status at the far right.
 Aurorae title corners use 12-pixel SVG geometry. Client contents can obscure
 the inner bottom arc within the existing 3-pixel borders; full-frame rounding
 requires visual qualification. KWin owns title dragging, resizing,
@@ -21,6 +26,13 @@ At 100% scale its 56-pixel panel, 6-pixel panel margins and 2-pixel task margins
 target a 40-pixel icon; icon artwork stays owned by installed application packages.
 Task backgrounds use 6-pixel SVG corners.
 
+The public KConfig `displayRole` separates title-only and control-only applet
+instances in a fresh Forge panel. The title instance is the second item on the
+left; the control instance is the final item, after the system tray. Control-only
+width is 120 pixels, or 80 when maximize/restore is unavailable, with no hidden
+button placeholder. Top-panel SVG side margins are zero; Dock margins stay six.
+Existing custom applets default to combined mode and are not repositioned.
+
 Original GTK 3 and GTK 4 styles cover file managers, text editors, terminal UI,
 toolbars, sidebars, menus, tabs, selection, focus, scrollbars and common controls.
 The candidate session selects ForgeROS:dark only when the theme is installed
@@ -31,6 +43,23 @@ still differ. The CSS contains no external assets or resource imports; the entry
 file imports only its packaged `gtk-dark.css` sibling. Existing XFCE and user
 configuration remain recoverable. The shell wrapper is optional and does not
 switch the default session.
+
+The explicit Apply Forge Native Style action now initializes only absent GTK
+3/4 `gtk-decoration-layout` keys to `:minimize,maximize,close`. It restores the
+complete older Forge `ButtonsOnLeft=XIA`/empty-right tuple only when the prior
+decoration theme is ForgeDark; unrelated custom pairs and explicit GTK choices
+remain unchanged. The matching generated old GTK left tuple is migrated in
+that same action. KWin is reconfigured through its documented DBus method;
+already-open GTK clients may require restart to pick up GtkSettings. A fixed
+public Plasma scripting call migrates only the exact previous seven-item Forge
+top panel at height 32, non-floating and non-hiding, with a combined Forge applet:
+it changes that instance to title-only and appends control-only after the tray.
+Reordered, extended, resized or otherwise customized panels and non-default
+applet roles remain unchanged. The migration is idempotent and performs no panel
+layout reset or automatic session switch. Theme CSS styles ordinary GTK
+title buttons, including GTK4 WindowControls, but cannot override application
+decoration-layout choices or guarantee libadwaita/Firefox/Electron CSD geometry.
+Those clients retain their own controls and need separate observed acceptance.
 
 The extra R-OS shell package provides a small lock-screen branding layer by
 inheriting the complete installed upstream LockScreen QML component. The exact
@@ -72,7 +101,12 @@ Reviewed upstream interfaces (source inspection, not runtime certification):
 - https://develop.kde.org/docs/plasma/theme/theme-details/
 - https://develop.kde.org/docs/plasma/theme/theme-elements/
 - https://develop.kde.org/docs/plasma/scripting/api/
+- https://develop.kde.org/docs/plasma/widget/configuration/
+- https://develop.kde.org/docs/plasma/widget/porting_kf6/
+- https://github.com/KDE/plasma-workspace/blob/master/shell/shellcorona.h
 - https://github.com/KDE/plasma-desktop/blob/v6.7.3/applets/taskmanager/qml/code/LayoutMetrics.js
 - https://docs.gtk.org/gtk3/running.html
 - https://docs.gtk.org/gtk3/css-properties.html
 - https://docs.gtk.org/gtk4/class.CssProvider.html
+- https://docs.gtk.org/gtk3/property.Settings.gtk-decoration-layout.html
+- https://docs.gtk.org/gtk4/class.WindowControls.html

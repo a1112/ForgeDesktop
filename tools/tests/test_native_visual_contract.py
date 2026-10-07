@@ -90,18 +90,71 @@ class NativeVisualContractTests(unittest.TestCase):
         self.assertIn('export GTK_THEME="${GTK_THEME:-ForgeROS:dark}"', source)
         self.assertNotRegex(source, r"\b(?:cp|mv|sed|gsettings|kwriteconfig|mkdir)\b|\.config/")
 
-    def test_traffic_controls_follow_shared_geometry_and_order(self):
+    def test_original_r_os_controls_follow_shared_geometry_and_order(self):
         tokens = json.loads((ROOT / "docs/design/r-os-tokens-v1.json").read_bytes())
-        self.assertEqual(tokens["window"]["controlWidth"], 24)
+        self.assertEqual(tokens["window"]["controlWidth"], 48)
+        self.assertEqual(tokens["window"]["fusionControlWidth"], 40)
         self.assertEqual(tokens["window"]["cornerRadius"], 12)
-        self.assertEqual(tokens["window"]["controlDiameter"], 12)
+        self.assertNotIn("controlDiameter", tokens["window"])
         config = (ROOT / "plasma/aurorae/ForgeDark/ForgeDarkrc").read_text()
-        self.assertIn("LeftButtons=XIA\nRightButtons=\n", config)
+        self.assertIn("LeftButtons=\nRightButtons=IAX\n", config)
+        self.assertIn("ButtonWidth=48\n", config)
         qml = (ROOT / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml").read_text()
-        self.assertLess(qml.index("id: closeButton"), qml.index("id: minimizeButton"))
+        self.assertLess(qml.index("Controls.Label"), qml.index("id: minimizeButton"))
         self.assertLess(qml.index("id: minimizeButton"), qml.index("id: restoreButton"))
+        self.assertLess(qml.index("id: restoreButton"), qml.index("id: closeButton"))
+        self.assertNotIn("TrafficControl", qml)
+        self.assertNotIn("dotColor", qml)
         for color in ("#ff5f57", "#febc2e", "#28c840"):
-            self.assertIn(color, qml)
+            self.assertNotIn(color, qml)
+        self.assertIn("Layout.preferredWidth: 40", qml)
+        self.assertIn('"#ef4444"', qml)
+
+    def test_aurorae_glyphs_are_visible_in_normal_inactive_and_hover_states(self):
+        for name in ("minimize", "maximize", "restore", "close"):
+            tree = ET.fromstring((ROOT / f"plasma/aurorae/ForgeDark/{name}.svg").read_bytes())
+            for state in ("active-center", "inactive-center", "hover-center", "pressed-center"):
+                group = next(element for element in tree.iter() if element.attrib.get("id") == state)
+                glyphs = [element for element in group.iter() if element.tag.endswith("path") or element.tag.endswith("line")]
+                self.assertTrue(glyphs, f"{name} {state} glyph must be visible without hover")
+                self.assertTrue(all(element.attrib.get("opacity", "1") != "0" for element in glyphs))
+                hit = next(element for element in group if element.tag.endswith("rect"))
+                self.assertEqual((hit.attrib.get("width"), hit.attrib.get("height")), ("48", "32"))
+
+    def test_packaging_rejects_old_left_traffic_layout(self):
+        from tools.build_plasma_bundle import WINDOW_REQUIRED, WINDOW_DECOR_ROOT, WINDOW_WIDGET_QML, WINDOW_WIDGET_METADATA, WINDOW_WIDGET_CONFIG, WINDOW_CATALOG
+        payloads = {}
+        for key in WINDOW_REQUIRED | {WINDOW_CATALOG}:
+            if key.startswith(WINDOW_DECOR_ROOT):
+                source = ROOT / "plasma/aurorae/ForgeDark" / key.removeprefix(WINDOW_DECOR_ROOT)
+            elif key == WINDOW_WIDGET_QML:
+                source = ROOT / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml"
+            elif key == WINDOW_WIDGET_METADATA:
+                source = ROOT / "plasma/plasmoids/org.forge.windowcontrols/metadata.json"
+            elif key == WINDOW_WIDGET_CONFIG:
+                source = ROOT / "plasma/plasmoids/org.forge.windowcontrols/contents/config/main.xml"
+            else:
+                source = ROOT / "plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo"
+            payloads[key] = (source.read_bytes(), 0o644)
+        key = WINDOW_DECOR_ROOT + "ForgeDarkrc"
+        payloads[key] = (b"[General]\nLeftButtons=XIA\nRightButtons=\n[Layout]\nTitleHeight=32\nButtonWidth=24\n", 0o644)
+        with self.assertRaises(ValueError):
+            validate_window_assets(payloads)
+
+    def test_gtk_csd_buttons_use_original_width_and_close_hover(self):
+        for version in (3, 4):
+            css = (ROOT / f"plasma/ros-theme/gtk/gtk-{version}.0/gtk-dark.css").read_text()
+            controls = css.split(".titlebar button.titlebutton", 1)[1]
+            self.assertIn("min-width: 48px", controls)
+            self.assertIn("min-height: 32px", controls)
+            self.assertIn("button.titlebutton.close:hover", controls)
+            self.assertIn("#ef4444", controls)
+
+    def test_fusion_unavailable_maximize_button_is_hidden_instead_of_placeholder(self):
+        qml = (ROOT / "plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml").read_text()
+        restore = qml.split("id: restoreButton", 1)[1].split("WindowControl {", 1)[0]
+        self.assertIn("visible: enabled", restore,
+                      "RowLayout must remove the unavailable maximize item, not leave a gray placeholder")
 
     def test_dock_icon_geometry_uses_supported_task_frame_margins(self):
         payloads = self.stage()

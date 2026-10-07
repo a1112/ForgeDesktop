@@ -1,7 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="120" height="32" viewBox="0 0 120 32">
-  <g id="active-center" transform="translate(0 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/></g>
-  <g id="hover-center" transform="translate(24 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/><path d="M9 14H14V19H9ZM11 12H16V17" fill="none" stroke="#171a21" stroke-width="1.2"/></g>
-  <g id="inactive-center" transform="translate(48 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#6b7280"/></g>
-  <g id="pressed-center" transform="translate(72 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#28c840"/><path d="M9 14H14V19H9ZM11 12H16V17" fill="none" stroke="#171a21" stroke-width="1.2"/></g>
-  <g id="deactivated-center" transform="translate(96 0)"><rect width="24" height="32" fill="none"/><rect x="6" y="10" width="12" height="12" rx="6" fill="#6b7280"/></g>
+<svg xmlns="http://www.w3.org/2000/svg" width="240" height="32" viewBox="0 0 240 32">
+  <g id="active-center" transform="translate(0 0)"><rect width="48" height="32" fill="none" fill-opacity="1"/><path d="M20 10H30V20M18 12H28V22H18Z" fill="none" stroke="#9ca3af" stroke-width="1.5"/></g>
+  <g id="hover-center" transform="translate(48 0)"><rect width="48" height="32" fill="#ffffff" fill-opacity="0.10"/><path d="M20 10H30V20M18 12H28V22H18Z" fill="none" stroke="#ffffff" stroke-width="1.5"/></g>
+  <g id="inactive-center" transform="translate(96 0)"><rect width="48" height="32" fill="none" fill-opacity="1"/><path d="M20 10H30V20M18 12H28V22H18Z" fill="none" stroke="#9ca3af" stroke-width="1.5"/></g>
+  <g id="pressed-center" transform="translate(144 0)"><rect width="48" height="32" fill="#ffffff" fill-opacity="0.15"/><path d="M20 10H30V20M18 12H28V22H18Z" fill="none" stroke="#ffffff" stroke-width="1.5"/></g>
+  <g id="deactivated-center" transform="translate(192 0)"><rect width="48" height="32" fill="none" fill-opacity="1"/><path d="M20 10H30V20M18 12H28V22H18Z" fill="none" stroke="#9ca3af" stroke-width="1.5"/></g>
 </svg>
