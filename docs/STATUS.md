@@ -1,6 +1,21 @@
 # Delivery status
 
 Approved scope: complete daily-use native desktop, not merely a nested demo.
+The 2026-10-08 corrective increment fixes observer startup/cleared activity,
+late locked activity, transient/app-ID updates, and Fusion capability refresh
+and press retargeting. The metadata correction is signed as `8ff5c31`; its
+script, companion and reducer must be installed together because older
+consumers reject explicit null activity. Rust/real CLI 28 tests and script 6
+tests passed after negative regressions; Qt 6.11.1 Linux Debug/assertions-enabled
+payload CTest also passed. Fusion's actual production QML passed 57 offscreen
+Qt 6.11.0 tests, including mouse/keyboard, real QVariantList and accessibility
+press actions; an independent artifact harness passed 3 additional hidden-parent
+cancellation cases. KDE module fixtures record requests, so these results do
+not qualify a real Plasma/KWin session. A newly pinned package and integrated
+producer checks are being prepared separately. No image/default-session switch,
+capture/input qualification, multi-output or saving-in-progress native-close
+runtime result is implied. See `plans/2026-10-08-native-window-continuation.md`.
+
 The user subsequently restored the original R-OS window-control layout:
 right minimize/maximize/close, always-visible gray glyphs, 48x32 ordinary and
 40x32 Fusion buttons. Source and packaging qualification is being updated;

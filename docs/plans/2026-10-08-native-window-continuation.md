@@ -45,7 +45,7 @@ Actual new-version KWin focus/lock/gesture and multi-output/hotplug validation, 
 - [x] Read current architecture/status and reuse clean isolated `agent/ros-desktop` checkout.
 - [x] Independently reproduce existing lifecycle/control gaps and retain the approved architecture/layout.
 - [x] Task 1 RED/GREEN, companion and bridge verification; separate spec and quality review passed. Actual Qt 6.11.1 Linux Debug CTest passed, not a KWin runtime gate.
-- [ ] Task 2 RED/GREEN, actual QML and native bundle verification.
+- [x] Task 2 RED/GREEN and actual QML verification (57 cases, plus 3 independent hidden-parent cancellation cases); native bundle verification remains in Task 3.
 - [ ] Spec review, quality review, signed integration and truthful delivery manifest.
 
 Official API basis: https://develop.kde.org/docs/plasma/kwin/api/ ; https://raw.githubusercontent.com/KDE/plasma-workspace/Plasma/6.5/libtaskmanager/waylandtasksmodel.cpp . The existing pinned target runtime still requires separate validation.
