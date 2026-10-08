@@ -360,7 +360,10 @@ class PlasmaBundleTests(unittest.TestCase):
             self.assertIn("TaskManager.AbstractTasksModel." + role, source)
         self.assertIn("tasks.activeTask", source)
         self.assertIn("function actOnActiveTask", source)
-        self.assertIn("if (!eligible(index))", source)
+        # Identity binding adds conditions to the same eligibility guard;
+        # actual target/eligibility behavior is exercised by the Qt suite.
+        dispatch = source.split("function actOnActiveTask", 1)[1].split("TaskManager.TasksModel {", 1)[0]
+        self.assertIn("!eligible(index)", dispatch)
         self.assertNotRegex(source, r"\b(?:Process|DBus|openUrlExternally|eval)\b")
 
     def test_fusion_widget_draws_controls_in_panel_item(self):
