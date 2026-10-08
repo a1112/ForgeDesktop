@@ -11,8 +11,17 @@ payload CTest also passed. Fusion's actual production QML passed 57 offscreen
 Qt 6.11.0 tests, including mouse/keyboard, real QVariantList and accessibility
 press actions; an independent artifact harness passed 3 additional hidden-parent
 cancellation cases. KDE module fixtures record requests, so these results do
-not qualify a real Plasma/KWin session. A newly pinned package and integrated
-producer checks are being prepared separately. No image/default-session switch,
+not qualify a real Plasma/KWin session. Integrated producer checks passed at
+`b2c0d8c`: Python 96 run / 95 pass / one existing POSIX-only FIFO skip, bridge
+28 tests, workspace fmt and strict bridge Clippy. The new 38-file theme package
+receipt is `9c9ee2f6bd1a491d2a11447ae104c30efac808add3f454263988d2a961a237d1`;
+only its QML applet differs from the previous 47a90 package. A coordinated Linux
+observer/companion/reducer test archive is bound separately to signed `8ff5c31`.
+Actual Linux locked/offline build/test/fmt/Clippy and target-userspace metadata
+CLI checks passed; it is not a complete deployed or licensed M5 release.
+The obsolete source-literal guard assertion failure and earlier candidate/list/
+accessibility/harness failures remain in the external evidence records.
+No image/default-session switch,
 capture/input qualification, multi-output or saving-in-progress native-close
 runtime result is implied. See `plans/2026-10-08-native-window-continuation.md`.
 
