@@ -60,7 +60,13 @@ to generation keys and quarantines unresolved parents. The broker must still
 validate app ownership and serialize trusted policy commands separately;
 title/app_id are advisory hints.
 The optional KWin script supplies managed window metadata and does not mutate
-windows. Script-visible popups are incomplete on some KWin versions; therefore
+windows. Startup publishes the existing eligible window observations before an
+activity observation for `workspace.activeWindow`. Every `windowActivated`
+signal publishes an eligible opaque ID or explicit `null` for no active window,
+the desktop, Dock or another excluded special window. Public
+`transientChanged` and `desktopFileNameChanged` signals refresh parent and app-ID
+metadata alongside the existing geometry and caption signals.
+Script-visible popups are incomplete on some KWin versions; therefore
 this observer is not the final compositor-side capture/input implementation.
 
 Build in an isolated Linux directory:
@@ -88,8 +94,30 @@ the same name does not promote cached children: a fresh trusted child observatio
 is required to bind the parent's current generation. Closing a root removes its
 live and quarantined subtree. Active-window metadata is a hint, not input authority.
 
-The reducer starts locked. Lock advances revocation metadata and clears activity;
-disconnect, invalid frames/events, limits or safe-counter exhaustion lock/revoke
+The companion's activity payload is `{type:"active",id:string|null}`; its private
+stdout also supplies `version:1`. The `id` field is required even when its value
+is `null`. Only activity permits a null ID: `window` and `closed` retain required
+bounded opaque string IDs, and a window's `parent` remains a required nullable
+opaque string. The reducer still fails closed on missing, wrong-type, duplicate
+or unknown fields.
+Explicit null and unknown live IDs clear activity. A closed ID cannot remain
+active, and activity for a reused ID binds only its current live generation.
+
+Install the packaged KWin script, Qt companion and Rust metadata reducer as one
+coordinated compatible set. This reducer still accepts the older activity string
+format. Older companions/reducers reject explicit null activity; an old reducer
+fails closed and terminates its observer epoch, so mixing the new script with
+those consumers is not a supported upgrade. The supervisor must check the
+installed set before enabling the script and recover to a fresh authenticated
+epoch after an observer failure. The policy command stream and its capabilities
+are unchanged.
+
+The reducer starts locked and ignores activity while locked, including initial
+observations and late activations. Lock advances revocation metadata and clears
+activity. Unlock alone does not resurrect an earlier activity hint; a fresh
+trusted activation is needed to expose a current live key. Browser data cannot
+unlock the reducer. These metadata rules do not authorize input or capture.
+Disconnect, invalid frames/events, limits or safe-counter exhaustion lock/revoke
 and terminally close the epoch. Same-epoch unlock/re-observation is rejected.
 The supervisor allocates a new unique epoch and constructs a new reducer after
 owner/child restart. All counters use the safe integer range without wrapping.

@@ -17,8 +17,11 @@ bool validObservation(const QByteArray &bytes) {
         : QSet<QString>{"type", "id"};
     if (type != "window" && type != "closed" && type != "active") return false;
     for (const auto &key : object.keys()) if (!allowed.contains(key)) return false;
+    if (!object.contains("id")) return false;
+    const auto identity = object.value("id");
+    if (type == "active" && identity.isNull()) return true;
     static const QRegularExpression id("^[a-zA-Z0-9{}_\\-]{1,128}$");
-    if (!id.match(object.value("id").toString()).hasMatch()) return false;
+    if (!identity.isString() || !id.match(identity.toString()).hasMatch()) return false;
     if (type != "window") return true;
     if (!object.contains("parent") || !object.value("caption").isString()
         || !object.value("app_id").isString() || !object.value("geometry").isObject()) return false;

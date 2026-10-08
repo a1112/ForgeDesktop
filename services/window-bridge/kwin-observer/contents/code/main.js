@@ -6,6 +6,9 @@ function publish(value) {
 }
 function identifier(window) { return String(window.internalId); }
 function eligible(window) { return window && !window.desktopWindow && !window.dock && (!window.specialWindow || window.popupWindow || window.dialog); }
+function activity(window) {
+    publish({type: "active", id: eligible(window) ? identifier(window) : null});
+}
 function observe(window) {
     if (!eligible(window)) return;
     var geometry = window.frameGeometry;
@@ -19,10 +22,11 @@ function attach(window) {
     observe(window);
     window.frameGeometryChanged.connect(function() { observe(window); });
     window.captionChanged.connect(function() { observe(window); });
+    window.transientChanged.connect(function() { observe(window); });
+    window.desktopFileNameChanged.connect(function() { observe(window); });
     window.closed.connect(function() { publish({type: "closed", id: identifier(window)}); });
 }
 workspace.windowAdded.connect(attach);
-workspace.windowActivated.connect(function(window) {
-    if (eligible(window)) publish({type: "active", id: identifier(window)});
-});
+workspace.windowActivated.connect(activity);
 workspace.windowList().forEach(attach);
+activity(workspace.activeWindow);

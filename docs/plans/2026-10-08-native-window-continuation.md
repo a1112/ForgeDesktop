@@ -44,7 +44,7 @@ Actual new-version KWin focus/lock/gesture and multi-output/hotplug validation, 
 
 - [x] Read current architecture/status and reuse clean isolated `agent/ros-desktop` checkout.
 - [x] Independently reproduce existing lifecycle/control gaps and retain the approved architecture/layout.
-- [ ] Task 1 RED/GREEN, companion and bridge verification.
+- [x] Task 1 RED/GREEN, companion and bridge verification; separate spec and quality review passed. Actual Qt 6.11.1 Linux Debug CTest passed, not a KWin runtime gate.
 - [ ] Task 2 RED/GREEN, actual QML and native bundle verification.
 - [ ] Spec review, quality review, signed integration and truthful delivery manifest.
 

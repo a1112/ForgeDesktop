@@ -30,7 +30,7 @@ impl std::fmt::Display for ObserverError {
 }
 impl std::error::Error for ObserverError {}
 
-fn required_parent<'de, D: serde::Deserializer<'de>>(
+fn required_nullable_id<'de, D: serde::Deserializer<'de>>(
     deserializer: D,
 ) -> Result<Option<String>, D::Error> {
     Option::<String>::deserialize(deserializer)
@@ -41,7 +41,7 @@ pub enum ObserverEvent {
     Window {
         version: u32,
         id: String,
-        #[serde(deserialize_with = "required_parent")]
+        #[serde(deserialize_with = "required_nullable_id")]
         parent: Option<String>,
         kind: WindowKind,
         geometry: Geometry,
@@ -54,7 +54,8 @@ pub enum ObserverEvent {
     },
     Active {
         version: u32,
-        id: String,
+        #[serde(deserialize_with = "required_nullable_id")]
+        id: Option<String>,
     },
     Lock {
         version: u32,
@@ -165,7 +166,10 @@ impl ObserverEvent {
                     return Err(ObserverError::InvalidParent);
                 }
             }
-            Self::Closed { id, .. } | Self::Active { id, .. } if !valid_id(id) => {
+            Self::Closed { id, .. } if !valid_id(id) => {
+                return Err(ObserverError::InvalidIdentity);
+            }
+            Self::Active { id: Some(id), .. } if !valid_id(id) => {
                 return Err(ObserverError::InvalidIdentity);
             }
             Self::Capabilities {
@@ -252,7 +256,13 @@ impl ObserverReducer {
             } => self.observe(id, parent, kind, geometry, caption, app_id),
             ObserverEvent::Closed { id, .. } => self.retire_tree(&id),
             ObserverEvent::Active { id, .. } => {
-                self.active_hint = self.live.get(&id).map(|window| window.key.clone());
+                self.active_hint = if self.locked {
+                    None
+                } else {
+                    id.as_ref()
+                        .and_then(|id| self.live.get(id))
+                        .map(|window| window.key.clone())
+                };
                 Ok(())
             }
             ObserverEvent::Lock { locked, .. } => {

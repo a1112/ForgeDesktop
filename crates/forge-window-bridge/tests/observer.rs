@@ -75,6 +75,10 @@ fn unknown_parent_requires_fresh_child_observation_and_close_retires_subtree() {
 #[test]
 fn lock_revokes_and_disconnect_never_unlocks_or_revives_same_epoch() {
     let mut reducer = ObserverReducer::new(9).unwrap();
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":false}),
+    );
     apply(&mut reducer, window("root", None, "normal", 0));
     apply(
         &mut reducer,
@@ -109,6 +113,158 @@ fn lock_revokes_and_disconnect_never_unlocks_or_revives_same_epoch() {
         fresh.snapshot(0, 64).unwrap().windows[0].key.session_epoch,
         10
     );
+}
+#[test]
+fn initial_and_late_locked_activity_stays_clear_and_unlock_does_not_resurrect_it() {
+    let mut reducer = ObserverReducer::new(9).unwrap();
+    apply(&mut reducer, window("root", None, "normal", 0));
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":false}),
+    );
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert_eq!(
+        reducer.snapshot(0, 64).unwrap().active_hint.unwrap().id,
+        "root"
+    );
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":true}),
+    );
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":false}),
+    );
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    let state = reducer.snapshot(0, 64).unwrap();
+    assert_eq!(state.active_hint.unwrap().id, "root");
+    assert!(!state.capture && !state.atomic_input && !state.runtime_verified);
+}
+#[test]
+fn explicit_null_and_unknown_activity_clear_existing_hint() {
+    let mut reducer = ObserverReducer::new(7).unwrap();
+    apply(&mut reducer, window("{opaque-uuid}", None, "normal", 0));
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":false}),
+    );
+    for clear in [Value::Null, json!("unknown")] {
+        apply(
+            &mut reducer,
+            json!({"version":1,"type":"active","id":"{opaque-uuid}"}),
+        );
+        assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_some());
+        apply(
+            &mut reducer,
+            json!({"version":1,"type":"active","id":clear}),
+        );
+        let state = reducer.snapshot(0, 64).unwrap();
+        assert!(state.active_hint.is_none());
+        assert!(state.connected && !state.locked);
+    }
+}
+#[test]
+fn activity_after_close_uses_only_current_live_generation() {
+    let mut reducer = ObserverReducer::new(7).unwrap();
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"lock","locked":false}),
+    );
+    apply(&mut reducer, window("root", None, "normal", 0));
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert_eq!(
+        reducer
+            .snapshot(0, 64)
+            .unwrap()
+            .active_hint
+            .unwrap()
+            .generation,
+        1
+    );
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"closed","id":"root"}),
+    );
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(&mut reducer, window("root", None, "normal", 0));
+    assert!(reducer.snapshot(0, 64).unwrap().active_hint.is_none());
+    apply(
+        &mut reducer,
+        json!({"version":1,"type":"active","id":"root"}),
+    );
+    assert_eq!(
+        reducer
+            .snapshot(0, 64)
+            .unwrap()
+            .active_hint
+            .unwrap()
+            .generation,
+        2
+    );
+}
+#[test]
+fn nullable_activity_does_not_relax_required_fields_id_syntax_or_other_event_ids() {
+    let mut invalid = vec![frame(json!({"version":1,"type":"active"}))];
+    for id in [
+        json!(false),
+        json!(7),
+        json!([]),
+        json!({}),
+        json!(""),
+        json!("contains space"),
+        json!("x".repeat(129)),
+    ] {
+        invalid.push(frame(json!({"version":1,"type":"active","id":id})));
+    }
+    for kind in ["closed", "window"] {
+        let mut event = if kind == "window" {
+            window("root", None, "normal", 0)
+        } else {
+            json!({"version":1,"type":"closed","id":"root"})
+        };
+        event["id"] = Value::Null;
+        invalid.push(frame(event.clone()));
+        event["id"] = json!(7);
+        invalid.push(frame(event.clone()));
+        event.as_object_mut().unwrap().remove("id");
+        invalid.push(frame(event));
+    }
+    invalid.push(frame(
+        json!({"version":1,"type":"active","id":null,"extra":true}),
+    ));
+    invalid.push(b"{\"version\":1,\"type\":\"active\",\"id\":null,\"id\":null}\n".to_vec());
+    invalid.push(b"{\"version\":1,\"type\":\"active\",\"id\":\"root\",\"id\":null}\n".to_vec());
+    for bytes in invalid {
+        let mut reducer = ObserverReducer::new(7).unwrap();
+        assert!(reducer.apply_frame(&bytes).is_err(), "{bytes:?}");
+        let state = reducer.snapshot(0, 64).unwrap();
+        assert!(!state.connected && state.locked && state.active_hint.is_none());
+    }
 }
 #[test]
 fn strict_frames_and_browser_control_messages_fail_closed() {
@@ -312,5 +468,99 @@ fn real_cli_rejects_browser_commands_and_truncated_input_with_locked_metadata() 
         assert_eq!(state["locked"], true);
         assert_eq!(state["capture"], false);
         assert!(state["last_error"].is_string());
+    }
+}
+fn cli_snapshots(input: &[u8]) -> Vec<Value> {
+    let output = run_observer(input);
+    assert!(
+        output.status.success(),
+        "{}",
+        String::from_utf8_lossy(&output.stderr)
+    );
+    output
+        .stdout
+        .split(|byte| *byte == b'\n')
+        .filter(|line| !line.is_empty())
+        .map(|line| serde_json::from_slice(line).unwrap())
+        .collect()
+}
+#[test]
+fn real_cli_accepts_explicit_clear_and_suppresses_locked_activity() {
+    let events = [
+        window("{uuid}", None, "normal", 0),
+        json!({"version":1,"type":"active","id":"{uuid}"}),
+        json!({"version":1,"type":"lock","locked":false}),
+        json!({"version":1,"type":"active","id":"{uuid}"}),
+        json!({"version":1,"type":"active","id":null}),
+        json!({"version":1,"type":"active","id":"{uuid}"}),
+        json!({"version":1,"type":"active","id":"unknown"}),
+        json!({"version":1,"type":"lock","locked":true}),
+        json!({"version":1,"type":"active","id":"{uuid}"}),
+        json!({"version":1,"type":"lock","locked":false}),
+    ];
+    let input = events.into_iter().flat_map(frame).collect::<Vec<_>>();
+    let snapshots = cli_snapshots(&input);
+    assert_eq!(snapshots.len(), 11);
+    for index in [0, 1, 2, 4, 6, 7, 8, 9, 10] {
+        assert!(
+            snapshots[index]["active_hint"].is_null(),
+            "{index}: {}",
+            snapshots[index]
+        );
+    }
+    for index in [3, 5] {
+        assert_eq!(snapshots[index]["active_hint"]["id"], "{uuid}");
+    }
+    for state in snapshots {
+        assert_eq!(state["capture"], false);
+        assert_eq!(state["atomic_input"], false);
+        assert_eq!(state["runtime_verified"], false);
+    }
+}
+#[test]
+fn real_cli_close_and_reuse_require_fresh_activity_for_new_generation() {
+    let events = [
+        json!({"version":1,"type":"lock","locked":false}),
+        window("root", None, "normal", 0),
+        json!({"version":1,"type":"active","id":"root"}),
+        json!({"version":1,"type":"closed","id":"root"}),
+        json!({"version":1,"type":"active","id":"root"}),
+        window("root", None, "normal", 0),
+        json!({"version":1,"type":"active","id":"root"}),
+    ];
+    let input = events.into_iter().flat_map(frame).collect::<Vec<_>>();
+    let states = cli_snapshots(&input);
+    assert_eq!(states[2]["active_hint"]["generation"], 1);
+    for index in [3, 4, 5] {
+        assert!(states[index]["active_hint"].is_null());
+    }
+    assert_eq!(states[6]["active_hint"]["generation"], 2);
+}
+#[test]
+fn real_cli_missing_wrong_type_and_duplicate_activity_fail_closed() {
+    let mut invalid = vec![
+        b"{\"version\":1,\"type\":\"active\"}\n".to_vec(),
+        b"{\"version\":1,\"type\":\"active\",\"id\":7}\n".to_vec(),
+        b"{\"version\":1,\"type\":\"active\",\"id\":null,\"id\":null}\n".to_vec(),
+        b"{\"version\":1,\"type\":\"active\",\"id\":null,\"unexpected\":true}\n".to_vec(),
+    ];
+    for mut event in [
+        window("root", None, "normal", 0),
+        json!({"version":1,"type":"closed","id":"root"}),
+    ] {
+        for id in [Value::Null, json!(7)] {
+            event["id"] = id;
+            invalid.push(frame(event.clone()));
+        }
+        event.as_object_mut().unwrap().remove("id");
+        invalid.push(frame(event));
+    }
+    for input in invalid {
+        let output = run_observer(&input);
+        assert!(!output.status.success());
+        let state: Value = serde_json::from_slice(output.stdout.trim_ascii()).unwrap();
+        assert_eq!(state["connected"], false);
+        assert_eq!(state["locked"], true);
+        assert!(state["active_hint"].is_null());
     }
 }
