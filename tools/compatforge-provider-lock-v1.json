@@ -25,6 +25,6 @@
     "desktop-launcher": "1"
   },
   "serviceName": "compatforge.service",
-  "sourceCommit": "df430fff25e6d4226daf90ef169136fa73613d26",
+  "sourceCommit": "2ef73fb0b3b74c94e0e41ec30e46a89218708fa5",
   "target": "x86_64-unknown-linux-gnu"
 }
