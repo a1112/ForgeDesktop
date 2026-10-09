@@ -1,7 +1,16 @@
 {
   "schemaVersion": 1,
   "archSnapshot": "2026/08/01",
-  "runtimePackages": ["desktop-file-utils", "fcitx5", "fcitx5-chinese-addons", "fcitx5-gtk", "fcitx5-qt", "kwin", "plasma-workspace", "python"],
+  "runtimePackages": [
+    "desktop-file-utils",
+    "fcitx5",
+    "fcitx5-chinese-addons",
+    "fcitx5-gtk",
+    "fcitx5-qt",
+    "kwin",
+    "plasma-workspace",
+    "python"
+  ],
   "assetLicenses": {
     "usr/libexec/forge-desktop/compatforge-desktop-sync": "MIT",
     "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": "MIT",
@@ -19,6 +28,8 @@
     "usr/share/plasma/look-and-feel/org.forge.desktop/metadata.json": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
-    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT"
+    "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT",
+    "usr/libexec/forge-desktop/forge_provider_contract.py": "MIT",
+    "usr/libexec/forge-desktop/compatforge-provider-lock-v1.json": "MIT"
   }
 }

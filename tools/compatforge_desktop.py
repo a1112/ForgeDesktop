@@ -16,8 +16,18 @@ import subprocess
 import sys
 import tempfile
 import time
+import uuid
+
+if __package__:
+    from .forge_provider_contract import load_lock, probe, decode_execution
+else:
+    try:
+        from forge_provider_contract import load_lock, probe, decode_execution
+    except ModuleNotFoundError:
+        from tools.forge_provider_contract import load_lock, probe, decode_execution
 
 CLIENT = "/usr/bin/compatforge-cli"
+PROVIDER_LOCK = Path(__file__).with_name("compatforge-provider-lock-v1.json")
 MAX_EXPORT = 16 * 1024 * 1024
 MAX_ENTRY = 16 * 1024
 MAX_MANIFEST = 256 * 1024
@@ -303,12 +313,18 @@ def reconcile(export, applications, state):
 
 def query_export():
     """Bound subprocess output while reading it; communicate alone is unbounded."""
-    process = subprocess.Popen([CLIENT, "desktop-export"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
+    required = load_lock(PROVIDER_LOCK)
+    probe(CLIENT, required)
+    request_id = "desktop-" + uuid.uuid4().hex
+    # This execution revalidates the fixed lock, and its result must identify
+    # both the executor and the same-connection daemon before reconciliation.
+    process = subprocess.Popen([CLIENT, "desktop-export", "--provider-contract", json.dumps(required, separators=(",", ":")),
+                                "--request-id", request_id], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                stdin=subprocess.DEVNULL, close_fds=True)
     output = bytearray()
     deadline = time.monotonic() + 70
     try:
-        with selectors.DefaultSelector() as selector:
+        with selectors.SelectSelector() as selector:
             selector.register(process.stdout, selectors.EVENT_READ)
             while True:
                 remaining = deadline - time.monotonic()
@@ -322,7 +338,7 @@ def query_export():
                 output.extend(chunk)
         require(process.wait(timeout=max(0.001, deadline - time.monotonic())) == 0,
                 "CompatForge desktop query failed; existing launchers retained")
-        return json.loads(output, object_pairs_hook=unique)
+        return decode_execution(output, required, request_id, "desktop.launchers", MAX_EXPORT)
     finally:
         if process.poll() is None:
             process.kill()

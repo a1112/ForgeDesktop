@@ -23,8 +23,10 @@ import xml.etree.ElementTree as ET
 
 if __package__:
     from tools.build_bundle import no_links, require, source_commit
+    from tools.forge_provider_contract import decode as decode_provider_lock
 else:
     from build_bundle import no_links, require, source_commit
+    from forge_provider_contract import decode as decode_provider_lock
 
 
 ARCH_SNAPSHOT = "2026/08/01"
@@ -39,7 +41,9 @@ REQUIRED = {SESSION_SCRIPT, SESSION_ENTRY, DEPENDENCIES, LICENSE}
 COMPAT_SCRIPT = "usr/libexec/forge-desktop/compatforge-desktop-sync"
 COMPAT_SERVICE = "usr/lib/systemd/user/forge-compatforge-desktop-sync.service"
 COMPAT_TIMER = "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer"
-COMPAT_REQUIRED = {COMPAT_SCRIPT, COMPAT_SERVICE, COMPAT_TIMER}
+COMPAT_CONTRACT = "usr/libexec/forge-desktop/forge_provider_contract.py"
+COMPAT_LOCK = "usr/libexec/forge-desktop/compatforge-provider-lock-v1.json"
+COMPAT_REQUIRED = {COMPAT_SCRIPT, COMPAT_SERVICE, COMPAT_TIMER, COMPAT_CONTRACT, COMPAT_LOCK}
 COMPAT_SERVICE_BYTES = (b"[Unit]\nDescription=Synchronize CompatForge application launchers\n"
                        b"After=compatforge.service\nRequisite=compatforge.service\nPartOf=graphical-session.target\nConditionPathExists=/usr/bin/compatforge-cli\n\n"
                        b"[Service]\nType=oneshot\nExecStart=/usr/libexec/forge-desktop/compatforge-desktop-sync\n"
@@ -180,8 +184,19 @@ def validate_compatforge_assets(payloads, dependencies, profile=ARCH_PROFILE):
             "invalid CompatForge desktop consumer")
     try:
         ast.parse(source)
+        ast.parse(payloads[COMPAT_CONTRACT][0])
     except (SyntaxError, UnicodeError) as error:
         raise ValueError("invalid CompatForge desktop consumer syntax") from error
+    lock = decode_provider_lock(payloads[COMPAT_LOCK][0])
+    require(lock["providerId"] == "compatforge" and lock["contractVersion"] == "2.0.0"
+            and lock["serviceName"] == "compatforge.service" and lock["target"] == "x86_64-unknown-linux-gnu"
+            and lock["commands"].get("desktop-export") == "2" and lock["commands"].get("desktop-launch") == "2"
+            and lock["schemas"].get("desktop-export") == "1" and lock["schemas"].get("desktop-launcher") == "1"
+            and lock["schemas"].get("daemon-handshake") == "2" and lock["schemas"].get("bound-request") == "2"
+            and lock["schemas"].get("bound-response") == "2" and lock["schemas"].get("daemon-reply") == "2"
+            and {"desktop-launchers-v1", "shared-service-v1", "provider-binding-v2"} <= set(lock["capabilities"])
+            and {"desktop.launchers", "jobs.submit"} <= set(lock["operations"]),
+            "CompatForge desktop lock omits mandatory provider requirements")
 
 
 def validate_visual_assets(payloads, profile=ARCH_PROFILE):
@@ -480,6 +495,8 @@ def repository_asset_sources(repo, *, profile=ARCH_PROFILE):
         DEPENDENCIES: "plasma/dependencies" + ("-ubuntu" if profile == UBUNTU_PROFILE else "") + ".json",
         LICENSE: "LICENSE-MIT",
         COMPAT_SCRIPT: "tools/compatforge_desktop.py",
+        COMPAT_CONTRACT: "tools/forge_provider_contract.py",
+        COMPAT_LOCK: "tools/compatforge-provider-lock-v1.json",
         COMPAT_SERVICE: "services/compatforge/forge-compatforge-desktop-sync.service",
         COMPAT_TIMER: "services/compatforge/forge-compatforge-desktop-sync.timer",
     }
