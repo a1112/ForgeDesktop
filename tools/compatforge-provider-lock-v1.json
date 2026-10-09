@@ -1,0 +1,25 @@
+{
+  "capabilities": [
+    "desktop-launchers-v1",
+    "shared-service-v1"
+  ],
+  "commands": {
+    "desktop-export": "1",
+    "desktop-launch": "1"
+  },
+  "contractVersion": "1.0.0",
+  "operations": [
+    "desktop.launchers",
+    "jobs.submit"
+  ],
+  "providerId": "compatforge",
+  "providerVersion": "0.12.0",
+  "schemaVersion": "1",
+  "schemas": {
+    "desktop-export": "1",
+    "desktop-launcher": "1"
+  },
+  "serviceName": "compatforge.service",
+  "sourceCommit": "df263757da5cd7f6f83150e0c0fe9e603035e5b7",
+  "target": "x86_64-unknown-linux-gnu"
+}

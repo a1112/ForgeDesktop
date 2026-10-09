@@ -30,8 +30,8 @@ class UbuntuLayoutTests(unittest.TestCase):
     def test_real_repository_staging_keeps_arch_bytes_and_ubuntu_receipt_closed(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            for profile, expected, count in [('ubuntu-26.04', UBUNTU_LAYOUT, 22),
-                                              (bundle.ARCH_PROFILE, REPO / 'plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js', 21)]:
+            for profile, expected, count in [('ubuntu-26.04', UBUNTU_LAYOUT, 24),
+                                              (bundle.ARCH_PROFILE, REPO / 'plasma/look-and-feel/contents/layouts/org.kde.plasma.desktop-layout.js', 23)]:
                 stage = root / profile
                 bundle.stage_repository_assets(REPO, stage, profile=profile)
                 self.assertEqual((stage / bundle.LOOK_LAYOUT).read_bytes(),

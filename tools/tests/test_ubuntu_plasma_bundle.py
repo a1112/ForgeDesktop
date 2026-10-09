@@ -52,6 +52,8 @@ class UbuntuBundleTests(unittest.TestCase):
         repo = Path(__file__).resolve().parents[2]
         inventory = json.loads((repo / 'plasma/dependencies-ubuntu.json').read_bytes())
         explicit = {
+            'usr/libexec/forge-desktop/forge_provider_contract.py': 'tools/forge_provider_contract.py',
+            'usr/libexec/forge-desktop/compatforge-provider-lock-v1.json': 'tools/compatforge-provider-lock-v1.json',
             'usr/share/plasma/look-and-feel/org.forge.desktop/contents/layouts/org.kde.plasma.desktop-layout.js':
                 'plasma/look-and-feel-ubuntu/contents/layouts/org.kde.plasma.desktop-layout.js',
             'usr/libexec/forge-desktop/ubuntu-desktop': 'tools/ubuntu_desktop.py',
@@ -74,7 +76,8 @@ class UbuntuBundleTests(unittest.TestCase):
             data = (repo / source).read_bytes()
             # Preserve binary message catalogs; normalize text checkout endings.
             path.write_bytes(data if source.endswith('.mo') else data.replace(b'\r\n', b'\n'))
-            path.chmod(0o755 if target.startswith('usr/libexec/') else 0o644)
+            path.chmod(0o755 if target in ('usr/libexec/forge-desktop/compatforge-desktop-sync',
+                                         'usr/libexec/forge-desktop/ubuntu-desktop') else 0o644)
         (self.stage / 'usr/share/forge-desktop/plasma/dependencies.json').write_text(json.dumps(inventory))
         receipt = verify_bundle(self.output, self.build())
         self.assertEqual(set(receipt['files']), set(self.files) | set(inventory['assetLicenses']))

@@ -29,7 +29,9 @@
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/ui/main.qml": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/contents/locale/zh_CN/LC_MESSAGES/plasma_applet_org.forge.windowcontrols.mo": "MIT",
     "usr/share/plasma/plasmoids/org.forge.windowcontrols/metadata.json": "MIT",
-    "usr/libexec/forge-desktop/ubuntu-desktop": "MIT"
+    "usr/libexec/forge-desktop/ubuntu-desktop": "MIT",
+    "usr/libexec/forge-desktop/forge_provider_contract.py": "MIT",
+    "usr/libexec/forge-desktop/compatforge-provider-lock-v1.json": "MIT"
   },
   "runtimeProfile": "ubuntu-26.04"
 }

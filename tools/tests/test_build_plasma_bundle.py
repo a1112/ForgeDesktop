@@ -81,6 +81,8 @@ class PlasmaBundleTests(unittest.TestCase):
     def test_compatforge_sync_bundle_is_closed_and_preserves_executable_mode(self):
         root = Path(__file__).resolve().parents[2]
         assets = {
+            "usr/libexec/forge-desktop/forge_provider_contract.py": (root / "tools/forge_provider_contract.py", 0o644),
+            "usr/libexec/forge-desktop/compatforge-provider-lock-v1.json": (root / "tools/compatforge-provider-lock-v1.json", 0o644),
             "usr/libexec/forge-desktop/compatforge-desktop-sync": (root / "tools/compatforge_desktop.py", 0o755),
             "usr/lib/systemd/user/forge-compatforge-desktop-sync.service": (root / "services/compatforge/forge-compatforge-desktop-sync.service", 0o644),
             "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer": (root / "services/compatforge/forge-compatforge-desktop-sync.timer", 0o644),
@@ -109,6 +111,24 @@ class PlasmaBundleTests(unittest.TestCase):
         script.write_bytes(SESSION + b"/usr/bin/sh -c 'danger'\n")
         with self.assertRaises(ValueError):
             self.build()
+        self.assertFalse(self.output.exists())
+
+    def test_provider_adapter_and_mandatory_lock_cannot_be_omitted_from_bundle(self):
+        from tools.build_plasma_bundle import stage_repository_assets, COMPAT_LOCK
+        repo = Path(__file__).resolve().parents[2]
+        full_stage = self.root / "contract-stage"
+        stage_repository_assets(repo, full_stage)
+        lock = full_stage / COMPAT_LOCK
+        original = lock.read_bytes()
+        lock.unlink()
+        with self.assertRaisesRegex(ValueError, "incomplete CompatForge|asset license records"):
+            create_bundle(full_stage, self.output, "0.1.0", "a" * 40)
+        value = json.loads(original)
+        value["commands"] = {}
+        lock.write_text(json.dumps(value))
+        lock.chmod(0o644)
+        with self.assertRaisesRegex(ValueError, "mandatory provider requirements"):
+            create_bundle(full_stage, self.output, "0.1.0", "a" * 40)
         self.assertFalse(self.output.exists())
 
     def test_rejects_configparser_defaults_as_session_fields(self):
@@ -317,6 +337,8 @@ class PlasmaBundleTests(unittest.TestCase):
                         self.stage / "usr/share/forge-desktop/plasma/dependencies.json")
         for source, destination, mode in (
             ("tools/compatforge_desktop.py", "usr/libexec/forge-desktop/compatforge-desktop-sync", 0o755),
+            ("tools/forge_provider_contract.py", "usr/libexec/forge-desktop/forge_provider_contract.py", 0o644),
+            ("tools/compatforge-provider-lock-v1.json", "usr/libexec/forge-desktop/compatforge-provider-lock-v1.json", 0o644),
             ("services/compatforge/forge-compatforge-desktop-sync.service", "usr/lib/systemd/user/forge-compatforge-desktop-sync.service", 0o644),
             ("services/compatforge/forge-compatforge-desktop-sync.timer", "usr/lib/systemd/user/forge-compatforge-desktop-sync.timer", 0o644),
         ):

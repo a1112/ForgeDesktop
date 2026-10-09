@@ -17,7 +17,16 @@ import sys
 import tempfile
 import time
 
+if __package__:
+    from .forge_provider_contract import load_lock, probe
+else:
+    try:
+        from forge_provider_contract import load_lock, probe
+    except ModuleNotFoundError:
+        from tools.forge_provider_contract import load_lock, probe
+
 CLIENT = "/usr/bin/compatforge-cli"
+PROVIDER_LOCK = Path(__file__).with_name("compatforge-provider-lock-v1.json")
 MAX_EXPORT = 16 * 1024 * 1024
 MAX_ENTRY = 16 * 1024
 MAX_MANIFEST = 256 * 1024
@@ -303,6 +312,7 @@ def reconcile(export, applications, state):
 
 def query_export():
     """Bound subprocess output while reading it; communicate alone is unbounded."""
+    probe(CLIENT, load_lock(PROVIDER_LOCK))
     process = subprocess.Popen([CLIENT, "desktop-export"], stdout=subprocess.PIPE, stderr=subprocess.DEVNULL,
                                stdin=subprocess.DEVNULL, close_fds=True)
     output = bytearray()
