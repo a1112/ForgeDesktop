@@ -1,13 +1,14 @@
 {
   "capabilities": [
     "desktop-launchers-v1",
+    "provider-binding-v2",
     "shared-service-v1"
   ],
   "commands": {
-    "desktop-export": "1",
-    "desktop-launch": "1"
+    "desktop-export": "2",
+    "desktop-launch": "2"
   },
-  "contractVersion": "1.0.0",
+  "contractVersion": "2.0.0",
   "operations": [
     "desktop.launchers",
     "jobs.submit"
@@ -16,10 +17,14 @@
   "providerVersion": "0.12.0",
   "schemaVersion": "1",
   "schemas": {
+    "bound-request": "2",
+    "bound-response": "2",
+    "daemon-handshake": "2",
+    "daemon-reply": "2",
     "desktop-export": "1",
     "desktop-launcher": "1"
   },
   "serviceName": "compatforge.service",
-  "sourceCommit": "df263757da5cd7f6f83150e0c0fe9e603035e5b7",
+  "sourceCommit": "df430fff25e6d4226daf90ef169136fa73613d26",
   "target": "x86_64-unknown-linux-gnu"
 }

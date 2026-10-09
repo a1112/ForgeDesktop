@@ -188,11 +188,13 @@ def validate_compatforge_assets(payloads, dependencies, profile=ARCH_PROFILE):
     except (SyntaxError, UnicodeError) as error:
         raise ValueError("invalid CompatForge desktop consumer syntax") from error
     lock = decode_provider_lock(payloads[COMPAT_LOCK][0])
-    require(lock["providerId"] == "compatforge" and lock["contractVersion"] == "1.0.0"
-            and lock["serviceName"] == "compatforge.service"
-            and lock["commands"].get("desktop-export") == "1" and lock["commands"].get("desktop-launch") == "1"
+    require(lock["providerId"] == "compatforge" and lock["contractVersion"] == "2.0.0"
+            and lock["serviceName"] == "compatforge.service" and lock["target"] == "x86_64-unknown-linux-gnu"
+            and lock["commands"].get("desktop-export") == "2" and lock["commands"].get("desktop-launch") == "2"
             and lock["schemas"].get("desktop-export") == "1" and lock["schemas"].get("desktop-launcher") == "1"
-            and {"desktop-launchers-v1", "shared-service-v1"} <= set(lock["capabilities"])
+            and lock["schemas"].get("daemon-handshake") == "2" and lock["schemas"].get("bound-request") == "2"
+            and lock["schemas"].get("bound-response") == "2" and lock["schemas"].get("daemon-reply") == "2"
+            and {"desktop-launchers-v1", "shared-service-v1", "provider-binding-v2"} <= set(lock["capabilities"])
             and {"desktop.launchers", "jobs.submit"} <= set(lock["operations"]),
             "CompatForge desktop lock omits mandatory provider requirements")
 

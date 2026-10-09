@@ -25,3 +25,14 @@ existing user-owned launcher files. This local slice has only synthetic contract
 and temporary bundle verification. It does not certify Wine, a running Linux
 service, image/VM startup, desktop performance or the unresolved R-OS Rust
 producer. Existing M0–M5 gates and session-default policy remain unchanged.
+
+Independent review supersedes the CLI-only v1 gate with contract 2.0.0. The
+actual `desktop-export` execution receives the fixed lock and a fresh correlation
+ID as argv, validates its own compiled identity and negotiates the actual daemon
+on one connection before its operation. The consumer validates executor and
+daemon identity/capabilities/schema plus correlation in the bound v2 result.
+Unbound legacy output and a path replacement's different source cannot trigger
+launcher removal. Inner desktop metadata remains schema 1; CLI/transport major
+is 2. Shared raw-byte vectors define UTF-8 without BOM identically in Rust and
+Python. Lock reads use no-follow, nonblocking, validated descriptors and hard
+read limits. No credential or authorization scope is introduced.
